@@ -1,111 +1,87 @@
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ShiftService {
 
-    // יצירת משמרת חדשה ושמירה שלה ב-DataStore
     public Shift createShift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
-        // יצירת האובייקט של Shift
+        // creating the shift
         Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments);
 
-        // הוספת המשמרת לרשימה ב-DataStore
-        DataStore.shifts.add(newShift);  // הוספה לרשימה הסטטית של shifts ב-DataStore
+        // adding the shift to the archive (data store)
+        this.archiveShift(newShift,date);
+
 
         return newShift;
     }
 
-    // עדכון משמרת
-    public boolean updateShift(String shiftId, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
-        for (Shift shift : DataStore.shifts) {
-            if (shift.getId().equals(shiftId)) {
-                // עדכון שדות המשמרת
-                shift.setArchived(false);  // ביכולתך לשנות גם את הסטטוס של המשמרת אם צריך
-                // אם אתה מעוניין לשדרג שדות אחרים גם, תוכל לעדכן את שדות השעה, תאריך, ועוד
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean updateShift(String shiftId, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
+//        for (Shift shift : DataStore.shifts) {
+//            if (shift.getId().equals(shiftId)) {
+//                // עדכון שדות המשמרת
+//                shift.setArchived(false);  // ביכולתך לשנות גם את הסטטוס של המשמרת אם צריך
+//                // אם אתה מעוניין לשדרג שדות אחרים גם, תוכל לעדכן את שדות השעה, תאריך, ועוד
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
-    // ארכוב משמרת
-    public boolean archiveShift(String shiftId, String archivedAt) { //צריך גם לאחסן!
-        for (Shift shift : DataStore.shifts) {
-            if (shift.getId().equals(shiftId)) {
+
+    public void archiveShift(Shift shift, String date_of_being_archived) {
+                DataStore.shifts.add(shift);  // הוספה לרשימה הסטטית של shifts ב-DataStore
                 shift.setArchived(true);
-                shift.setArchivedAt(archivedAt);
-                return true;  // המשמרת הושלמה והארכוב בוצע בהצלחה
-            }
-        }
-        return false;
+                shift.setArchivedAt(date_of_being_archived);
     }
 
-    // מחיקת משמרת
+
     public boolean deleteShift(String shiftId) {
         Iterator<Shift> iterator = DataStore.shifts.iterator();
         while (iterator.hasNext()) {
             Shift shift = iterator.next();
             if (shift.getId().equals(shiftId)) {
-                iterator.remove();  // הסרת המשמרת
+                iterator.remove();  // deleting the shift from the memory.
                 return true;
             }
         }
-        return false;  // לא נמצאה משמרת עם מזהה זה
+        return false;  // we didn't find a matching shift.
     }
 
-    // חיפוש משמרת לפי ID
+    // searching a shift by id
     public Shift getShiftById(String shiftId) {
         for (Shift shift : DataStore.shifts) {
             if (shift.getId().equals(shiftId)) {
                 return shift;
             }
         }
-        return null;  // אם לא נמצאה משמרת עם מזהה זה
+        return null;  // didn't find a matching shift
     }
 
-    // קבלת כל המשמרות
+
     public List<Shift> getAllShifts() {
-        return new ArrayList<>(DataStore.shifts);  // מחזירים את כל המשמרות ברשימה חדשה
+        return new ArrayList<>(DataStore.shifts);  // returning all the shifts that happened in the last 7 years in a list.
     }
 
-    // קבלת משמרות לפי ארכוב
-    public List<Shift> getShiftsByArchiveStatus(boolean isArchived) {
-        List<Shift> filteredShifts = new ArrayList<>();
-        for (Shift shift : DataStore.shifts) {
-            if (shift.isArchived() == isArchived) {
-                filteredShifts.add(shift);
-            }
-        }
-        return filteredShifts;
-    }
 
-    public List<Shift> getAllShiftsForThisWeek() {
+    public List<Shift> getAllShiftsForThisWeek() { //check!!
         List<Shift> allShifts = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0); // לניקוי השעה
+        LocalDate today = LocalDate.now();
+        LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY);
+        LocalDate weekEnd = weekStart.plusDays(6);
 
-        // התחלת השבוע (ראשון)
-        Calendar weekStart = (Calendar) today.clone();
-        weekStart.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-
-        // סוף השבוע (שבת)
-        Calendar weekEnd = (Calendar) weekStart.clone();
-        weekEnd.add(Calendar.DAY_OF_WEEK, 6);
+        String startDateStr = weekStart.toString(); // yyyy-MM-dd
+        String endDateStr = weekEnd.toString();     // yyyy-MM-dd
 
         for (Shift shift : DataStore.shifts) {
-            try {
-                Date shiftDate = sdf.parse(shift.getDate());
+            String shiftDate = shift.getDate();
 
-                if (!shift.isArchived() &&
-                        !shiftDate.before(weekStart.getTime()) &&
-                        !shiftDate.after(weekEnd.getTime())) {
+            if (!shift.isArchived()
+                    && shiftDate.compareTo(startDateStr) >= 0
+                    && shiftDate.compareTo(endDateStr) <= 0) {
 
-                    allShifts.add(shift);
-                }
-
-            } catch (ParseException e) {
-                System.out.println("שגיאה בפיענוח תאריך במשמרת: " + shift.getDate());
+                allShifts.add(shift);
             }
         }
 
