@@ -10,6 +10,7 @@ public class DataStore {
     public static List<ShiftSwapRequest> swapRequests = new ArrayList<>();
     public static List<EmployeeContract> contracts = new ArrayList<>();
     public static List<Role> roles = new ArrayList<>();
+    public static Map<String, List<Shift>> WeeklyPreferneces = new HashMap<>();
 
     // ניקוי נתונים
     public static void clearAll() {
