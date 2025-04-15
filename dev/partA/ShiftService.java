@@ -1,5 +1,3 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -10,29 +8,70 @@ public class ShiftService {
         Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments);
 
         // adding the shift to the archive (data store)
-        this.archiveShift(newShift,date);
+        this.archiveShift(newShift, date);
 
 
         return newShift;
     }
 
-//    public boolean updateShift(String shiftId, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
-//        for (Shift shift : DataStore.shifts) {
-//            if (shift.getId().equals(shiftId)) {
-//                // עדכון שדות המשמרת
-//                shift.setArchived(false);  // ביכולתך לשנות גם את הסטטוס של המשמרת אם צריך
-//                // אם אתה מעוניין לשדרג שדות אחרים גם, תוכל לעדכן את שדות השעה, תאריך, ועוד
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public void updateShiftField(String shiftId, String fieldName, Object newValue) {
+        Shift shift = getShiftById(shiftId);
+
+        if (shift == null) {
+            System.out.println("Shift not found.");
+            return;
+        }
+
+        switch (fieldName.toLowerCase()) {
+            case "shiftmanager":
+                if (newValue instanceof Employee) {
+                    shift.setShiftManager((Employee) newValue);
+                    System.out.println("Shift manager updated successfully.");
+                } else {
+                    System.out.println("Invalid value. Expected an Employee.");
+                }
+                break;
+
+            case "assignments":
+                if (newValue instanceof List<?>) {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        List<ShiftAssignment> assignments = (List<ShiftAssignment>) newValue;
+                        shift.setAssignments(assignments);
+                        System.out.println("Assignments updated successfully.");
+                    } catch (ClassCastException e) {
+                        System.out.println("Invalid assignments list.");
+                    }
+                } else {
+                    System.out.println("Invalid value. Expected a list of ShiftAssignment.");
+                }
+                break;
+
+            case "requiredroles":
+                if (newValue instanceof List<?>) {
+                    try {
+                        @SuppressWarnings("unchecked")
+                        List<Role> roles = (List<Role>) newValue;
+                        shift.setRequiredRoles(roles);
+                        System.out.println("Required roles updated successfully.");
+                    } catch (ClassCastException e) {
+                        System.out.println("Invalid roles list.");
+                    }
+                } else {
+                    System.out.println("Invalid value. Expected a list of Role.");
+                }
+                break;
+
+            default:
+                System.out.println("Invalid field name. Allowed: shiftManager, assignments, requiredRoles.");
+        }
+    }
 
 
     public void archiveShift(Shift shift, String date_of_being_archived) {
-                DataStore.shifts.add(shift);  // הוספה לרשימה הסטטית של shifts ב-DataStore
-                shift.setArchived(true);
-                shift.setArchivedAt(date_of_being_archived);
+        DataStore.shifts.add(shift);  // adding the shift to the DataStore
+        shift.setArchived(true);
+        shift.setArchivedAt(date_of_being_archived);
     }
 
 
@@ -64,29 +103,29 @@ public class ShiftService {
     }
 
 
-    public List<Shift> getAllShiftsForThisWeek() { //check!!
+    public List<Shift> getAllShiftsForThisWeek() {
         List<Shift> allShifts = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
         LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY);
         LocalDate weekEnd = weekStart.plusDays(6);
 
-        String startDateStr = weekStart.toString(); // yyyy-MM-dd
-        String endDateStr = weekEnd.toString();     // yyyy-MM-dd
-
         for (Shift shift : DataStore.shifts) {
-            String shiftDate = shift.getDate();
+            if (shift.isArchived()) continue;
 
-            if (!shift.isArchived()
-                    && shiftDate.compareTo(startDateStr) >= 0
-                    && shiftDate.compareTo(endDateStr) <= 0) {
-
-                allShifts.add(shift);
+            try {
+                LocalDate shiftDate = LocalDate.parse(shift.getDate());  // assuming yyyy-MM-dd format
+                if (!shiftDate.isBefore(weekStart) && !shiftDate.isAfter(weekEnd)) {
+                    allShifts.add(shift);
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format in shift: " + shift.getDate());
             }
         }
 
         return allShifts;
     }
+
 
     public List<Shift> getShiftsByDate(String date) {
         List<Shift> result = new ArrayList<>();
@@ -100,4 +139,37 @@ public class ShiftService {
         return result;
     }
 
+    public void sendEmployeesAssignments(String EmployeeId) { //the employee gives a map of date and type of shift
+        List<Shift> allShifts = getAllShiftsForThisWeek();
+        Scanner scanner = new Scanner(System.in);
+        List<Shift> selectedShifts = new ArrayList<>();
+
+        // מציגים את כל המשמרות הקיימות
+        System.out.println("המשמרות הקיימות:");
+        for (Shift shift : allShifts) {
+            System.out.println("ID: " + shift.getId() + ", Date: " + shift.getDate() + ", Type: " + shift.getType());
+        }
+
+        System.out.println("הכנס את ה-ID של המשמרות שברצונך לבחור (הפרד בפסיקים):");
+        String input = scanner.nextLine();
+
+        // מפרידים את ה-ID-ים
+        String[] shiftIds = input.split(",");
+
+        // מחפשים את המשמרות לפי ה-ID
+        for (String id : shiftIds) {
+            String trimmedId = id.trim();
+            for (Shift shift : allShifts) {
+                if (shift.getId().equals(trimmedId)) {
+                    selectedShifts.add(shift);
+                    break;
+                }
+            }
+        }
+
+        DataStore.WeeklyPreferneces.put(EmployeeId, selectedShifts);
+    }
+
 }
+
+
