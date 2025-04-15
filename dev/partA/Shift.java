@@ -9,9 +9,10 @@ public class Shift {
     private List<Role> requiredRoles;
     private List<ShiftAssignment> assignments;
     private Employee shiftManager;
-    private String archivedAt;
+    private String archivedAt; //date of putting the date in the archive
     private boolean isArchived;
 
+    // constructor
     public Shift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         this.id = id;
         this.date = date;
@@ -25,7 +26,7 @@ public class Shift {
         this.archivedAt = null;
     }
 
-    // Getters and setters (רשות, אם רוצים נגישות מבוקרת – תלוי בכם ובסגנון העבודה שלכם)
+    // Getters
     public String getId() {
         return id;
     }
@@ -66,11 +67,46 @@ public class Shift {
         return isArchived;
     }
 
-    public void setArchived(boolean archived) {
-        isArchived = archived;
+    // Setters
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setRequiredRoles(List<Role> requiredRoles) {
+        this.requiredRoles = requiredRoles;
+    }
+
+    public void setAssignments(List<ShiftAssignment> assignments) {
+        this.assignments = assignments;
+    }
+
+    public void setShiftManager(Employee shiftManager) {
+        this.shiftManager = shiftManager;
     }
 
     public void setArchivedAt(String archivedAt) {
         this.archivedAt = archivedAt;
     }
+
+    public void setArchived(boolean archived) {
+        isArchived = archived;
+    }
+
+
 }
