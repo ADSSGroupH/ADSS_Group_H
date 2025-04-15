@@ -4,69 +4,63 @@ import java.util.List;
 
 public class ShiftSwapRequestService {
 
-    // יצירת בקשה חדשה ושמירה שלה ב-DataStore
-    public ShiftSwapRequest createRequest(String id, Employee requestor, Shift fromShift, Shift toShift, String date) {
-        // יצירת הבקשה החדשה
-        ShiftSwapRequest newRequest = new ShiftSwapRequest(id, requestor, fromShift, toShift, date);
+    public ShiftSwapRequest createRequest(String id, Employee requester, Shift fromShift, Shift toShift, String date) {
+        // creating the request
+        ShiftSwapRequest newRequest = new ShiftSwapRequest(id, requester, fromShift, toShift, date);
 
-        // שמירה של הבקשה ב-DataStore
-        DataStore.swapRequests.add(newRequest);  // הוספה לרשימת הבקשות ב-DataStore
+        // archiving the request
+        this.archiveRequest(newRequest,date);
 
         return newRequest;
     }
 
-    // עדכון סטטוס של בקשה
-    public boolean updateRequestStatus(String requestId, ShiftSwapRequest.Status status) {
+
+    public boolean updateRequestStatus(String requestId, ShiftSwapRequest.Status status) { //updating a request status
         for (ShiftSwapRequest request : DataStore.swapRequests) {
-            if (request.getId().equals(requestId)) {
+            if (request.getId().equals(requestId)) { //found the request
                 request.setStatus(status);
-                return true;  // עדכון בוצע
+                return true;
             }
         }
-        return false;  // לא נמצא בקשה עם מזהה זה
+        return false;  //didn't find a matching request
     }
 
-    // ארכוב בקשה
-    public boolean archiveRequest(String requestId, String archivedAt) {
-        for (ShiftSwapRequest request : DataStore.swapRequests) {
-            if (request.getId().equals(requestId)) {
+    public void archiveRequest(ShiftSwapRequest request, String date_of_being_archived) {
+                DataStore.swapRequests.add(request);
                 request.setArchived(true);
-                request.setArchivedAt(archivedAt);
-                return true;  // עדכון בוצע
-            }
-        }
-        return false;  // לא נמצא בקשה עם מזהה זה
+                request.setArchivedAt(date_of_being_archived);
+
     }
 
-    // מחיקת בקשה
+
     public boolean deleteRequest(String requestId) {
         Iterator<ShiftSwapRequest> iterator = DataStore.swapRequests.iterator();
         while (iterator.hasNext()) {
             ShiftSwapRequest request = iterator.next();
             if (request.getId().equals(requestId)) {
-                iterator.remove();  // הסרת הבקשה מהרשימה
+                iterator.remove();
                 return true;
             }
         }
-        return false;  // לא נמצא בקשה עם מזהה זה
+        return false;  // didn't find a matching request
     }
 
-    // חיפוש בקשה לפי ID
-    public ShiftSwapRequest getRequestById(String requestId) {
+
+    public ShiftSwapRequest getRequestById(String requestId) { //searching request by id
         for (ShiftSwapRequest request : DataStore.swapRequests) {
             if (request.getId().equals(requestId)) {
-                return request;  // חזר עם הבקשה אם נמצאה
+                return request;
             }
         }
-        return null;  // אם לא נמצאה בקשה
+        return null;  // didn't find the request
     }
 
-    // קבלת כל הבקשות
-    public List<ShiftSwapRequest> getAllRequests() {
-        return new ArrayList<>(DataStore.swapRequests);  // החזרת כל הבקשות ברשימה חדשה
+
+    public List<ShiftSwapRequest> getAllRequests() { //getting all the requests from the archive
+        return new ArrayList<>(DataStore.swapRequests);
     }
 
-    // קבלת בקשות לפי סטטוס
+    // getting all requests by status (approved, rejected,pending)
     public List<ShiftSwapRequest> getRequestsByStatus(ShiftSwapRequest.Status status) {
         List<ShiftSwapRequest> filteredRequests = new ArrayList<>();
         for (ShiftSwapRequest request : DataStore.swapRequests) {
@@ -74,6 +68,6 @@ public class ShiftSwapRequestService {
                 filteredRequests.add(request);
             }
         }
-        return filteredRequests;  // החזרת בקשות לפי סטטוס
+        return filteredRequests;
     }
 }
