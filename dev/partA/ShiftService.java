@@ -197,6 +197,43 @@ public class ShiftService {
 
     }
 
+    // מציג את כל השיבוצים של השבוע לכל העובדים
+    public List<String> MakeWeeklyAssignmentReport() {
+        Map<String, Map<String, List<ShiftAssignment>>> grouped = new TreeMap<>();
+
+        for (ShiftAssignment assignment : DataStore.assignments) {
+            String date = assignment.getShift().getDate();
+            String type = assignment.getShift().getType();
+
+            grouped.putIfAbsent(date, new TreeMap<>());
+            grouped.get(date).putIfAbsent(type, new ArrayList<>());
+            grouped.get(date).get(type).add(assignment);
+        }
+
+        if (grouped.isEmpty()) {
+            System.out.println("Weekly Assignment Report: No assignments found for this week.");
+            return null;
+        }
+
+        List <String> ListOfSentences = new ArrayList<>();
+
+        ListOfSentences.add("Weekly Assignment Report (All Employees):");
+        for (String date : grouped.keySet()) {
+            ListOfSentences.add("Date: " + date);
+            Map<String, List<ShiftAssignment>> shiftsByType = grouped.get(date);
+
+            for (String type : shiftsByType.keySet()) {
+                ListOfSentences.add("  Shift: " + type);
+                for (ShiftAssignment assignment : shiftsByType.get(type)) {
+                    String roleName = assignment.getRole() != null ? assignment.getRole().getName() : "No role assigned";
+                    String employeeName = assignment.getEmployee().getName();
+                    ListOfSentences.add("    - Employee: " + employeeName + " | Role: " + roleName);
+                }
+            }
+        }
+        return ListOfSentences;
+    }
+
 
 
 }
