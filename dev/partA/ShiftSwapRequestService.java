@@ -70,4 +70,50 @@ public class ShiftSwapRequestService {
         }
         return filteredRequests;
     }
+
+    public boolean applyApprovedRequest(ShiftSwapRequest request) {
+        if (request.getStatus() != ShiftSwapRequest.Status.approved) {
+            System.out.println("Request is not approved. Cannot apply.");
+            return false;
+        }
+
+        Employee requester = request.getRequester();
+        Shift fromShift = request.getFromShift();
+        Shift toShift = request.getToShift();
+
+        ShiftAssignment fromAssignment = null;
+        ShiftAssignment toAssignment = null;
+
+        // מחפשים את השיבוצים הנוכחיים
+        for (ShiftAssignment assignment : DataStore.assignments) {
+            if (assignment.getShift().getId().equals(fromShift.getId()) &&
+                    assignment.getEmployee().getId().equals(requester.getId())) {
+                fromAssignment = assignment;
+            }
+
+            if (assignment.getShift().getId().equals(toShift.getId())) {
+                toAssignment = assignment;
+            }
+        }
+
+        if (fromAssignment == null) {
+            System.out.println("Requester is not assigned to the original shift.");
+            return false;
+        }
+
+        // מחליפים בין העובדים
+        if (toAssignment != null) {
+            // שני העובדים קיימים – מבצעים החלפה
+            Employee otherEmployee = toAssignment.getEmployee();
+
+            fromAssignment.setEmployee(otherEmployee);
+            toAssignment.setEmployee(requester);
+        } else {
+            // רק מבקש הבקשה קיים – הוא עובר למשמרת החדשה
+            fromAssignment.setShift(toShift);
+        }
+
+        System.out.println("Shift swap applied successfully.");
+        return true;
+    }
 }
