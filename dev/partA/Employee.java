@@ -10,10 +10,12 @@ public class Employee {
     private String bankDetails;
     private boolean isArchived;
     private String archivedAt;
+    private boolean isManager;
+    private String password;
 
     // --- Constructor ---
     public Employee(String id, String name, String phoneNumber, Branch branch, Set<Role> roles,
-                    EmployeeContract contract, String bankDetails, boolean isArchived, String archivedAt) {
+                    EmployeeContract contract, String bankDetails, boolean isArchived, String archivedAt, boolean isManager , String password) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -23,6 +25,8 @@ public class Employee {
         this.bankDetails = bankDetails;
         this.isArchived = isArchived;
         this.archivedAt = archivedAt;
+        this.isManager = isManager;
+        this.password = password;
     }
 
     // --- Getters and Setters ---
@@ -87,5 +91,17 @@ public class Employee {
     }
     public void setArchivedAt(String archivedAt) {
         this.archivedAt = archivedAt;
+    }
+    public boolean IsManager (){
+        return isManager;
+    }
+    public void setManager(boolean manager){
+        isManager = manager;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
