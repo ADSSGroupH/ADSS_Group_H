@@ -125,6 +125,29 @@ public class ShiftService {
 
         return allShifts;
     }
+    public List<ShiftAssignment> getAllAssignmentsForThisWeek() {
+        List<ShiftAssignment> weeklyAssignments = new ArrayList<>();
+
+        LocalDate today = LocalDate.now();
+        LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY);
+        LocalDate weekEnd = weekStart.plusDays(6);
+
+        for (ShiftAssignment assignment : DataStore.assignments) {
+            Shift shift = assignment.getShift();
+            if (shift == null || shift.isArchived()) continue;
+
+            try {
+                LocalDate shiftDate = LocalDate.parse(shift.getDate()); // assuming "yyyy-MM-dd"
+                if (!shiftDate.isBefore(weekStart) && !shiftDate.isAfter(weekEnd)) {
+                    weeklyAssignments.add(assignment);
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format in shift: " + shift.getDate());
+            }
+        }
+
+        return weeklyAssignments;
+    }
 
 
     public List<Shift> getShiftsByDate(String date) {
@@ -139,36 +162,42 @@ public class ShiftService {
         return result;
     }
 
-    public void sendEmployeesAssignments(String EmployeeId) { //the employee gives a map of date and type of shift
-        List<Shift> allShifts = getAllShiftsForThisWeek();
-        Scanner scanner = new Scanner(System.in);
-        List<Shift> selectedShifts = new ArrayList<>();
+    // פונקציה לשליפת כל העובדים המוקצים למשמרת לפי ה-ID שלה
+    public List<Employee> getAllTheEmployeesInAShift(String shiftId) {
+        List<Shift> allShifts = this.getAllShiftsForThisWeek();
+        List<Employee> employeesInShift = new ArrayList<>();
 
-        // מציגים את כל המשמרות הקיימות
-        System.out.println("המשמרות הקיימות:");
+        // מחפשים את המשמרת לפי ה-ID שלה
         for (Shift shift : allShifts) {
-            System.out.println("ID: " + shift.getId() + ", Date: " + shift.getDate() + ", Type: " + shift.getType());
-        }
-
-        System.out.println("הכנס את ה-ID של המשמרות שברצונך לבחור (הפרד בפסיקים):");
-        String input = scanner.nextLine();
-
-        // מפרידים את ה-ID-ים
-        String[] shiftIds = input.split(",");
-
-        // מחפשים את המשמרות לפי ה-ID
-        for (String id : shiftIds) {
-            String trimmedId = id.trim();
-            for (Shift shift : allShifts) {
-                if (shift.getId().equals(trimmedId)) {
-                    selectedShifts.add(shift);
-                    break;
+            if (shift.getId().equals(shiftId)) {
+                // עבור כל ShiftAssignment, נוסיף את העובד לרשימה
+                for (ShiftAssignment assignment : shift.getAssignments()) {
+                    employeesInShift.add(assignment.getEmployee());
                 }
+                return employeesInShift;
+            }
+        }
+        return null;  // אם לא מצאנו את המשמרת, מחזירים null
+    }
+
+    public List<ShiftAssignment> getWeeklyAssignmentsForEmployee (String employeeId) {
+        List<ShiftAssignment> result = new ArrayList<>();
+
+        for (ShiftAssignment assignment : this.getAllAssignmentsForThisWeek()) {
+            if (assignment.getEmployee().getId().equals(employeeId)) {
+                result.add(assignment);
             }
         }
 
-        DataStore.WeeklyPreferneces.put(EmployeeId, selectedShifts);
+        if (result.isEmpty()) {
+            System.out.println("No assignments found for employee ID: " + employeeId);
+            return null;
+        }
+        return result;
+
     }
+
+
 
 }
 
