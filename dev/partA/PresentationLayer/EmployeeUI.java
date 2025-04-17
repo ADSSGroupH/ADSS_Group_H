@@ -1,7 +1,3 @@
-import ServiceLayer.EmployeeService;
-import ServiceLayer.ShiftService;
-import ServiceLayer.ShiftSwapRequestService;
-
 import java.util.Scanner;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +77,7 @@ public class EmployeeUI {
 
                 case "6" -> {
                     System.out.println("Logging out...");
-                    return;
+                    new LoginForm().show();;
                 }
 
                 default -> System.out.println("Invalid choice.");
