@@ -39,12 +39,12 @@ public class LoginForm {
 
     public static void main(String[] args) {
         //creating a manager to operate the system
-        Role role = new Role("1","manager");
+        Role role = new Role("0","manager");
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        Branch branch = new Branch("1","1","1", null);
-        EmployeeContract contract = new EmployeeContract("212396444","17.04.2025",10,10,20,"n", "n",2000,"17.04.2025",true);
-        HRManager manager = new HRManager("212396444","yarden", "054-4332473", branch,roles,contract,"n",true,"17.04.2025","123");
+        Branch branch = new Branch("1","example","example", null);
+        EmployeeContract contract = new EmployeeContract("123456789","17.04.2025",10,10,20,"example", "example",2000,"17.04.2025",true);
+        HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true,"17.04.2025","123");
         DataStore.employees.add(manager);
         LoginForm loginForm = new LoginForm();
         loginForm.show();
