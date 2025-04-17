@@ -1,5 +1,3 @@
-package DomainLayer;
-
 import java.util.Set;
 
 public class HRManager extends Employee {
