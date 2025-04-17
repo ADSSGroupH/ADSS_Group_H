@@ -1,5 +1,3 @@
-package DomainLayer;
-
 public class ShiftSwapRequest {
 
     public enum Status {
