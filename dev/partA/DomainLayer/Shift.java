@@ -1,4 +1,3 @@
-package DomainLayer;
 import java.util.List;
 
 public class Shift {
