@@ -1,5 +1,3 @@
-package DomainLayer;
-
 public class ShiftAssignment {
     private Employee employee;
     private Shift shift;
