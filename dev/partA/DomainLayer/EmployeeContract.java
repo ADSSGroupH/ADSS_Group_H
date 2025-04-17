@@ -1,5 +1,3 @@
-package DomainLayer;
-
 public class EmployeeContract {
     private String employeeID;
     private String startDate;
