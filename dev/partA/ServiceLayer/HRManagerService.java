@@ -7,6 +7,7 @@ public class HRManagerService {
         Employee newEmployee = new Employee(id, name, phoneNumber, branch, roles, null, bankDetails, false, null, isManager, password);
 
         DataStore.employees.add(newEmployee);
+        branch.UpdateEmployees(newEmployee);
         System.out.println("Employee added successfully.");
     }
 
