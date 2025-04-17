@@ -6,6 +6,7 @@ public class LoginForm {
     private final Scanner scanner = new Scanner(System.in);
 
     public void show() {
+        while (true) {
         System.out.println("=== Login ===");
 
         System.out.print("Enter your ID: ");
@@ -23,17 +24,18 @@ public class LoginForm {
             }
         }
 
-        if (loggedInUser != null) {
-            System.out.println("Login successful! Welcome, " + loggedInUser.getName());
+            if (loggedInUser != null) {
+                System.out.println("Login successful! Welcome, " + loggedInUser.getName());
 
-            boolean isManager = loggedInUser.IsManager();
-            if (!isManager) {
-                new EmployeeUI(loggedInUser).display();
+                boolean isManager = loggedInUser.IsManager();
+                if (!isManager) {
+                    new EmployeeUI(loggedInUser).display();
+                } else {
+                    new ManagerUI().display();
+                }
             } else {
-                new ManagerUI().display();
+                System.out.println("Invalid ID or password.");
             }
-        } else {
-            System.out.println("Invalid ID or password.");
         }
     }
 
