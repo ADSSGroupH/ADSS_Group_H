@@ -44,7 +44,8 @@ public class Branch {
         this.Address = Address;
     }
 
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
+    public void UpdateEmployees(Employee employee) {
+        this.employees.add(employee);
     }
+
 }
