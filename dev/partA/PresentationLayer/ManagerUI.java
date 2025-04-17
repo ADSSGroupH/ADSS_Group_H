@@ -1,5 +1,3 @@
-import ServiceLayer.ShiftService;
-
 import java.util.*;
 
 public class ManagerUI {
@@ -190,11 +188,13 @@ public class ManagerUI {
 
                 case "14" -> {
                     System.out.println("Logging out...");
-                    return;
+                    new LoginForm().show();
                 }
 
                 default -> System.out.println("Invalid choice.");
             }
+
         }
+
     }
 }
