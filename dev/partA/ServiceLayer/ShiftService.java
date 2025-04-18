@@ -107,7 +107,7 @@ public class ShiftService {
         List<Shift> allShifts = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
-        LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY);
+        LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY).plusWeeks(1);
         LocalDate weekEnd = weekStart.plusDays(6);
 
         for (Shift shift : DataStore.shifts) {
