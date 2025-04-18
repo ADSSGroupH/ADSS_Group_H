@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Set;
 
 public class Employee {
@@ -9,13 +13,14 @@ public class Employee {
     private EmployeeContract contract;
     private String bankDetails;
     private boolean isArchived;
-    private String archivedAt;
+    private LocalDate archivedAt;
     private boolean isManager;
     private String password;
 
+
+
     // --- Constructor ---
-    public Employee(String id, String name, String phoneNumber, Branch branch, Set<Role> roles,
-                    EmployeeContract contract, String bankDetails, boolean isArchived, String archivedAt, boolean isManager , String password) {
+    public Employee(String id, String name, String phoneNumber, Branch branch, Set<Role> roles, EmployeeContract contract, String bankDetails, boolean isArchived, LocalDate archivedAt, boolean isManager , String password) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -86,10 +91,10 @@ public class Employee {
         isArchived = archived;
     }
 
-    public String getArchivedAt() {
+    public LocalDate getArchivedAt() {
         return archivedAt;
     }
-    public void setArchivedAt(String archivedAt) {
+    public void setArchivedAt(LocalDate archivedAt) {
         this.archivedAt = archivedAt;
     }
     public boolean IsManager (){
