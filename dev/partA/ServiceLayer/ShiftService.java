@@ -1,5 +1,8 @@
 import java.time.LocalDate;
 import java.util.*;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
+
 
 public class ShiftService {
 
@@ -98,20 +101,18 @@ public class ShiftService {
     }
 
 
-    public List<Shift> getAllShifts() {
-        return new ArrayList<>(DataStore.shifts);  // returning all the shifts that happened in the last 7 years in a list.
-    }
-
-
     public List<Shift> getAllShiftsForThisWeek() {
         List<Shift> allShifts = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
-        LocalDate weekStart = today.with(java.time.DayOfWeek.SUNDAY).plusWeeks(1);
+
+        // לחשב את יום ראשון הבא (אפילו אם היום ראשון – נלך לראשון הבא)
+        LocalDate nextSunday = today.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+        LocalDate weekStart = nextSunday;
         LocalDate weekEnd = weekStart.plusDays(6);
 
         for (Shift shift : DataStore.shifts) {
-            if (shift.isArchived()) continue;
+            if (!shift.isArchived()) continue;
 
             try {
                 LocalDate shiftDate = LocalDate.parse(shift.getDate());  // assuming yyyy-MM-dd format
@@ -125,6 +126,7 @@ public class ShiftService {
 
         return allShifts;
     }
+
     public List<ShiftAssignment> getAllAssignmentsForThisWeek() {
         List<ShiftAssignment> weeklyAssignments = new ArrayList<>();
 
