@@ -166,6 +166,7 @@ public class HRManagerService {
         return null;
     }
     public void AssignShiftToEmployee (String ShiftID){
+        List <ShiftAssignment> assignments = new ArrayList<>();
         //first find the shift
         for (Shift shift : DataStore.shifts){
             if (shift.getId().equals(ShiftID)){ //found the shift
@@ -175,6 +176,7 @@ public class HRManagerService {
                     for (Employee employee : AllQualifiedEmployees){
                         if (DataStore.WeeklyPreferneces.get(employee.getId()).contains(shift)) { //if the worker submitted this shift
                             ShiftAssignment assignment = new ShiftAssignment(employee,shift,role);
+                            assignments.add(assignment);
                             DataStore.assignments.add(assignment);
                         }
                     }
@@ -182,6 +184,7 @@ public class HRManagerService {
 
                 }
             }
+           shift.setAssignments(assignments);
         }
         System.out.println("This shift does not exist in the system!");
 
