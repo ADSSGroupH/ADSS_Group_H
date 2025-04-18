@@ -23,7 +23,8 @@ public class ManagerUI {
             System.out.println("12. View All Shifts for This Week");
             System.out.println("13. Add New Role"); //might be unnecessary - check!
             System.out.println("14. get all employees qualified for a specific role");
-            System.out.println("15. Exit");
+            System.out.println("15. create shift assignment");
+            System.out.println("16. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -91,8 +92,8 @@ public class ManagerUI {
                         }
                     }
                     if (branch == null) {
-                       System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
-                       break; // יוצא מ-case 5
+                        System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
+                        break; // יוצא מ-case 5
                     }
 
                     Set<Role> roles = new HashSet<>();
@@ -265,8 +266,14 @@ public class ManagerUI {
                     HRManagerService ManagerService = new HRManagerService();
                     System.out.println(ManagerService.getAllEmployeesByRole(RoleName)); //check the printing is working
                 }
-
                 case "15" -> {
+                    System.out.println("Enter the shift ID: ");
+                    String ShiftId = scanner.nextLine();
+                    ShiftService shiftService1 = new ShiftService();
+                    shiftService1.CreateShiftAssignment(ShiftId);
+                }
+
+                case "16" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
