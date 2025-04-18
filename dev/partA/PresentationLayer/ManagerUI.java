@@ -87,8 +87,12 @@ public class ManagerUI {
                     for (Branch b: DataStore.branches) {
                         if (b.getId().equals(branchId)) {
                             branch = b;
+                            break;
                         }
-                        //to add: if not- branch does not exist
+                    }
+                    if (branch == null) {
+                       System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
+                       break; // יוצא מ-case 5
                     }
 
                     Set<Role> roles = new HashSet<>();
@@ -127,6 +131,26 @@ public class ManagerUI {
                     String password = scanner.nextLine();
 
                     managerService.addEmployee(id, name, phone, branch, roles, bank, false,password);
+
+                    // יצירת חוזה לעובד החדש
+                    System.out.println("Enter contract details for the new employee:");
+                    System.out.print("Start Date (yyyy-MM-dd): ");
+                    String startDate = scanner.nextLine();
+                    System.out.print("Free Days: ");
+                    int freeDays = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Sickness Days: ");
+                    int sicknessDays = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Monthly Work Hours: ");
+                    int hours = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Social Contributions: ");
+                    String social = scanner.nextLine();
+                    System.out.print("Advanced Study Fund: ");
+                    String fund = scanner.nextLine();
+                    System.out.print("Salary: ");
+                    int salary = Integer.parseInt(scanner.nextLine());
+
+                    managerService.createContract(id, startDate, freeDays, sicknessDays, hours, social, fund, salary);
+                    System.out.println("A new employee was successfully added along with a new active contract.");
                 }
 
                 case "6" -> {
