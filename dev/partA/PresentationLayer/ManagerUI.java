@@ -21,7 +21,7 @@ public class ManagerUI {
             System.out.println("10. Update Employee Info");
             System.out.println("11. Find Shift by ID");
             System.out.println("12. View All Shifts for This Week");
-            System.out.println("13. Add New Role");
+            System.out.println("13. Add New Role"); //might be unnecessary - check!
             System.out.println("14. Exit");
             System.out.print("Choose: ");
 
@@ -90,7 +90,6 @@ public class ManagerUI {
                         //to add: if not- branch does not exist
                     }
 
-                    // קלט בסיסי לתפקידים (ניתן להרחיב בהמשך)
                     Set<Role> roles = new HashSet<>();
                     System.out.print("Add a role? (yes/no): ");
                     String addRole = scanner.nextLine();
@@ -148,6 +147,29 @@ public class ManagerUI {
                     String type = scanner.nextLine();
                     Employee manager = null; // Dummy manager, assign if needed
                     List<Role> roles = new ArrayList<>();
+                    System.out.print("Which roles do you need in this shift? : (separate the names by comma)");
+                    String neededRoles = scanner.nextLine();
+                    // Split the roles
+                    String[] SeperatedNeededRoles = input.split(",");
+                    for (String roleName : SeperatedNeededRoles){
+                        for (Role existedRole : DataStore.roles){
+                            if (!existedRole.getName().equals(roleName)){
+                                System.out.printf("%s doesn't exist in the system. Would you like to add it?%n", roleName);
+                                String answer = scanner.nextLine();
+                                if (answer.equals("yes")){
+                                    System.out.printf("What is the role Id?");
+                                    String RoleId = scanner.nextLine();
+                                    Role newRole = new Role (RoleId, roleName);
+                                    roles.add(newRole);
+                                }
+
+                            }else{
+                                roles.add(existedRole);
+                            }
+                        }
+                    }
+
+
                     List<ShiftAssignment> assignments = new ArrayList<>();
                     shiftService.createShift(id, date, start, end, type, manager, roles, assignments);
                 }
