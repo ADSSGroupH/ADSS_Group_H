@@ -150,23 +150,34 @@ public class ManagerUI {
                     System.out.print("Which roles do you need in this shift? : (separate the names by comma)");
                     String neededRoles = scanner.nextLine();
                     // Split the roles
-                    String[] SeperatedNeededRoles = input.split(",");
+                    String[] SeperatedNeededRoles = neededRoles.split(",");
                     for (String roleName : SeperatedNeededRoles){
                         for (Role existedRole : DataStore.roles){
                             if (!existedRole.getName().equals(roleName)){
-                                System.out.printf("%s doesn't exist in the system. Would you like to add it?%n", roleName);
+                                System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
                                 String answer = scanner.nextLine();
                                 if (answer.equals("yes")){
                                     System.out.printf("What is the role Id?");
                                     String RoleId = scanner.nextLine();
                                     Role newRole = new Role (RoleId, roleName);
                                     roles.add(newRole);
+                                    DataStore.roles.add(newRole);
                                 }
 
                             }else{
                                 roles.add(existedRole);
                             }
                         }
+                        System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
+                        String answer = scanner.nextLine();
+                        if (answer.equals("yes")){
+                            System.out.printf("What is the role Id?");
+                            String RoleId = scanner.nextLine();
+                            Role newRole = new Role (RoleId, roleName);
+                            roles.add(newRole);
+                            DataStore.roles.add(newRole);
+                        }
+
                     }
 
 
