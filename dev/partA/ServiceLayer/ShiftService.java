@@ -8,10 +8,11 @@ public class ShiftService {
 
     public Shift createShift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         // creating the shift
-        Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments);
+
+        Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments,LocalDate.now());
 
         // adding the shift to the archive (data store)
-        this.archiveShift(newShift, date);
+        this.archiveShift(newShift);
 
 
         return newShift;
@@ -71,10 +72,10 @@ public class ShiftService {
     }
 
 
-    public void archiveShift(Shift shift, String date_of_being_archived) {
+    public void archiveShift(Shift shift) {
         DataStore.shifts.add(shift);  // adding the shift to the DataStore
         shift.setArchived(true);
-        shift.setArchivedAt(date_of_being_archived);
+        shift.setArchivedAt(LocalDate.now());
     }
 
 
@@ -246,7 +247,7 @@ public class ShiftService {
                     //now we need to check if these workers are available for this shift in order to make the assignment.
                     for (Employee employee : AllQualifiedEmployees){
                         if (DataStore.WeeklyPreferneces.get(employee.getId()).contains(shift)) { //if the worker submitted this shift
-                            ShiftAssignment assignment = new ShiftAssignment(employee,shift,role);
+                            ShiftAssignment assignment = new ShiftAssignment(employee,shift,role,LocalDate.now());
                             assignments.add(assignment);
                             DataStore.assignments.add(assignment);
                         }
@@ -260,6 +261,17 @@ public class ShiftService {
         System.out.println("This shift does not exist in the system!");
 
 
+    }
+    public List<Shift> getShiftsBetween(LocalDate from, LocalDate to) {
+        List<Shift> result = new ArrayList<>();
+        for (Shift shift : DataStore.shifts) {
+            LocalDate shiftDate = LocalDate.parse(shift.getDate());
+            if ((shiftDate.isEqual(from) || shiftDate.isAfter(from)) &&
+                    (shiftDate.isEqual(to) || shiftDate.isBefore(to))) {
+                result.add(shift);
+            }
+        }
+        return result;
     }
 
 
