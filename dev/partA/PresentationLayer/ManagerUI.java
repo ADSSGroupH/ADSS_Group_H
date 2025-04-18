@@ -22,7 +22,8 @@ public class ManagerUI {
             System.out.println("11. Find Shift by ID");
             System.out.println("12. View All Shifts for This Week");
             System.out.println("13. Add New Role"); //might be unnecessary - check!
-            System.out.println("14. Exit");
+            System.out.println("14. get all employees qualified for a specific role");
+            System.out.println("15. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -145,7 +146,7 @@ public class ManagerUI {
                     String end = scanner.nextLine();
                     System.out.print("Type: ");
                     String type = scanner.nextLine();
-                    Employee manager = null; // Dummy manager, assign if needed
+                    Employee manager = null; // will bw assigned in the shift assignment
                     List<Role> roles = new ArrayList<>();
                     System.out.print("Which roles do you need in this shift? : (separate the names by comma)");
                     String neededRoles = scanner.nextLine();
@@ -234,8 +235,14 @@ public class ManagerUI {
                     DataStore.roles.add(role);
                     System.out.println("New role added successfully.");
                 }
-
                 case "14" -> {
+                    System.out.println("Enter the role name");
+                    String RoleName = scanner.nextLine();
+                    HRManagerService ManagerService = new HRManagerService();
+                    System.out.println(ManagerService.getAllEmployeesByRole(RoleName)); //check the printing is working
+                }
+
+                case "15" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
