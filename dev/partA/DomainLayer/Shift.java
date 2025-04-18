@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Shift {
@@ -9,11 +11,11 @@ public class Shift {
     private List<Role> requiredRoles;
     private List<ShiftAssignment> assignments;
     private Employee shiftManager;
-    private String archivedAt; //date of putting the date in the archive
+    private LocalDate archivedAt; //date of putting the date in the archive
     private boolean isArchived;
 
     // constructor
-    public Shift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
+    public Shift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments, LocalDate ArchivedAt) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -23,7 +25,7 @@ public class Shift {
         this.requiredRoles = requiredRoles;
         this.assignments = assignments;
         this.isArchived = false;
-        this.archivedAt = null;
+        this.archivedAt = ArchivedAt;
     }
 
     // Getters
@@ -59,7 +61,7 @@ public class Shift {
         return shiftManager;
     }
 
-    public String getArchivedAt() {
+    public LocalDate getArchivedAt() {
         return archivedAt;
     }
 
@@ -100,7 +102,7 @@ public class Shift {
         this.shiftManager = shiftManager;
     }
 
-    public void setArchivedAt(String archivedAt) {
+    public void setArchivedAt(LocalDate archivedAt) {
         this.archivedAt = archivedAt;
     }
 
