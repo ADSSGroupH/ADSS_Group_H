@@ -80,26 +80,42 @@ public class ManagerUI {
                     String phone = scanner.nextLine();
 
                     // קלט לסניף
+                    Branch branch = null;
                     System.out.print("Branch ID: ");
                     String branchId = scanner.nextLine();
-                    System.out.print("Branch name: ");
-                    String branchName = scanner.nextLine();
-                    System.out.print("Branch address: ");
-                    String branchAddress = scanner.nextLine();
-                    Branch branch = new Branch(branchId, branchName, branchAddress, new ArrayList<>());
+                    for (Branch b: DataStore.branches) {
+                        if (b.getId().equals(branchId)) {
+                            branch = b;
+                        }
+                        //to add: if not- branch does not exist
+                    }
 
                     // קלט בסיסי לתפקידים (ניתן להרחיב בהמשך)
                     Set<Role> roles = new HashSet<>();
                     System.out.print("Add a role? (yes/no): ");
                     String addRole = scanner.nextLine();
                     while (addRole.equalsIgnoreCase("yes")) {
-                        System.out.print("Role ID: ");
-                        String roleId = scanner.nextLine();
+
+                        Role role = null;
                         System.out.print("Role name: ");
                         String roleName = scanner.nextLine();
-                        Role role = new Role(roleId, roleName);
-                        roles.add(role);
-                        DataStore.roles.add(role); // מוסיף גם למחסן התפקידים
+                        for (Role r: DataStore.roles) {
+                            if (r.getName().equals(roleName)) {
+                                role = r;
+                            }
+                        }
+                        if ( role == null){
+                            System.out.print("This role doesn't exist. would you like to create it? (yes/no): ");
+                            String answer = scanner.nextLine();
+                            if (answer.equals("yes")) {
+                                System.out.print("Role ID: ");
+                                String roleId = scanner.nextLine();
+                                Role newRole = new Role(roleName, roleId);
+                                roles.add(newRole);
+                                DataStore.roles.add(newRole); // מוסיף גם למחסן התפקידים
+                            }
+                        }
+
                         System.out.print("Add another role? (yes/no): ");
                         addRole = scanner.nextLine();
                     }
