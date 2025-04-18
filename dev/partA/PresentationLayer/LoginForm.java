@@ -1,6 +1,4 @@
-import java.util.HashSet;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class LoginForm {
     private final Scanner scanner = new Scanner(System.in);
@@ -44,7 +42,9 @@ public class LoginForm {
         Role role = new Role("0","manager");
         Set<Role> roles = new HashSet<>();
         roles.add(role);
-        Branch branch = new Branch("1","example","example", null);
+        List <Employee> EmployeesInTheBranch = new ArrayList<>();
+        Branch branch = new Branch("1", "example", "example", EmployeesInTheBranch);
+        DataStore.branches.add(branch);
         EmployeeContract contract = new EmployeeContract("123456789","17.04.2025",10,10,20,"example", "example",2000,"17.04.2025",true);
         HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true,"17.04.2025","123");
         DataStore.employees.add(manager);
