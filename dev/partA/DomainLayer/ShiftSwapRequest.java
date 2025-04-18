@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.util.Date;
+
 public class ShiftSwapRequest {
 
     public enum Status {
@@ -12,7 +15,7 @@ public class ShiftSwapRequest {
     private Shift toShift;
     private Status status;
     private String date;
-    private String archivedAt;
+    private LocalDate archivedAt;
     private boolean isArchived;
 
     // constructor
@@ -52,7 +55,7 @@ public class ShiftSwapRequest {
         return date;
     }
 
-    public String getArchivedAt() {
+    public LocalDate getArchivedAt() {
         return archivedAt;
     }
 
@@ -65,7 +68,7 @@ public class ShiftSwapRequest {
         this.status = status;
     }
 
-    public void setArchivedAt(String archivedAt) {
+    public void setArchivedAt(LocalDate archivedAt) {
         this.archivedAt = archivedAt;
     }
 
