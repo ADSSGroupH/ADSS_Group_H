@@ -145,5 +145,26 @@ public class HRManagerService {
                 System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails.");
         }
     }
+    public List <Employee> getAllEmployeesByRole(String RoleName) {
+        List <Employee> result= new ArrayList<>();
+        for (Role role : DataStore.roles){
+            if (role.getName().equals(RoleName)){ //Role exists!
+                for (Employee employee : DataStore.employees){
+                    if (employee.getRoles().contains(role)){
+                        result.add(employee);
+                    }
+                }
+                if (result.isEmpty()){
+                    System.out.println("There are no workers qualified for this role");
+                }
+
+                return result;
+
+            }
+        }
+        System.out.println("This Role Doesn't exist");
+        return null;
+    }
+
 
 }
