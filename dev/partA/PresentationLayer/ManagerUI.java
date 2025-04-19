@@ -1,8 +1,9 @@
-import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.*;
 
 public class ManagerUI {
+    public HRManager LoggedInManager;
     private final Scanner scanner = new Scanner(System.in);
     private final HRManagerService managerService = new HRManagerService();
     private final ShiftService shiftService = new ShiftService();
@@ -11,7 +12,7 @@ public class ManagerUI {
     public void display() {
         while (true) {
             System.out.println("\nManager Menu:");
-            System.out.println("1. View All Employees");
+            System.out.println("1. View All Employees in your branch");
             System.out.println("2. View Weekly Assignment Report");
             System.out.println("3. View Shift Swap Requests");
             System.out.println("4. Approve or Reject a Swap Request");
@@ -25,8 +26,9 @@ public class ManagerUI {
             System.out.println("12. View All Shifts for This Week");
             System.out.println("13. Add New Role"); //might be unnecessary - check!
             System.out.println("14. get all employees qualified for a specific role");
-            System.out.println("15. Find employees by availability");
-            System.out.println("16. Exit");
+            System.out.println("15. create shift assignment");
+            System.out.println("16. Find employees by availability");
+            System.out.println("17. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -34,7 +36,9 @@ public class ManagerUI {
                 case "1" -> {
                     List<Employee> employees = managerService.getAllEmployees();
                     for (Employee e : employees) {
-                        System.out.println("- ID: " + e.getId() + ", Name: " + e.getName());
+                        if (Objects.equals(e.getBranch().getId(), LoggedInManager.getBranch().getId())) {
+                            System.out.println("- ID: " + e.getId() + ", Name: " + e.getName());
+                        }
                     }
                 }
 
@@ -94,8 +98,12 @@ public class ManagerUI {
                         }
                     }
                     if (branch == null) {
-                       System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
-                       break; // יוצא מ-case 5
+                        System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
+                        break; // יוצא מ-case 5
+                    }
+                    if (!Objects.equals(branch.getId(), LoggedInManager.getBranch().getId())) { //if the worker's branch is different from the manager branch, the manager can't create this worker.
+                        System.out.println("You can't create a new employee in another branch! Employee creation aborted.");
+                        break; // יוצא מ-case 5
                     }
 
                     Set<Role> roles = new HashSet<>();
@@ -268,8 +276,13 @@ public class ManagerUI {
                     HRManagerService ManagerService = new HRManagerService();
                     System.out.println(ManagerService.getAllEmployeesByRole(RoleName)); //check the printing is working
                 }
-
                 case "15" -> {
+                    System.out.println("Enter the shift ID: ");
+                    String ShiftId = scanner.nextLine();
+                    ShiftService shiftService1 = new ShiftService();
+                    shiftService1.CreateShiftAssignment(ShiftId);
+                }
+                case "16" -> {
                     System.out.print("Enter date (yyyy-MM-dd): ");
                     String dateStr = scanner.nextLine();
                     try {
@@ -288,15 +301,18 @@ public class ManagerUI {
                     } catch (DateTimeParseException e) {
                         System.out.println("Invalid date format. Please use yyyy-MM-dd.");
                     }
+
                 }
 
-                case "16" -> {
+                case "17" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
 
                 default -> System.out.println("Invalid choice.");
             }
+
         }
+
     }
 }
