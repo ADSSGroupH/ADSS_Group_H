@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,33 +27,85 @@ public class DataStore {
         contracts.clear();
         roles.clear();
     }
-    // פונקציה לחישוב הזמן עד יום חמישי הבא
-    public long getTimeUntilNextThursday() {
-        Calendar now = Calendar.getInstance();
-        int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
-        long timeUntilThursday = 0;
 
-        // אם היום יום חמישי, התזמון יהיה מיידי
-        if (dayOfWeek == Calendar.THURSDAY) {
-            timeUntilThursday = 0;
-        } else {
-            // אם לא, חישוב הזמן עד יום חמישי הבא
-            int daysUntilThursday = (Calendar.THURSDAY - dayOfWeek + 7) % 7;
-            timeUntilThursday = daysUntilThursday * 24L * 60L * 60L * 1000L;  // הזמן בשעות, דקות, שניות ומילישניות
+
+
+    // פונקציה למחיקת אובייקטים ישנים יותר מ-7 שנים
+    public static void clearOldData() {
+
+//            // למחוק עובדים ישנים יותר מ-7 שנים
+//            Iterator<Employee> employeeIterator = employees.iterator();
+//            while (employeeIterator.hasNext()) {
+//                Employee employee = employeeIterator.next();
+//                if (new Date().getTime() - employee.getCreationDate().getTime() > sevenYearsInMillis) {
+//                    employeeIterator.remove();
+//                }
+//            }
+
+//            // למחוק סניפים ישנים יותר מ-7 שנים
+//            Iterator<Branch> branchIterator = branches.iterator();
+//            while (branchIterator.hasNext()) {
+//                Branch branch = branchIterator.next();
+//                if (new Date().getTime() - branch.getCreationDate().getTime() > sevenYearsInMillis) {
+//                    branchIterator.remove();
+//                }
+//            }
+
+        // delete shifts that are older than 7 years
+        Iterator<Shift> shiftIterator = shifts.iterator();
+        while (shiftIterator.hasNext()) {
+            Shift shift = shiftIterator.next();
+            LocalDate SevenYearsAgoDate = LocalDate.now();
+            if (shift.getArchivedAt().isBefore(SevenYearsAgoDate)) {
+                shiftIterator.remove();
+            }
         }
 
-        return timeUntilThursday;
-    }
+        // delete shift assignments that are older than 7 years
+        Iterator<ShiftAssignment> assignmentIterator = assignments.iterator();
+        while (assignmentIterator.hasNext()) {
+            ShiftAssignment assignment = assignmentIterator.next();
+            LocalDate SevenYearsAgoDate = LocalDate.now();
+            if (assignment.getArchiveDate().isBefore(SevenYearsAgoDate)) {
+                assignmentIterator.remove();
+            }
+        }
 
-    public void startWeeklyClearTask() {
+        // delete shift swap requests that are older than 7 years
+        Iterator<ShiftSwapRequest> swapRequestIterator = swapRequests.iterator();
+        while (swapRequestIterator.hasNext()) {
+            ShiftSwapRequest swapRequest = swapRequestIterator.next();
+            LocalDate SevenYearsAgoDate = LocalDate.now();
+            if (swapRequest.getArchivedAt().isBefore(SevenYearsAgoDate)) {
+                swapRequestIterator.remove();
+            }
+        }
+
+//            // למחוק חוזים ישנים יותר מ-7 שנים
+//            Iterator<EmployeeContract> contractIterator = contracts.iterator();
+//            while (contractIterator.hasNext()) {
+//                EmployeeContract contract = contractIterator.next();
+//                if (new Date().getTime() - contract.getCreationDate().getTime() > sevenYearsInMillis) {
+//                    contractIterator.remove();
+//                }
+//            }
+
+//            // למחוק תפקידים ישנים יותר מ-7 שנים
+//            Iterator<Role> roleIterator = roles.iterator();
+//            while (roleIterator.hasNext()) {
+//                Role role = roleIterator.next();
+//                if (new Date().getTime() - role.getCreationDate().getTime() > sevenYearsInMillis) {
+//                    roleIterator.remove();
+//                }
+//            }
+    }
+    public void startDailyClearTask() { //cleaned the datastore daily
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        // זמן עד יום חמישי הבא
-        long initialDelay = getTimeUntilNextThursday();
-
-        // מבצע את הפונקציה כל חמישי
-        scheduler.scheduleAtFixedRate(() -> {
-            WeeklyPreferneces.clear();  // מנקה את העדפות המשמרות
-        }, initialDelay, TimeUnit.DAYS.toMillis(7), TimeUnit.MILLISECONDS);
+        // מבצע את הפונקציה כל יום
+        scheduler.scheduleAtFixedRate(() -> {clearOldData();  // מנקה את הנתונים הישנים
+        }, 0, 1, TimeUnit.DAYS);  // כל יום
     }
+
 }
+
