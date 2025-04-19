@@ -1,6 +1,8 @@
 import java.util.*;
 import java.time.LocalDate;
 
+
+
 public class HRManagerService {
 
     public void addEmployee(String id, String name, String phoneNumber, Branch branch, Set<Role> roles, String bankDetails, boolean isManager, String password ) {
@@ -15,7 +17,7 @@ public class HRManagerService {
         for (Employee emp : DataStore.employees) {
             if (emp.getId().equals(id)) {
                 emp.setArchived(true);
-                emp.setArchivedAt(LocalDate.now().toString());
+                emp.setArchivedAt(LocalDate.now());
                 System.out.println("Employee has been marked as archived.");
                 return;
             }
@@ -187,29 +189,6 @@ public class HRManagerService {
         return availableEmployees;
     }
 
-    public void AssignShiftToEmployee (String ShiftID){
-        List <ShiftAssignment> assignments = new ArrayList<>();
-        //first find the shift
-        for (Shift shift : DataStore.shifts){
-            if (shift.getId().equals(ShiftID)){ //found the shift
-                for (Role role : shift.getRequiredRoles()){
-                    List <Employee> AllQualifiedEmployees = this.getAllEmployeesByRole(role.getName());
-                    //now we need to check if these workers are available for this shift in order to make the assignment.
-                    for (Employee employee : AllQualifiedEmployees){
-                        if (DataStore.WeeklyPreferneces.get(employee.getId()).contains(shift)) { //if the worker submitted this shift
-                            ShiftAssignment assignment = new ShiftAssignment(employee,shift,role);
-                            assignments.add(assignment);
-                            DataStore.assignments.add(assignment);
-                        }
-                    }
-                    System.out.println("There is no matching employee for this role in this shift");
 
-                }
-            }
-            shift.setAssignments(assignments);
-        }
-        System.out.println("This shift does not exist in the system!");
-
-    }
 
 }
