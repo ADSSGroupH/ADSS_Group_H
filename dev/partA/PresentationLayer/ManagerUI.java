@@ -1,4 +1,6 @@
 import java.util.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class ManagerUI {
     private final Scanner scanner = new Scanner(System.in);
@@ -23,7 +25,7 @@ public class ManagerUI {
             System.out.println("12. View All Shifts for This Week");
             System.out.println("13. Add New Role"); //might be unnecessary - check!
             System.out.println("14. get all employees qualified for a specific role");
-            System.out.println("15. create shift assignment");
+            System.out.println("15. Find employees by availability");
             System.out.println("16. Exit");
             System.out.print("Choose: ");
 
@@ -92,8 +94,8 @@ public class ManagerUI {
                         }
                     }
                     if (branch == null) {
-                        System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
-                        break; // יוצא מ-case 5
+                       System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
+                       break; // יוצא מ-case 5
                     }
 
                     Set<Role> roles = new HashSet<>();
@@ -266,11 +268,26 @@ public class ManagerUI {
                     HRManagerService ManagerService = new HRManagerService();
                     System.out.println(ManagerService.getAllEmployeesByRole(RoleName)); //check the printing is working
                 }
+
                 case "15" -> {
-                    System.out.println("Enter the shift ID: ");
-                    String ShiftId = scanner.nextLine();
-                    ShiftService shiftService1 = new ShiftService();
-                    shiftService1.CreateShiftAssignment(ShiftId);
+                    System.out.print("Enter date (yyyy-MM-dd): ");
+                    String dateStr = scanner.nextLine();
+                    try {
+                        LocalDate date = LocalDate.parse(dateStr);
+                        System.out.print("Enter shift type (e.g., Morning/Evening): ");
+                        String type = scanner.nextLine();
+                        List<Employee> availableEmployees = managerService.getEmployeesByAvailability(date, type);
+                        if (availableEmployees.isEmpty()) {
+                            System.out.println("No available employees for the given date and shift type.");
+                        } else {
+                            System.out.println("Available employees:");
+                            for (Employee e : availableEmployees) {
+                                System.out.println("- " + e.getName());
+                            }
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                    }
                 }
 
                 case "16" -> {
@@ -280,8 +297,6 @@ public class ManagerUI {
 
                 default -> System.out.println("Invalid choice.");
             }
-
         }
-
     }
 }
