@@ -5,6 +5,11 @@ import java.time.temporal.TemporalAdjusters;
 
 
 public class ShiftService {
+    public enum Alert {
+        info,
+        warning,
+        error
+    }
 
     public Shift createShift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         // creating the shift
@@ -247,12 +252,20 @@ public class ShiftService {
                     //now we need to check if these workers are available for this shift in order to make the assignment.
                     for (Employee employee : AllQualifiedEmployees){
                         if (DataStore.WeeklyPreferneces.get(employee.getId()).contains(shift)) { //if the worker submitted this shift
+                            //checking the employee is not already assigned to this shift with a different role:
+                            for (ShiftAssignment s : shift.getAssignments()){
+                                if (s.getEmployee().getId().equals(employee.getId())){
+                                    System.out.println("This employee is already assigned to this shift with a different role!");
+                                    return;
+                                }
+                            }
                             ShiftAssignment assignment = new ShiftAssignment(employee,shift,role,LocalDate.now());
                             assignments.add(assignment);
                             DataStore.assignments.add(assignment);
                         }
                     }
                     System.out.println("There is no matching employee for this role in this shift");
+
 
                 }
             }
