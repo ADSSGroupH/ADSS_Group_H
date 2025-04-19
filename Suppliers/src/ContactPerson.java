@@ -26,6 +26,7 @@ public class ContactPerson {
         this.name = name;
     }
 
+
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
