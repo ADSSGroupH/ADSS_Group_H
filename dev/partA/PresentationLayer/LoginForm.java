@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.*;
 
 public class LoginForm {
@@ -29,7 +30,9 @@ public class LoginForm {
                 if (!isManager) {
                     new EmployeeUI(loggedInUser).display();
                 } else {
-                    new ManagerUI().display();
+                    ManagerUI ManagerDash = new ManagerUI(); //now we know who is the manager that got into the system.
+                    ManagerDash.LoggedInManager = (HRManager) loggedInUser;
+                    ManagerDash.display();
                 }
             } else {
                 System.out.println("Invalid ID or password.");
@@ -46,7 +49,7 @@ public class LoginForm {
         Branch branch = new Branch("1", "example", "example", EmployeesInTheBranch);
         DataStore.branches.add(branch);
         EmployeeContract contract = new EmployeeContract("123456789","17.04.2025",10,10,20,"example", "example",2000,"17.04.2025",true);
-        HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true,"17.04.2025","123");
+        HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true, LocalDate.now(),"123");
         DataStore.employees.add(manager);
         LoginForm loginForm = new LoginForm();
         loginForm.show();
