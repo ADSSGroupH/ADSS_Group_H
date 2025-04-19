@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +10,7 @@ public class ShiftSwapRequestService {
         ShiftSwapRequest newRequest = new ShiftSwapRequest(id, requester, fromShift, toShift, date);
 
         // archiving the request
-        this.archiveRequest(newRequest,date);
+        this.archiveRequest(newRequest);
 
         return newRequest;
     }
@@ -25,10 +26,10 @@ public class ShiftSwapRequestService {
         return false;  //didn't find a matching request
     }
 
-    public void archiveRequest(ShiftSwapRequest request, String date_of_being_archived) {
+    public void archiveRequest(ShiftSwapRequest request) {
                 DataStore.swapRequests.add(request);
                 request.setArchived(true);
-                request.setArchivedAt(date_of_being_archived);
+                request.setArchivedAt(LocalDate.now()); // entering the time of creating the request
 
     }
 
