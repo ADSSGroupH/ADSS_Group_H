@@ -241,40 +241,68 @@ public class ShiftService {
         }
         return ListOfSentences;
     }
-    public void CreateShiftAssignment (String ShiftID){
-        List <ShiftAssignment> assignments = new ArrayList<>();
-        //first find the shift
-        for (Shift shift : DataStore.shifts){
-            if (shift.getId().equals(ShiftID)){ //found the shift
-                for (Role role : shift.getRequiredRoles()){
-                    HRManagerService ManagerService = new HRManagerService();
-                    List <Employee> AllQualifiedEmployees = ManagerService.getAllEmployeesByRole(role.getName());
-                    //now we need to check if these workers are available for this shift in order to make the assignment.
-                    for (Employee employee : AllQualifiedEmployees){
-                        if (DataStore.WeeklyPreferneces.get(employee.getId()).contains(shift)) { //if the worker submitted this shift
-                            //checking the employee is not already assigned to this shift with a different role:
-                            for (ShiftAssignment s : shift.getAssignments()){
-                                if (s.getEmployee().getId().equals(employee.getId())){
-                                    System.out.println("This employee is already assigned to this shift with a different role!");
-                                    return;
-                                }
-                            }
-                            ShiftAssignment assignment = new ShiftAssignment(employee,shift,role,LocalDate.now());
-                            assignments.add(assignment);
-                            DataStore.assignments.add(assignment);
-                        }
-                    }
-                    System.out.println("There is no matching employee for this role in this shift");
+    public void createShiftAssignment(String shiftID) {
+        Shift targetShift = null;
 
-
-                }
+        // first find the shift
+        for (Shift shift : DataStore.shifts) {
+            if (shift.getId().equals(shiftID)) {
+                targetShift = shift;
+                break;
             }
-            shift.setAssignments(assignments);
         }
-        System.out.println("This shift does not exist in the system!");
 
+        if (targetShift == null) {
+            System.out.println("This shift does not exist in the system!");
+            return;
+        }
 
+        List<ShiftAssignment> newAssignments = new ArrayList<>();
+        HRManagerService managerService = new HRManagerService();
+
+        // go through all the required roles for this shift
+        for (Role requiredRole : targetShift.getRequiredRoles()) {
+            List<Employee> qualifiedEmployees = managerService.getAllEmployeesByRole(requiredRole.getName());
+            boolean foundMatch = false;
+
+            // now we need to check if these workers are available for this shift in order to make the assignment.
+            for (Employee employee : qualifiedEmployees) {
+                // checking the employee is not already assigned to this shift with a different role:
+                boolean alreadyAssigned = targetShift.getAssignments().stream()
+                        .anyMatch(a -> a.getEmployee().getId().equals(employee.getId()));
+
+                if (alreadyAssigned) {
+                    System.out.println("This employee is already assigned to this shift with a different role!");
+                    continue;
+                }
+
+                // if the worker submitted this shift
+                boolean isAvailable = DataStore.WeeklyPreferneces.containsKey(employee.getId()) &&
+                        DataStore.WeeklyPreferneces.get(employee.getId()).contains(targetShift);
+
+                if (!isAvailable) {
+                    System.out.println("This employee will be assigned to this shift, but he isn't available!");
+                }
+
+                // create the assignment
+                ShiftAssignment assignment = new ShiftAssignment(employee, targetShift, requiredRole, LocalDate.now());
+                newAssignments.add(assignment);
+                DataStore.assignments.add(assignment);
+                foundMatch = true;
+                break; // stop looking once we assign someone to this role
+            }
+
+            // if no employee matched this role
+            if (!foundMatch) {
+                System.out.println("There is no matching employee for this role in this shift");
+            }
+        }
+
+        // save the new assignments to the shift
+        targetShift.setAssignments(newAssignments);
     }
+
+
     public List<Shift> getShiftsBetween(LocalDate from, LocalDate to) {
         List<Shift> result = new ArrayList<>();
         for (Shift shift : DataStore.shifts) {
@@ -285,6 +313,27 @@ public class ShiftService {
             }
         }
         return result;
+    }
+    public void DeleteShiftAssignment (String ShiftId , String EmployeeIdToDelete){
+        // step 1 - find the shift
+        for (Shift shift : DataStore.shifts){
+            if (shift.getId().equals(ShiftId)){ //found the shift
+                //step 2 - find the assignment of the employee
+                for (ShiftAssignment assignment : shift.getAssignments()){
+                    if (assignment.getEmployee().getId().equals(EmployeeIdToDelete)) { //found the employee to delete
+                        //step 3: delete the assignment from the shift and from the datastore
+                        List <ShiftAssignment> allAssignmentsInTheShift = shift.getAssignments();
+                        allAssignmentsInTheShift.remove(assignment);
+                        shift.setAssignments(allAssignmentsInTheShift);
+
+                        DataStore.assignments.remove(assignment);
+                        System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!", assignment.getEmployee().getName());
+                    }
+                }
+                System.out.println("This employee is not assigned to the given shift!");
+            }
+        }
+        System.out.println("This given shift does not exist!");
     }
 
 
