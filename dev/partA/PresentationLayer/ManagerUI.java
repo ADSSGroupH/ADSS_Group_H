@@ -174,53 +174,55 @@ public class ManagerUI {
                 case "7" -> {
                     System.out.print("Shift ID: ");
                     String id = scanner.nextLine();
+
                     System.out.print("Date (yyyy-MM-dd): ");
                     String date = scanner.nextLine();
+
                     System.out.print("Start Time: ");
                     String start = scanner.nextLine();
+
                     System.out.print("End Time: ");
                     String end = scanner.nextLine();
+
                     System.out.print("Type: ");
                     String type = scanner.nextLine();
-                    Employee manager = null; // will bw assigned in the shift assignment
-                    List<Role> roles = new ArrayList<>();
-                    System.out.print("Which roles do you need in this shift? : (separate the names by comma)");
-                    String neededRoles = scanner.nextLine();
-                    // Split the roles
-                    String[] SeperatedNeededRoles = neededRoles.split(",");
-                    for (String roleName : SeperatedNeededRoles){
-                        for (Role existedRole : DataStore.roles){
-                            if (!existedRole.getName().equals(roleName)){
-                                System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
-                                String answer = scanner.nextLine();
-                                if (answer.equals("yes")){
-                                    System.out.printf("What is the role Id?");
-                                    String RoleId = scanner.nextLine();
-                                    Role newRole = new Role (RoleId, roleName);
-                                    roles.add(newRole);
-                                    DataStore.roles.add(newRole);
-                                }
 
-                            }else{
+                    Employee manager = null; // יתעדכן בהקצאת המשמרת בעתיד
+                    List<Role> roles = new ArrayList<>();
+
+                    System.out.print("Which roles do you need in this shift? (separate the names by comma): ");
+                    String neededRoles = scanner.nextLine();
+                    String[] separatedNeededRoles = neededRoles.split(",");
+
+                    for (String roleName : separatedNeededRoles) {
+                        roleName = roleName.trim(); // מנקה רווחים מיותרים
+                        boolean roleExists = false;
+
+                        for (Role existedRole : DataStore.roles) {
+                            if (existedRole.getName().equalsIgnoreCase(roleName)) {
                                 roles.add(existedRole);
+                                roleExists = true;
+                                break;
                             }
                         }
-                        System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
-                        String answer = scanner.nextLine();
-                        if (answer.equals("yes")){
-                            System.out.printf("What is the role Id?");
-                            String RoleId = scanner.nextLine();
-                            Role newRole = new Role (RoleId, roleName);
-                            roles.add(newRole);
-                            DataStore.roles.add(newRole);
+
+                        if (!roleExists) {
+                            System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
+                            String answer = scanner.nextLine().trim();
+                            if (answer.equalsIgnoreCase("yes")) {
+                                System.out.print("What is the role Id? ");
+                                String roleId = scanner.nextLine();
+                                Role newRole = new Role(roleId, roleName);
+                                roles.add(newRole);
+                                DataStore.roles.add(newRole);
+                            }
                         }
-
                     }
-
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
                     shiftService.createShift(id, date, start, end, type, manager, roles, assignments);
                 }
+
 
                 case "8" -> {
                     System.out.print("Enter shift ID: ");
