@@ -28,7 +28,8 @@ public class ManagerUI {
             System.out.println("14. get all employees qualified for a specific role");
             System.out.println("15. create shift assignment");
             System.out.println("16. Find employees by availability");
-            System.out.println("17. Exit");
+            System.out.println("17. Cancel an employee's assignment to a specific shift");
+            System.out.println("18. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -280,7 +281,7 @@ public class ManagerUI {
                     System.out.println("Enter the shift ID: ");
                     String ShiftId = scanner.nextLine();
                     ShiftService shiftService1 = new ShiftService();
-                    shiftService1.CreateShiftAssignment(ShiftId);
+                    shiftService1.createShiftAssignment(ShiftId);
                 }
                 case "16" -> {
                     System.out.print("Enter date (yyyy-MM-dd): ");
@@ -303,8 +304,16 @@ public class ManagerUI {
                     }
 
                 }
-
                 case "17" -> {
+                    System.out.print("Enter the Shift's Id: ");
+                    String ShiftId = scanner.nextLine();
+                    System.out.print("Enter the Employee's Id: ");
+                    String EmployeeId = scanner.nextLine();
+                    ShiftService shiftservice = new ShiftService();
+                    shiftservice.DeleteShiftAssignment(ShiftId, EmployeeId);
+                }
+
+                case "18" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
