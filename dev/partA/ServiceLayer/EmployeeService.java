@@ -1,12 +1,9 @@
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.time.LocalDate;
 
 public class EmployeeService {
-
-    // מגיש העדפות לשיבוץ השבועי לפי משמרות קיימות
-    public void submitWeeklyShiftPreferences(String employeeId) {
-        this.sendEmployeesAssignments(employeeId);
-    }
 
 
     // שולף את בקשות ההחלפה של העובד
@@ -27,25 +24,37 @@ public class EmployeeService {
         ShiftSwapRequestService service = new ShiftSwapRequestService();
         return service.createRequest(requestId, requester, fromShift, toShift, date);
     }
-    public void sendEmployeesAssignments(String EmployeeId) { // the employee gives a map of date and type of shift
+
+
+    public void submitWeeklyShiftPreferences(String employeeId) {
         ShiftService shiftService = new ShiftService();
-        List<Shift> allShifts = shiftService.getAllShiftsForThisWeek();
+
+        // קבע את היום הנוכחי
+        LocalDate today = LocalDate.now();
+        DayOfWeek todayDay = today.getDayOfWeek();
+
+        // אם היום שישי או שבת - ההעדפות הן לשבוע שאחר לשבוע הבא
+        int weeksToAdd = (todayDay.getValue() >= DayOfWeek.FRIDAY.getValue()) ? 2 : 1;
+
+        // חשב את יום ראשון של השבוע הרצוי
+        LocalDate targetWeekStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusWeeks(weeksToAdd - 1);
+        LocalDate targetWeekEnd = targetWeekStart.plusDays(6); // שבת
+
+        // שלוף את כל המשמרות בטווח הרצוי
+        List<Shift> allShifts = shiftService.getShiftsBetween(targetWeekStart, targetWeekEnd);
+
         Scanner scanner = new Scanner(System.in);
         List<Shift> selectedShifts = new ArrayList<>();
 
-        // Display all existing shifts
-        System.out.println("Available Shifts:");
+        System.out.println("Available Shifts for the week: " + targetWeekStart + " to " + targetWeekEnd);
         for (Shift shift : allShifts) {
             System.out.println("ID: " + shift.getId() + ", Date: " + shift.getDate() + ", Type: " + shift.getType());
         }
 
         System.out.println("Enter the IDs of the shifts you want to select (separated by commas):");
         String input = scanner.nextLine();
-
-        // Split the IDs
         String[] shiftIds = input.split(",");
 
-        // Find the shifts by ID
         for (String id : shiftIds) {
             String trimmedId = id.trim();
             for (Shift shift : allShifts) {
@@ -56,6 +65,8 @@ public class EmployeeService {
             }
         }
 
-        DataStore.WeeklyPreferneces.put(EmployeeId, selectedShifts);
+        // save the employee's submissions
+        DataStore.WeeklyPreferneces.put(employeeId, selectedShifts);
     }
+
 }
