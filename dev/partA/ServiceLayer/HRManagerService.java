@@ -49,7 +49,7 @@ public class HRManagerService {
         return DataStore.employees;
     }
 
-    public void createContract(String employeeId, String startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
+    public void createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
         Employee emp = getEmployeeById(employeeId);
         if (emp == null) {
             System.out.println("No employee found with the given ID.");
