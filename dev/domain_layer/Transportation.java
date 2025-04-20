@@ -1,36 +1,35 @@
 package dev.domain_layer;
 
-import java.util.Dictionary;
 import java.util.List;
 
 public class Transportation {
     private int id;
     private String date;
     private String departureTime;
-    private int transportationManagerID;
     private String truckPlateNumber;
     private int driverID;
     private boolean succeeded;
-    private Dictionary<Integer, List<Item>> itemsDocument;
+    private List<Item> itemsDocument; 
     private List<Integer> shipmentAreasID;
     private Site origin;
-    private Site destination;
+    private Site [] destination;
+    private String accident;
 
-    public Transportation(int id, String date, String departureTime, int transportationManagerID,
-                          String truckPlateNumber, int driverID, boolean succeeded,
-                          Dictionary<Integer, List<Item>> itemsDocument, List<Integer> shipmentAreasID,
-                          Site origin, Site destination) {
+    public Transportation(int id, String date, String departureTime,
+                          String truckPlateNumber, int driverID,
+                          List<Item> itemsDocument, List<Integer> shipmentAreasID,
+                          Site origin, Site [] destination) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
-        this.transportationManagerID = transportationManagerID;
         this.truckPlateNumber = truckPlateNumber;
         this.driverID = driverID;
-        this.succeeded = succeeded;
+        this.succeeded = false;
         this.itemsDocument = itemsDocument;
         this.shipmentAreasID = shipmentAreasID;
         this.origin = origin;
         this.destination = destination;
+        this.accident = "No accidents reported";
     }
     public void setDate(String newDate) {
         this.date = newDate;
@@ -38,10 +37,6 @@ public class Transportation {
 
     public void setDepartureTime(String newDepartureTime) {
         this.departureTime = newDepartureTime;
-    }
-
-    public void setTransportationManagerID(int newID) {
-        this.transportationManagerID = newID;
     }
 
     public void setTruckPlateNumber(String newPlate) {
@@ -56,7 +51,7 @@ public class Transportation {
         this.succeeded = newSucceeded;
     }
 
-    public void setItemsDocument(Dictionary<Integer, List<Item>> newItemsDocument) {
+    public void setItemsDocument(List<Item> newItemsDocument) {
         this.itemsDocument = newItemsDocument;
     }
 
@@ -68,11 +63,51 @@ public class Transportation {
         this.origin = newOrigin;
     }
 
-    public void setDestination(Site newDestination) {
+    public void setDestination(Site [] newDestination) {
         this.destination = newDestination;
     }
 
     public int getId() {
         return id;
     }
+
+    public String getTruckPlateNumber() {
+        return truckPlateNumber;
+    }
+
+    public String getDate() {
+        return date;
+    }
+    public String getDepartureTime() {
+        return departureTime;
+    }
+
+    public int getDriverID() {
+        return driverID;
+    }
+    public boolean isSucceeded() {
+        return succeeded;
+    }
+    public List<Item> getItemsDocument() {
+        return itemsDocument;
+    }
+    public List<Integer> getShipmentAreasID() {
+        return shipmentAreasID;
+    }
+    public Site getOrigin() {
+        return origin;
+    }
+    public Site[] getDestination() {
+        return destination;
+    }
+    public String getAccident() {
+        return accident;
+    }
+    public void setAccident(String accident) {
+        this.accident = accident;
+    }
+
+
+
+    
 }
