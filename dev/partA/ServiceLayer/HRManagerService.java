@@ -49,9 +49,7 @@ public class HRManagerService {
         return DataStore.employees;
     }
 
-    public void createContract(String employeeId, String startDate, int freeDays, int sicknessDays,
-                               int monthlyWorkHours, String socialContributions,
-                               String advancedStudyFund, int salary) {
+    public void createContract(String employeeId, String startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
         Employee emp = getEmployeeById(employeeId);
         if (emp == null) {
             System.out.println("No employee found with the given ID.");
@@ -151,11 +149,15 @@ public class HRManagerService {
         List <Employee> result= new ArrayList<>();
         for (Role role : DataStore.roles){
             if (role.getName().equals(RoleName)){ //Role exists!
-                for (Employee employee : DataStore.employees){
-                    if (employee.getRoles().contains(role)){
-                        result.add(employee);
+                for (Employee employee : DataStore.employees) {
+                    for (Role r : employee.getRoles()) {
+                        if (r.getId().equals(role.getId())) {
+                            result.add(employee);
+                            break;
+                        }
                     }
                 }
+
                 if (result.isEmpty()){
                     System.out.println("There are no workers qualified for this role");
                 }
@@ -185,7 +187,9 @@ public class HRManagerService {
                 }
             }
         }
-
+        if (availableEmployees.isEmpty()){
+            System.out.println("There are no workers Available for this shift");
+        }
         return availableEmployees;
     }
 
