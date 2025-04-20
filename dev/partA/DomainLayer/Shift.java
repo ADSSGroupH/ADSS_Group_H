@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Shift {
     private String id;
-    private String date;
+    private LocalDate date;
     private String startTime;
     private String endTime;
     private String type;
@@ -15,7 +15,7 @@ public class Shift {
     private boolean isArchived;
 
     // constructor
-    public Shift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments, LocalDate ArchivedAt) {
+    public Shift(String id, LocalDate date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments, LocalDate ArchivedAt) {
         this.id = id;
         this.date = date;
         this.startTime = startTime;
@@ -33,7 +33,7 @@ public class Shift {
         return id;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -74,7 +74,7 @@ public class Shift {
         this.id = id;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
