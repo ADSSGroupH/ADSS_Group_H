@@ -68,7 +68,7 @@ public class EmployeeUI {
                     }
 
                     String requestId = UUID.randomUUID().toString();
-                    String date = LocalDate.now().toString();
+                    LocalDate date = LocalDate.now();
                     ShiftSwapRequest request = swapService.createRequest(requestId, employee, fromShift, toShift, date);
                     System.out.println("Swap request submitted with ID: " + request.getId());
                 }
