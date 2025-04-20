@@ -5,11 +5,6 @@ import java.time.temporal.TemporalAdjusters;
 
 
 public class ShiftService {
-    public enum Alert {
-        info,
-        warning,
-        error
-    }
 
     public Shift createShift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         // creating the shift
@@ -268,11 +263,16 @@ public class ShiftService {
             // now we need to check if these workers are available for this shift in order to make the assignment.
             for (Employee employee : qualifiedEmployees) {
                 // checking the employee is not already assigned to this shift with a different role:
-                boolean alreadyAssigned = targetShift.getAssignments().stream()
-                        .anyMatch(a -> a.getEmployee().getId().equals(employee.getId()));
+                boolean alreadyAssigned = false;
+                for (ShiftAssignment assignment : targetShift.getAssignments()) {
+                    if (assignment.getEmployee().getId().equals(employee.getId())) {
+                        alreadyAssigned = true;
+                        break;
+                    }
+                }
 
                 if (alreadyAssigned) {
-                    System.out.println("This employee is already assigned to this shift with a different role!");
+                    //System.out.println("This employee is already assigned to this shift with a different role!");
                     continue;
                 }
 
@@ -286,20 +286,21 @@ public class ShiftService {
 
                 // create the assignment
                 ShiftAssignment assignment = new ShiftAssignment(employee, targetShift, requiredRole, LocalDate.now());
-                newAssignments.add(assignment);
+                newAssignments.add(assignment); //using the array to update the *array* of assignments in the shift
                 DataStore.assignments.add(assignment);
+                targetShift.setAssignments(newAssignments);
                 foundMatch = true;
                 break; // stop looking once we assign someone to this role
             }
 
             // if no employee matched this role
             if (!foundMatch) {
-                System.out.println("There is no matching employee for this role in this shift");
+                System.out.printf("There is no matching employee for the role : %S in this shift", requiredRole.getName());
             }
         }
 
         // save the new assignments to the shift
-        targetShift.setAssignments(newAssignments);
+        //targetShift.setAssignments(newAssignments);
     }
 
 
@@ -314,27 +315,32 @@ public class ShiftService {
         }
         return result;
     }
-    public void DeleteShiftAssignment (String ShiftId , String EmployeeIdToDelete){
-        // step 1 - find the shift
-        for (Shift shift : DataStore.shifts){
-            if (shift.getId().equals(ShiftId)){ //found the shift
-                //step 2 - find the assignment of the employee
-                for (ShiftAssignment assignment : shift.getAssignments()){
-                    if (assignment.getEmployee().getId().equals(EmployeeIdToDelete)) { //found the employee to delete
-                        //step 3: delete the assignment from the shift and from the datastore
-                        List <ShiftAssignment> allAssignmentsInTheShift = shift.getAssignments();
-                        allAssignmentsInTheShift.remove(assignment);
-                        shift.setAssignments(allAssignmentsInTheShift);
-
+    public void DeleteShiftAssignment(String shiftId, String employeeIdToDelete) {
+        // Step 1: Find the shift
+        for (Shift shift : DataStore.shifts) {
+            if (shift.getId().equals(shiftId)) {
+                // Step 2: Use iterator to safely remove the assignment
+                Iterator<ShiftAssignment> iterator = shift.getAssignments().iterator();
+                while (iterator.hasNext()) {
+                    ShiftAssignment assignment = iterator.next();
+                    if (assignment.getEmployee().getId().equals(employeeIdToDelete)) {
+                        // Step 3: Remove assignment from both shift and DataStore
+                        iterator.remove();
                         DataStore.assignments.remove(assignment);
-                        System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!", assignment.getEmployee().getName());
+                        System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!\n",
+                                assignment.getEmployee().getName());
+                        return; // Done!
                     }
                 }
+                // Step 4: If we got here, employee wasn't assigned to this shift
                 System.out.println("This employee is not assigned to the given shift!");
+                return;
             }
         }
+        // Step 5: If we got here, shift wasn't found
         System.out.println("This given shift does not exist!");
     }
+
 
 
 
