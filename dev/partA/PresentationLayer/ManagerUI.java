@@ -126,7 +126,7 @@ public class ManagerUI {
                             if (answer.equals("yes")) {
                                 System.out.print("Role ID: ");
                                 String roleId = scanner.nextLine();
-                                Role newRole = new Role(roleName, roleId);
+                                Role newRole = new Role(roleId,roleName);
                                 roles.add(newRole);
                                 DataStore.roles.add(newRole); // מוסיף גם למחסן התפקידים
                             }
@@ -276,14 +276,12 @@ public class ManagerUI {
                 case "14" -> {
                     System.out.println("Enter the role name");
                     String RoleName = scanner.nextLine();
-                    HRManagerService ManagerService = new HRManagerService();
-                    System.out.println(ManagerService.getAllEmployeesByRole(RoleName)); //check the printing is working
+                    System.out.println(managerService.getAllEmployeesByRole(RoleName)); //check the printing is working
                 }
                 case "15" -> {
                     System.out.println("Enter the shift ID: ");
                     String ShiftId = scanner.nextLine();
-                    ShiftService shiftService1 = new ShiftService();
-                    shiftService1.createShiftAssignment(ShiftId);
+                    shiftService.createShiftAssignment(ShiftId);
                 }
                 case "16" -> {
                     System.out.print("Enter date (yyyy-MM-dd): ");
@@ -311,8 +309,7 @@ public class ManagerUI {
                     String ShiftId = scanner.nextLine();
                     System.out.print("Enter the Employee's Id: ");
                     String EmployeeId = scanner.nextLine();
-                    ShiftService shiftservice = new ShiftService();
-                    shiftservice.DeleteShiftAssignment(ShiftId, EmployeeId);
+                    shiftService.DeleteShiftAssignment(ShiftId, EmployeeId);
                 }
 
                 case "18" -> {
