@@ -14,12 +14,12 @@ public class ShiftSwapRequest {
     private Shift fromShift;
     private Shift toShift;
     private Status status;
-    private String date;
+    private LocalDate date;
     private LocalDate archivedAt;
     private boolean isArchived;
 
     // constructor
-    public ShiftSwapRequest(String id, Employee requester, Shift fromShift, Shift toShift, String date) {
+    public ShiftSwapRequest(String id, Employee requester, Shift fromShift, Shift toShift, LocalDate date) {
         this.id = id;
         this.requestor = requester;
         this.fromShift = fromShift;
@@ -51,7 +51,7 @@ public class ShiftSwapRequest {
         return status;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
