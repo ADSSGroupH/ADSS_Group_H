@@ -21,7 +21,7 @@ public class EmployeeService {
     // מגיש בקשת החלפת משמרת
     public ShiftSwapRequest submitSwapRequest(Employee requester, Shift fromShift, Shift toShift) {
         String requestId = UUID.randomUUID().toString();
-        String date = LocalDate.now().toString();
+        LocalDate date = LocalDate.now(); //the date of the *creation* of the swap request.
         ShiftSwapRequestService service = new ShiftSwapRequestService();
         return service.createRequest(requestId, requester, fromShift, toShift, date);
     }
