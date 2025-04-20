@@ -48,7 +48,7 @@ public class LoginForm {
         List <Employee> EmployeesInTheBranch = new ArrayList<>();
         Branch branch = new Branch("1", "example", "example", EmployeesInTheBranch);
         DataStore.branches.add(branch);
-        EmployeeContract contract = new EmployeeContract("123456789","17.04.2025",10,10,20,"example", "example",2000,"17.04.2025",true);
+        EmployeeContract contract = new EmployeeContract("123456789",LocalDate.parse("2025-04-17"),10,10,20,"example", "example",2000,"17.04.2025",true);
         HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true, LocalDate.now(),"123");
         DataStore.employees.add(manager);
         LoginForm loginForm = new LoginForm();
