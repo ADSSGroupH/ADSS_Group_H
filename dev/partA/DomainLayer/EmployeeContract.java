@@ -1,6 +1,8 @@
+import java.time.LocalDate;
+
 public class EmployeeContract {
     private String employeeID;
-    private String startDate;
+    private LocalDate startDate;
     private int freeDays;
     private int sicknessDays;
     private int monthlyWorkHours;
@@ -11,7 +13,7 @@ public class EmployeeContract {
     private boolean isArchived;
 
     // --- Constructor ---
-    public EmployeeContract(String employeeID, String startDate, int freeDays, int sicknessDays,
+    public EmployeeContract(String employeeID, LocalDate startDate, int freeDays, int sicknessDays,
                             int monthlyWorkHours, String socialContributions,
                             String advancedStudyFund, int salary,
                             String archivedAt, boolean isArchived) {
@@ -35,10 +37,10 @@ public class EmployeeContract {
         this.employeeID = employeeID;
     }
 
-    public String getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
-    public void setStartDate(String startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
