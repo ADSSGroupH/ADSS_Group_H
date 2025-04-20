@@ -146,8 +146,17 @@ public class ManagerUI {
 
                     // יצירת חוזה לעובד החדש
                     System.out.println("Enter contract details for the new employee:");
-                    System.out.print("Start Date (yyyy-MM-dd): ");
-                    String startDate = scanner.nextLine();
+                    LocalDate Date = LocalDate.now(); //will be changed
+                    while (true) {
+                        System.out.print("Start Date (yyyy-MM-dd): ");
+                        String startDate = scanner.nextLine();
+                        try {
+                            Date = LocalDate.parse(startDate);
+                            break;
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date! Please enter again (format: yyyy-MM-dd).");
+                        }
+                    }
                     System.out.print("Free Days: ");
                     int freeDays = Integer.parseInt(scanner.nextLine());
                     System.out.print("Sickness Days: ");
@@ -161,7 +170,7 @@ public class ManagerUI {
                     System.out.print("Salary: ");
                     int salary = Integer.parseInt(scanner.nextLine());
 
-                    managerService.createContract(id, startDate, freeDays, sicknessDays, hours, social, fund, salary);
+                    managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
                     System.out.println("A new employee was successfully added along with a new active contract.");
                 }
 
@@ -174,9 +183,17 @@ public class ManagerUI {
                 case "7" -> {
                     System.out.print("Shift ID: ");
                     String id = scanner.nextLine();
-
-                    System.out.print("Date (yyyy-MM-dd): ");
-                    String date = scanner.nextLine();
+                    LocalDate Date = LocalDate.now(); //will be changed
+                    while (true) {
+                        System.out.print("Date (yyyy-MM-dd): ");
+                        String date = scanner.nextLine();
+                        try {
+                            Date = LocalDate.parse(date);
+                            break;
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date! Please enter again (format: yyyy-MM-dd).");
+                        }
+                    }
 
                     System.out.print("Start Time: ");
                     String start = scanner.nextLine();
@@ -220,7 +237,7 @@ public class ManagerUI {
                     }
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
-                    shiftService.createShift(id, date, start, end, type, manager, roles, assignments);
+                    shiftService.createShift(id, Date, start, end, type, manager, roles, assignments);
                 }
 
 
