@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ShiftSwapRequestService {
 
-    public ShiftSwapRequest createRequest(String id, Employee requester, Shift fromShift, Shift toShift, String date) {
+    public ShiftSwapRequest createRequest(String id, Employee requester, Shift fromShift, Shift toShift, LocalDate date) {
         // creating the request
         ShiftSwapRequest newRequest = new ShiftSwapRequest(id, requester, fromShift, toShift, date);
 
