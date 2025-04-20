@@ -6,7 +6,7 @@ import java.time.temporal.TemporalAdjusters;
 
 public class ShiftService {
 
-    public Shift createShift(String id, String date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
+    public Shift createShift(String id, LocalDate date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         // creating the shift
 
         Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments,LocalDate.now());
@@ -116,7 +116,7 @@ public class ShiftService {
             if (!shift.isArchived()) continue;
 
             try {
-                LocalDate shiftDate = LocalDate.parse(shift.getDate());  // assuming yyyy-MM-dd format
+                LocalDate shiftDate = shift.getDate();  // assuming yyyy-MM-dd format
                 if (!shiftDate.isBefore(weekStart) && !shiftDate.isAfter(weekEnd)) {
                     allShifts.add(shift);
                 }
@@ -140,7 +140,7 @@ public class ShiftService {
             if (shift == null || shift.isArchived()) continue;
 
             try {
-                LocalDate shiftDate = LocalDate.parse(shift.getDate()); // assuming "yyyy-MM-dd"
+                LocalDate shiftDate = shift.getDate(); // assuming "yyyy-MM-dd"
                 if (!shiftDate.isBefore(weekStart) && !shiftDate.isAfter(weekEnd)) {
                     weeklyAssignments.add(assignment);
                 }
@@ -205,10 +205,10 @@ public class ShiftService {
         Map<String, Map<String, List<ShiftAssignment>>> grouped = new TreeMap<>();
 
         for (ShiftAssignment assignment : DataStore.assignments) {
-            String date = assignment.getShift().getDate();
+            LocalDate date = assignment.getShift().getDate();
             String type = assignment.getShift().getType();
 
-            grouped.putIfAbsent(date, new TreeMap<>());
+            grouped.putIfAbsent(String.valueOf(date), new TreeMap<>());
             grouped.get(date).putIfAbsent(type, new ArrayList<>());
             grouped.get(date).get(type).add(assignment);
         }
@@ -307,7 +307,7 @@ public class ShiftService {
     public List<Shift> getShiftsBetween(LocalDate from, LocalDate to) {
         List<Shift> result = new ArrayList<>();
         for (Shift shift : DataStore.shifts) {
-            LocalDate shiftDate = LocalDate.parse(shift.getDate());
+            LocalDate shiftDate = shift.getDate();
             if ((shiftDate.isEqual(from) || shiftDate.isAfter(from)) &&
                     (shiftDate.isEqual(to) || shiftDate.isBefore(to))) {
                 result.add(shift);
