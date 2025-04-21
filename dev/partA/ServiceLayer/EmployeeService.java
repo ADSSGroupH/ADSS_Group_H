@@ -3,6 +3,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class EmployeeService {
 
@@ -36,7 +37,8 @@ public class EmployeeService {
             DayOfWeek todayDay = today.getDayOfWeek();
 
             // אם היום שישי או שבת - ההעדפות הן לשבוע שאחר לשבוע הבא
-            int weeksToAdd = (todayDay.getValue() >= DayOfWeek.FRIDAY.getValue()) ? 2 : 1;
+            int weeksToAdd = (todayDay.getValue() > DayOfWeek.THURSDAY.getValue() || (todayDay == DayOfWeek.THURSDAY && LocalTime.now().getHour() >= 16)) ? 2 : 1;
+
 
             // חשב את יום ראשון של השבוע הרצוי
             LocalDate targetWeekStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusWeeks(weeksToAdd - 1);
