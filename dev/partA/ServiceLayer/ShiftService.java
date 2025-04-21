@@ -89,6 +89,7 @@ public class ShiftService {
                     return false;
                 } else {
                     shift.setArchived(true);  // shift is not in use anymore so it's archived
+                    shift.setArchivedAt(LocalDate.now());
                     return true;
                 }
 
@@ -278,7 +279,6 @@ public class ShiftService {
                 }
 
                 if (alreadyAssigned) {
-                    //System.out.println("This employee is already assigned to this shift with a different role!");
                     continue;
                 }
 
@@ -304,9 +304,6 @@ public class ShiftService {
                 System.out.printf("There is no matching employee for the role : %S in this shift", requiredRole.getName());
             }
         }
-
-        // save the new assignments to the shift
-        //targetShift.setAssignments(newAssignments);
     }
 
 
@@ -332,7 +329,8 @@ public class ShiftService {
                     if (assignment.getEmployee().getId().equals(employeeIdToDelete)) {
                         // Step 3: Remove assignment from both shift and DataStore
                         iterator.remove();
-                        DataStore.assignments.remove(assignment);
+                        assignment.setArchived(true);
+                        assignment.setArchiveDate(LocalDate.now());
                         System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!\n",
                                 assignment.getEmployee().getName());
                         return; // Done!
