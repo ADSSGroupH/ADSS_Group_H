@@ -19,17 +19,16 @@ public class ManagerUI {
             System.out.println("5. Add New Employee");
             System.out.println("6. Delete Employee");
             System.out.println("7. Create New Shift");
-            System.out.println("8. Update Shift Field");
-            System.out.println("9. Delete Shift");
-            System.out.println("10. Update Employee Info");
-            System.out.println("11. Find Shift by ID");
-            System.out.println("12. View All Shifts for This Week");
-            System.out.println("13. Add New Role"); //might be unnecessary - check!
-            System.out.println("14. get all employees qualified for a specific role");
-            System.out.println("15. create shift assignment");
-            System.out.println("16. Find employees by availability");
-            System.out.println("17. Cancel an employee's assignment to a specific shift");
-            System.out.println("18. Exit");
+            System.out.println("8. Delete Shift");
+            System.out.println("9. Update Employee Info");
+            System.out.println("10. Find Shift by ID");
+            System.out.println("11. View All Shifts for This Week");
+            System.out.println("12. Add New Role"); //might be unnecessary - check!
+            System.out.println("13. get all employees qualified for a specific role");
+            System.out.println("14. create shift assignment");
+            System.out.println("15. Find employees by availability");
+            System.out.println("16. Cancel an employee's assignment to a specific shift");
+            System.out.println("17. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -241,23 +240,14 @@ public class ManagerUI {
                 }
 
 
-                case "8" -> {
-                    System.out.print("Enter shift ID: ");
-                    String id = scanner.nextLine();
-                    System.out.print("Enter field name to update: ");
-                    String field = scanner.nextLine();
-                    System.out.print("Enter new value (manual object input required): ");
-                    String value = scanner.nextLine(); // Here you'd inject a proper object
-                    shiftService.updateShiftField(id, field, value);
-                }
 
-                case "9" -> {
+                case "8" -> {
                     System.out.print("Enter shift ID to delete: ");
                     String id = scanner.nextLine();
                     shiftService.deleteShift(id);
                 }
 
-                case "10" -> {
+                case "9" -> {
                     System.out.print("Enter employee ID: ");
                     String id = scanner.nextLine();
                     System.out.print("Field to update (name/phoneNumber/bankDetails): ");
@@ -267,21 +257,21 @@ public class ManagerUI {
                     managerService.updateEmployeeField(id, field, value);
                 }
 
-                case "11" -> {
+                case "10" -> {
                     System.out.print("Enter shift ID: ");
                     String id = scanner.nextLine();
                     Shift shift = shiftService.getShiftById(id);
                     System.out.println(shift != null ? "Shift found: " + shift.getType() + ", Date: " + shift.getDate() : "Shift not found.");
                 }
 
-                case "12" -> {
+                case "11" -> {
                     List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
                     for (Shift s : shifts) {
                         System.out.println("- ID: " + s.getId() + ", Date: " + s.getDate() + ", Type: " + s.getType());
                     }
                 }
 
-                case "13" -> {
+                case "12" -> {
                     System.out.print("Enter new role ID: ");
                     String roleId = scanner.nextLine();
                     System.out.print("Enter new role name: ");
@@ -290,17 +280,17 @@ public class ManagerUI {
                     DataStore.roles.add(role);
                     System.out.println("New role added successfully.");
                 }
-                case "14" -> {
+                case "13" -> {
                     System.out.println("Enter the role name");
                     String RoleName = scanner.nextLine();
                     System.out.println(managerService.getAllEmployeesByRole(RoleName)); //check the printing is working
                 }
-                case "15" -> {
+                case "14" -> {
                     System.out.println("Enter the shift ID: ");
                     String ShiftId = scanner.nextLine();
                     shiftService.createShiftAssignment(ShiftId);
                 }
-                case "16" -> {
+                case "15" -> {
                     System.out.print("Enter date (yyyy-MM-dd): ");
                     String dateStr = scanner.nextLine();
                     try {
@@ -321,7 +311,7 @@ public class ManagerUI {
                     }
 
                 }
-                case "17" -> {
+                case "16" -> {
                     System.out.print("Enter the Shift's Id: ");
                     String ShiftId = scanner.nextLine();
                     System.out.print("Enter the Employee's Id: ");
@@ -329,7 +319,7 @@ public class ManagerUI {
                     shiftService.DeleteShiftAssignment(ShiftId, EmployeeId);
                 }
 
-                case "18" -> {
+                case "17" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
