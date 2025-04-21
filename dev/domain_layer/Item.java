@@ -25,4 +25,10 @@ public class Item {
     public int getQuantity() {
         return quantity;
     }
+    public void rduceQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
+    }
 }

@@ -387,4 +387,20 @@ public class TransportationController {
             return "Transportation with ID " + id + " not found.";
         }
     }
+    public String removeTruck(String plateNumber) {
+        if (truckMap.containsKey(plateNumber)) {
+            truckMap.remove(plateNumber);
+            return "Truck with plate number " + plateNumber + " removed.";
+        } else {
+            return "Truck with plate number " + plateNumber + " not found.";
+        }
+    }
+    public String removeDriver(int id) {
+        if (driverMap.containsKey(id)) {
+            driverMap.remove(id);
+            return "Driver with ID " + id + " removed.";
+        } else {
+            return "Driver with ID " + id + " not found.";
+        }
+    }
 }
