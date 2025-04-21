@@ -39,7 +39,8 @@ public class ShiftSwapRequestService {
         while (iterator.hasNext()) {
             ShiftSwapRequest request = iterator.next();
             if (request.getId().equals(requestId)) {
-                iterator.remove();
+                request.setArchived(true);
+                request.setArchivedAt(LocalDate.now());
                 return true;
             }
         }
