@@ -6,6 +6,7 @@ public class ShiftAssignment {
     private Shift shift;
     private Role role;
     private LocalDate ArchiveDate;
+    private boolean IsArchived = false;
 
     public ShiftAssignment(Employee employee, Shift shift, Role role, LocalDate ArchiveDate) {
         this.employee = employee;
@@ -28,6 +29,7 @@ public class ShiftAssignment {
     public LocalDate getArchiveDate() {
         return ArchiveDate;
     }
+    public boolean getIsArchived (){return IsArchived;}
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
@@ -43,4 +45,5 @@ public class ShiftAssignment {
     public void setArchiveDate(LocalDate ArchiveDate) {
         this.ArchiveDate = ArchiveDate;
     }
+    public void setArchived (boolean IsArchived){this.IsArchived = IsArchived;}
 }
