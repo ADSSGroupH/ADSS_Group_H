@@ -80,8 +80,8 @@ public class HRManagerService {
             System.out.println("Employee or contract not found.");
             return;
         }
-
-        DataStore.contracts.remove(emp.getContract());
+        emp.getContract().setArchived(true); //making the contract not active.
+        emp.getContract().setArchivedAt(LocalDate.now().toString());
         emp.setContract(null);
 
         System.out.println("Contract deleted from employee.");
