@@ -84,8 +84,14 @@ public class ShiftService {
         while (iterator.hasNext()) {
             Shift shift = iterator.next();
             if (shift.getId().equals(shiftId)) {
-                iterator.remove();  // deleting the shift from the memory.
-                return true;
+                if (!shift.getAssignments().isEmpty()) {
+                    System.out.println("you can't delete a shift if there are employees assigned to it!");
+                    return false;
+                } else {
+                    shift.setArchived(true);  // shift is not in use anymore so it's archived
+                    return true;
+                }
+
             }
         }
         return false;  // we didn't find a matching shift.
