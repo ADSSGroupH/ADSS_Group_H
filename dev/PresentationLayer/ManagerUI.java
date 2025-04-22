@@ -27,12 +27,13 @@ public class ManagerUI {
             System.out.println("9. Update Employee Info");
             System.out.println("10. Find Shift by ID");
             System.out.println("11. View All Shifts for This Week");
-            System.out.println("12. Add New Role"); //might be unnecessary - check!
+            System.out.println("12. Add New Role");
             System.out.println("13. get all employees qualified for a specific role");
             System.out.println("14. create shift assignment");
             System.out.println("15. Find employees by availability");
             System.out.println("16. Cancel an employee's assignment to a specific shift");
-            System.out.println("17. Exit");
+            System.out.println("17. View a specific shift details");
+            System.out.println("18. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -324,6 +325,33 @@ public class ManagerUI {
                 }
 
                 case "17" -> {
+                    System.out.print("Enter shift ID: ");
+                    String shiftId = scanner.nextLine();
+                    Shift shift = shiftService.getShiftById(shiftId);
+                    if (shift == null) {
+                        System.out.println("Shift not found.");
+                        break;
+                    }
+                    System.out.println("\n--- Shift Details ---");
+                    System.out.println("ID: " + shift.getId());
+                    System.out.println("Date: " + shift.getDate());
+                    System.out.println("Type: " + shift.getType());
+                    System.out.println("Start: " + shift.getStartTime() + ", End: " + shift.getEndTime());
+
+                    Set<Role> assignedRoles = new HashSet<>();
+                    for (ShiftAssignment assignment : shift.getAssignments()) {
+                        System.out.println("- " + assignment.getRole().getName() + ": " + assignment.getEmployee().getName());
+                        assignedRoles.add(assignment.getRole());
+                    }
+
+                    for (Role role : shift.getRequiredRoles()) {
+                        if (!assignedRoles.contains(role)) {
+                            System.out.println("- " + role.getName() + ": (unassigned, employee needed)");
+                        }
+                    }
+                }
+
+                case "18" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
