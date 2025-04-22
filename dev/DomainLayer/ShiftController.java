@@ -300,7 +300,7 @@ public class ShiftController {
                         DAO.WeeklyPreferneces.get(employee.getId()).contains(targetShift);
 
                 if (!isAvailable) {
-                    System.out.println("This employee will be assigned to this shift, but he isn't available!");
+                    System.out.println("Warning: Employee " + employee.getName() + " is not available but will still be assigned.");
                 }
 
                 // create the assignment
