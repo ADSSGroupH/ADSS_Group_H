@@ -117,9 +117,10 @@ public class ShiftController {
         LocalDate today = LocalDate.now();
 
         // לחשב את יום ראשון הבא (אפילו אם היום ראשון – נלך לראשון הבא)
-        LocalDate nextSunday = today.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
-        LocalDate weekStart = nextSunday;
+        LocalDate weekStart = today.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY));
         LocalDate weekEnd = weekStart.plusDays(6);
+
+        System.out.println("Checking shifts between: " + weekStart + " to " + weekEnd);
 
         for (Shift shift : DAO.shifts) {
             if (!shift.isArchived()) continue;
