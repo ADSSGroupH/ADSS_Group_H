@@ -270,9 +270,13 @@ public class ManagerUI {
                 }
 
                 case "11" -> {
-                    List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
-                    for (Shift s : shifts) {
-                        System.out.println("- ID: " + s.getId() + ", Date: " + s.getDate() + ", Type: " + s.getType());
+                       List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
+                    if (shifts.isEmpty()) {
+                        System.out.println("No shifts scheduled for this week.");
+                    } else {
+                        for (Shift s : shifts) {
+                            System.out.println("- ID: " + s.getId() + ", Date: " + s.getDate() + ", Type: " + s.getType());
+                        }
                     }
                 }
 
@@ -286,9 +290,14 @@ public class ManagerUI {
                     System.out.println("New role added successfully.");
                 }
                 case "13" -> {
-                    System.out.println("Enter the role name");
+                    System.out.print("Enter the role name: ");
                     String RoleName = scanner.nextLine();
-                    System.out.println(managerService.getAllEmployeesByRole(RoleName)); //check the printing is working
+                    List<Employee> result = managerService.getAllEmployeesByRole(RoleName);
+                    if (result != null) {
+                        for (Employee e : result) {
+                            System.out.println(e);
+                        }
+                    }
                 }
                 case "14" -> {
                     System.out.println("Enter the shift ID: ");
