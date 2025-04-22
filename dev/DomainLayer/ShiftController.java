@@ -135,6 +135,9 @@ public class ShiftController {
             }
         }
 
+        if (allShifts.isEmpty()) {
+            System.out.println("No shifts scheduled between " + weekStart + " and " + weekEnd);
+        }
         return allShifts;
     }
 
