@@ -12,7 +12,6 @@ public class ManagerController {
 
         DAO.employees.add(newEmployee);
         branch.UpdateEmployees(newEmployee);
-        System.out.println("Employee added successfully.");
     }
 
     public void deleteEmployee(String id) {
@@ -71,8 +70,6 @@ public class ManagerController {
 
         emp.setContract(newContract); // מעדכנים את החוזה הפעיל
         DAO.contracts.add(newContract); // שומרים את כל החוזים בארכיון כללי
-
-        System.out.println("New contract created and set as active.");
     }
 
 
@@ -143,20 +140,50 @@ public class ManagerController {
                 System.out.println("Bank details updated successfully.");
                 break;
 
+            case "password":
+                emp.setPassword(newValue);
+                System.out.println("Password updated successfully.");
+                break;
+
+            case "roles":
+                String[] roleNames = newValue.split(",");
+                Set<Role> newRoles = new HashSet<>();
+
+                for (String roleName : roleNames) {
+                    Role matched = null;
+                    for (Role r : DataStore.roles) {
+                        if (r.getName().equalsIgnoreCase(roleName.trim())) {
+                            matched = r;
+                            break;
+                        }
+                    }
+
+                    if (matched != null) {
+                        newRoles.add(matched);
+                    } else {
+                        System.out.println("Role not found: " + roleName.trim());
+                    }
+                }
+
+                if (!newRoles.isEmpty()) {
+                    emp.setRoles(newRoles);
+                    System.out.println("Roles updated successfully.");
+                } else {
+                    System.out.println("No valid roles provided. No changes made.");
+                }
+                break;
+
             default:
-                System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails.");
+                System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails, password, isManager, roles.");
         }
     }
     public List <Employee> getAllEmployeesByRole(String RoleName) {
         List <Employee> result= new ArrayList<>();
         for (Role role : DAO.roles){
-            if (role.getName().equals(RoleName)){ //Role exists!
+            if (role.getName().equalsIgnoreCase(RoleName.trim())){ //Role exists!
                 for (Employee employee : DAO.employees) {
-                    for (Role r : employee.getRoles()) {
-                        if (r.getId().equals(role.getId())) {
-                            result.add(employee);
-                            break;
-                        }
+                   if (employee.getRoles().contains(role)){
+                        result.add(employee);
                     }
                 }
 
@@ -170,7 +197,7 @@ public class ManagerController {
             }
         }
         System.out.println("This Role Doesn't exist");
-        return null;
+        return new ArrayList<>();
     }
 
     public List<Employee> getEmployeesByAvailability(LocalDate date, String shiftType) {
