@@ -211,7 +211,7 @@ public class ManagerUI {
                     Employee manager = null; // יתעדכן בהקצאת המשמרת בעתיד
                     List<Role> roles = new ArrayList<>();
 
-                    System.out.print("Which roles do you need in this shift? (separate the names by comma): ");
+                    System.out.print("Which roles do you need in this shift (shift manager is already included)? (separate the names by comma): ");
                     String neededRoles = scanner.nextLine();
                     String[] separatedNeededRoles = neededRoles.split(",");
 
@@ -241,8 +241,10 @@ public class ManagerUI {
                     }
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
+                    Role shiftManager = new Role("1", "shift manager");
+                    roles.add(shiftManager);
                     shiftService.createShift(id, Date, start, end, type, manager, roles, assignments);
-                    System.out.printf("Shift number: %s was created successfully", id);;
+                    System.out.printf("Shift number: %s was created successfully", id);
                 }
 
 
@@ -271,7 +273,7 @@ public class ManagerUI {
                 }
 
                 case "11" -> {
-                       List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
+                    List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
                     if (shifts.isEmpty()) {
                         System.out.println("No shifts scheduled for this week.");
                     } else {
