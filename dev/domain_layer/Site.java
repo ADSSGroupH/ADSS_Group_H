@@ -44,4 +44,14 @@ public class Site {
     public void setShipmentAreaId(int shipmentAreaId) {
         this.shipmentAreaId = shipmentAreaId;
     }
+
+    public String display() {
+        return "Site{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", contactPersonName='" + contactPersonName + '\'' +
+                ", shipmentAreaId=" + shipmentAreaId +
+                '}' + "\n";
+    }
 }

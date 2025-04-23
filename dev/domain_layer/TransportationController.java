@@ -40,7 +40,7 @@ public class TransportationController {
         }
     }
 
-    public String makeTransportation(int id, String date, String departureTime, String truckPlateNumber, int driverID, List<Item> itemsDocument, List<Integer> shipmentAreasID, Site origin, Site [] destination){ 
+    public String makeTransportation(int id, String date, String departureTime, String truckPlateNumber, int driverID, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){ 
         // Check if the transportation already exists
         if (transportationMap.containsKey(id)) {
             return "Transportation with ID " + id + " already exists.";
@@ -55,10 +55,11 @@ public class TransportationController {
         if (!checkSiteExists(origin.getName(), shipmentAreasID)) {
             return "Site with name " + origin.getName() + " doesn't exists in the shipment areas.";
         }
-        for (int i=0; i<destination.length; i++){
-            if (!checkSiteExists(destination[i].getName(), shipmentAreasID)) {
-                return "Site with name " + destination[i].getName() + " doesn't exists in the shipment areas.";
+        for (ItemsDocument item : itemsDocument) {
+            if (!checkSiteExists(item.getDestination().getName(), shipmentAreasID)) {
+                return "Destination site with name " + item.getDestination().getName() + " doesn't exists in the shipment areas.";
             }
+            
         }
         // Check if the truck exists
         if (!truckMap.containsKey(truckPlateNumber)) {
@@ -79,7 +80,7 @@ public class TransportationController {
         if (driverMap.get(driverID).getLicenseType().equals(truckMap.get(truckPlateNumber).getLicenseType())) {
             return "Driver with ID " + driverID + " does not have the required license type for truck " + truckPlateNumber + ".";
         }
-        Transportation t = new Transportation(id, date, departureTime, truckPlateNumber, driverID, itemsDocument, shipmentAreasID, origin, destination);
+        Transportation t = new Transportation(id, date, departureTime, truckPlateNumber, driverID, itemsDocument, shipmentAreasID, origin);
         // Check if the items weight is less than the truck's max weight
         if (calculateItemsWeight(itemsDocument) > truckMap.get(truckPlateNumber).getMaxWeight()) {
             return "Items weight exceeds the truck's maximum weight.";
@@ -172,7 +173,7 @@ public class TransportationController {
         }
     }
     
-    public String changeItemsDocument(int id, List<Item> newItemsDocument) {
+    public String changeItemsDocument(int id, List<ItemsDocument> newItemsDocument) {
         Transportation t = findTransportationById(id);
         if (t != null) {
             // Check if the items weight is less than the truck's max weight
@@ -206,15 +207,6 @@ public class TransportationController {
         }
     }
     
-    public String changeDestination(int id, Site[] newDestination) {
-        Transportation t = findTransportationById(id);
-        if (t != null) {
-            t.setDestination(newDestination);
-            return "Destination changed for ID " + id;
-        } else {
-            return "Transportation with ID " + id + " not found.";
-        }
-    }
     public String reportAccident(int transportationID, String accident){
         Transportation t = findTransportationById(transportationID);
         if (t == null) {
@@ -256,19 +248,21 @@ public class TransportationController {
         return sb.toString();
     }
 
-    private int calculateItemsWeight(List<Item> itemsDocument) {
+    private int calculateItemsWeight(List<ItemsDocument> itemsDocument) {
         // Calculate the total weight of items in the items document
         int totalWeight = 0;   
-        for (Item item : itemsDocument) {
-            totalWeight = totalWeight + item.getWeight() * item.getQuantity();
+        for (ItemsDocument itemDocument : itemsDocument) {
+            for (Item item : itemDocument.getItems()) {
+                totalWeight = totalWeight + item.getWeight() * item.getQuantity();
+            }
         }  
         return totalWeight;
     }
 
-    public String removeItems(int id, List<Item> itemsToRemove) {
+    public String removeItems(int id, List<ItemsDocument> itemsToRemove) {
         Transportation t = findTransportationById(id);
         if (t != null) {
-            List<Item> itemsDocument = t.getItemsDocument();
+            List<ItemsDocument> itemsDocument = t.getItemsDocument();
             itemsDocument.removeAll(itemsToRemove);
             t.setItemsDocument(itemsDocument);
             return "Items removed from transportation ID " + id;
@@ -277,10 +271,10 @@ public class TransportationController {
         }
     }
 
-    public String addItems(int id, List<Item> itemsToAdd) {
+    public String addItems(int id, List<ItemsDocument> itemsToAdd) {
         Transportation t = findTransportationById(id);
         if (t != null) {
-            List<Item> itemsDocument = t.getItemsDocument();
+            List<ItemsDocument> itemsDocument = t.getItemsDocument();
             itemsDocument.addAll(itemsToAdd);
             // Check if the items weight is less than the truck's max weight
             if (calculateItemsWeight(itemsDocument) > truckMap.get(t.getTruckPlateNumber()).getMaxWeight()) {
@@ -331,10 +325,9 @@ public class TransportationController {
 
     public String displayItemsList(Transportation t) {
         StringBuilder sb = new StringBuilder();
-        List<Item> itemsDocument = t.getItemsDocument();
-        for (Item item : itemsDocument) {
-            sb.append(", Name: ").append(item.getName())
-              .append(", quantity: ").append(item.getQuantity()).append("\n");
+        List<ItemsDocument> itemsDocument = t.getItemsDocument();
+        for (ItemsDocument itemdDocument : itemsDocument) {
+            sb.append(itemdDocument.display()).append("\n");
         }
         return sb.toString();
     }
@@ -343,15 +336,7 @@ public class TransportationController {
         if (t == null) {
             return "Transportation with ID " + transportationID + " not found.";
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Date: ").append(t.getDate()).append("\n")
-          .append("Departure Time: ").append(t.getDepartureTime()).append("\n")
-          .append("Truck Plate Number: ").append(t.getTruckPlateNumber()).append("\n")
-          .append("Driver ID: ").append(t.getDriverID()).append("\n")
-          .append("Origin: ").append(t.getOrigin()).append("\n")
-          .append("Destination: ").append(t.getDestination()).append("\n")
-          .append("Items Document: ").append(displayItemsList(t)).append("\n");
-        return sb.toString();
+        return t.display();
     }
 
     public String addSite(String name, String address, String phoneNumber, String contactPersonName, int shipmentAreaId) {

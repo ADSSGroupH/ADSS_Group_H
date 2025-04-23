@@ -9,16 +9,15 @@ public class Transportation {
     private String truckPlateNumber;
     private int driverID;
     private boolean succeeded;
-    private List<Item> itemsDocument; 
+    private List<ItemsDocument> itemsDocument; 
     private List<Integer> shipmentAreasID;
     private Site origin;
-    private Site [] destination;
     private String accident;
 
     public Transportation(int id, String date, String departureTime,
                           String truckPlateNumber, int driverID,
-                          List<Item> itemsDocument, List<Integer> shipmentAreasID,
-                          Site origin, Site [] destination) {
+                          List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID,
+                          Site origin) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
@@ -28,7 +27,6 @@ public class Transportation {
         this.itemsDocument = itemsDocument;
         this.shipmentAreasID = shipmentAreasID;
         this.origin = origin;
-        this.destination = destination;
         this.accident = "No accidents reported";
     }
     public void setDate(String newDate) {
@@ -51,7 +49,7 @@ public class Transportation {
         this.succeeded = newSucceeded;
     }
 
-    public void setItemsDocument(List<Item> newItemsDocument) {
+    public void setItemsDocument(List<ItemsDocument> newItemsDocument) {
         this.itemsDocument = newItemsDocument;
     }
 
@@ -61,10 +59,6 @@ public class Transportation {
 
     public void setOrigin(Site newOrigin) {
         this.origin = newOrigin;
-    }
-
-    public void setDestination(Site [] newDestination) {
-        this.destination = newDestination;
     }
 
     public int getId() {
@@ -88,7 +82,7 @@ public class Transportation {
     public boolean isSucceeded() {
         return succeeded;
     }
-    public List<Item> getItemsDocument() {
+    public List<ItemsDocument> getItemsDocument() {
         return itemsDocument;
     }
     public List<Integer> getShipmentAreasID() {
@@ -97,14 +91,26 @@ public class Transportation {
     public Site getOrigin() {
         return origin;
     }
-    public Site[] getDestination() {
-        return destination;
-    }
     public String getAccident() {
         return accident;
     }
     public void setAccident(String accident) {
         this.accident = accident;
+    }
+    public String display() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Transportation ID: ").append(id).append("\n");
+        sb.append("Date: ").append(date).append("\n");
+        sb.append("Departure Time: ").append(departureTime).append("\n");
+        sb.append("Truck Plate Number: ").append(truckPlateNumber).append("\n");
+        sb.append("Driver ID: ").append(driverID).append("\n");
+        sb.append("Accident Report: ").append(accident).append("\n");
+        sb.append("Origin: ").append(origin.getName()).append("\n");
+        sb.append("Items Document:\n");
+        for (ItemsDocument doc : itemsDocument) {
+            sb.append(doc.display()).append("\n");
+        }
+        return sb.toString();
     }
 
 
