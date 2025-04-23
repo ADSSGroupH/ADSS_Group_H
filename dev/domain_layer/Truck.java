@@ -1,13 +1,15 @@
 package dev.domain_layer;
 
+import dev.domain_layer.Driver.LicenseType;
+
 public class Truck {
     private String plateNumber;
     private String model;
     private int netWeight;
     private int maxWeight;
-    private String licenseType;
+    private LicenseType licenseType;
 
-    public Truck(String plateNumber, String model, int netWeight, int maxWeight, String licenseType) {
+    public Truck(String plateNumber, String model, int netWeight, int maxWeight, LicenseType licenseType) {
         this.plateNumber = plateNumber;
         this.model = model;
         this.netWeight = netWeight;
@@ -15,7 +17,7 @@ public class Truck {
         this.licenseType = licenseType;
     }
 
-    public String getLicenseType() {
+    public LicenseType getLicenseType() {
         return licenseType;
     }
 
@@ -30,5 +32,15 @@ public class Truck {
     }
     public String getPlateNumber() {
         return plateNumber;
+    }
+
+    public String display(){
+        return "Truck{" +
+                "plateNumber='" + plateNumber + '\'' +
+                ", model='" + model + '\'' +
+                ", netWeight=" + netWeight +
+                ", maxWeight=" + maxWeight +
+                ", licenseType=" + licenseType +
+                '}';
     }
 }

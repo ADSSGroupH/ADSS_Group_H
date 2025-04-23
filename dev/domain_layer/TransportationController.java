@@ -1,5 +1,6 @@
 package dev.domain_layer;
 
+import dev.domain_layer.Driver.LicenseType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -216,7 +217,7 @@ public class TransportationController {
         return "Accident reported";
     }
 
-    public String addDriver(int id, String name, String licenseType) {
+    public String addDriver(int id, String name, LicenseType licenseType) {
         Driver driver = new Driver(name, licenseType);
         // Check if the driver already exists
         if (driverMap.containsKey(id)) {
@@ -226,7 +227,7 @@ public class TransportationController {
         return "Driver added with ID " + id + ", Name: " + name + ", License Type: " + licenseType;
     }
 
-    public String addTruck(String plateNumber, String model, int netWeight, int maxWeight, String licenseType) {
+    public String addTruck(String plateNumber, String model, int netWeight, int maxWeight, LicenseType licenseType) {
         Truck truck = new Truck(plateNumber, model, netWeight, maxWeight, licenseType);
         // Check if the truck already exists
         if (truckMap.containsKey(plateNumber)) {
@@ -291,11 +292,7 @@ public class TransportationController {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Truck> entry : truckMap.entrySet()) {
             Truck truck = entry.getValue();
-            sb.append("Plate Number: ").append(truck.getPlateNumber())
-              .append(", Model: ").append(truck.getModel())
-              .append(", Net Weight: ").append(truck.getNetWeight())
-              .append(", Max Weight: ").append(truck.getMaxWeight())
-              .append(", License Type: ").append(truck.getLicenseType()).append("\n");
+            sb.append(truck.display()).append("\n");
         }
         return sb.toString();
     }
@@ -304,10 +301,7 @@ public class TransportationController {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<Integer, Driver> entry : driverMap.entrySet()) {
             Driver driver = entry.getValue();
-            sb.append("ID: ").append(entry.getKey())
-              .append(", Name: ").append(driver.getName())
-              .append(", License Type: ").append(driver.getLicenseType())
-              .append(", Occupied: ").append(driver.isOccupied()).append("\n");
+            sb.append(driver.display()).append("\n");
         }
         return sb.toString();
     }
