@@ -241,8 +241,9 @@ public class ManagerUI {
                     }
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
-                    Role shiftManager = new Role("1", "shift manager");
+                    Role shiftManager = new Role("1", "shift manager"); //make sure there is always a shift manager in a shift
                     roles.add(shiftManager);
+                    DAO.roles.add(shiftManager);
                     shiftService.createShift(id, Date, start, end, type, manager, roles, assignments);
                     System.out.printf("Shift number: %s was created successfully", id);
                 }
