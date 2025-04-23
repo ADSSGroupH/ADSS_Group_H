@@ -54,6 +54,10 @@ public class UserController {
         return "No user is currently logged in";
     }
 
+    public String getCurrentUserRole() {
+        return currentUser.getRole().toString();
+    }
+
     
     
 }
