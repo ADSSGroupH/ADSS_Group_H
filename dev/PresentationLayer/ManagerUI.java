@@ -242,7 +242,7 @@ public class ManagerUI {
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
                     shiftService.createShift(id, Date, start, end, type, manager, roles, assignments);
-                    System.out.printf("Shift number: was created successfully", id);
+                    System.out.printf("Shift number: %s was created successfully", id);;
                 }
 
 
