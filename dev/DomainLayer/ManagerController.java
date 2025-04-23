@@ -151,7 +151,7 @@ public class ManagerController {
 
                 for (String roleName : roleNames) {
                     Role matched = null;
-                    for (Role r : DataStore.roles) {
+                    for (Role r : DAO.roles) {
                         if (r.getName().equalsIgnoreCase(roleName.trim())) {
                             matched = r;
                             break;
