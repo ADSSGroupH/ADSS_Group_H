@@ -9,4 +9,10 @@ public class StockReport extends Report {
                        List<Category> categories) {
         super(reportID, date, products, categories);
     }
+
+    @Override
+    public String generate() {
+        return "StockReport: " + this.getProducts();
+    }
 }
+
