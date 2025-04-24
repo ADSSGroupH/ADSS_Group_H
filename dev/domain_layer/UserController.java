@@ -6,7 +6,7 @@ import java.util.List;
 public class UserController {
     private List<User> users = new ArrayList<>();
     private User currentUser;
-
+    
     public UserController() {
         // Initialize with some users
         users.add(new User( "Tal","123", User.Role.SystemManager));
