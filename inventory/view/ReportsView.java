@@ -4,9 +4,12 @@ import inventory.domain.Report;
 import java.util.List;
 
 public class ReportsView {
-    private List<Report> reports;
-    public void setReports(List<Report> reports) {
-        this.reports = reports;
+    private String reportContent;
+    public ReportsView(String reportContent) {
+        this.reportContent = reportContent;
     }
-    public List<Report> getReports() { return reports; }
+    public void display() {
+        System.out.println("=== Report ===");
+        System.out.println(reportContent);
+    }
 }
