@@ -6,8 +6,13 @@ import java.util.List;
 
 public class AlertsView {
     private List<Alert> alerts;
-    public void setAlerts(List<Alert> alerts) {
+    public AlertsView(List<Alert> alerts) {
         this.alerts = alerts;
     }
-    public List<Alert> getAlerts() { return alerts; }
+    public void display() {
+        System.out.println("=== Alerts ===");
+        for (Alert a : alerts) {
+            a.printShortageMessage();
+        }
+    }
 }
