@@ -177,8 +177,8 @@ public class ManagerUI {
                     System.out.print("Salary: ");
                     int salary = Integer.parseInt(scanner.nextLine());
 
-                    EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
                     managerService.addEmployee(id, name, phone, branch, roles,bank, false,password);
+                    EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
                     Employee emp = managerService.getEmployeeById(id);
                     emp.setContract(contract);
                     System.out.println("A new employee was successfully added along with a new active contract.");
@@ -266,7 +266,7 @@ public class ManagerUI {
                 case "9" -> {
                     System.out.print("Enter employee ID: ");
                     String id = scanner.nextLine();
-                    System.out.print("Field to update (name/phoneNumber/bankDetails): ");
+                    System.out.print("Field to update (name/phoneNumber/bankDetails/password/roles): ");
                     String field = scanner.nextLine();
                     System.out.print("New value: ");
                     String value = scanner.nextLine();
