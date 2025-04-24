@@ -13,7 +13,7 @@ public class HRManagerService {
     ManagerController managerController = new ManagerController();
 
     public void addEmployee(String id, String name, String phoneNumber, Branch branch, Set<Role> roles, String bankDetails, boolean isManager, String password ) {
-        managerController.addEmployee(id,name,phoneNumber,branch,roles,bankDetails,isManager,password);
+        managerController.addEmployee(id,name,phoneNumber,branch,roles, bankDetails,isManager,password);
     }
 
     public void deleteEmployee(String id) {
@@ -32,8 +32,8 @@ public class HRManagerService {
         return managerController.getAllEmployees();
     }
 
-    public void createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
-        managerController.createContract(employeeId,startDate,freeDays,sicknessDays,monthlyWorkHours,socialContributions,advancedStudyFund,salary);
+    public EmployeeContract createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
+        return managerController.createContract(employeeId,startDate,freeDays,sicknessDays,monthlyWorkHours,socialContributions,advancedStudyFund,salary);
 
     }
 
