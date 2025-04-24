@@ -2,15 +2,16 @@ package DomainLayer;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.time.DayOfWeek;
-import java.time.temporal.TemporalAdjusters;
-
 
 public class ShiftController {
 
     public Shift createShift(String id, LocalDate date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
         // creating the shift
-
+        Role shift_Manager = new Role("1", "shift manager"); //make sure there is always a shift manager in a shift
+        requiredRoles.add(shift_Manager);
+        if (!DAO.roles.contains(shift_Manager)) {
+            DAO.roles.add(shift_Manager);
+        }
         Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments,LocalDate.now());
 
         // adding the shift to the archive (data store)
@@ -215,111 +216,192 @@ public class ShiftController {
 
     // מציג את כל השיבוצים של השבוע לכל העובדים
     public List<String> MakeWeeklyAssignmentReport() {
-        Map<String, Map<String, List<ShiftAssignment>>> grouped = new TreeMap<>();
+        Map<String, Map<String, List<Shift>>> groupedShifts = new TreeMap<>();
 
-        for (ShiftAssignment assignment : DAO.assignments) {
-            LocalDate date = assignment.getShift().getDate();
-            String type = assignment.getShift().getType();
+        for (Shift shift : DAO.shifts) {
+            String date = String.valueOf(shift.getDate());
+            String type = shift.getType();
 
-            grouped.putIfAbsent(String.valueOf(date), new TreeMap<>());
-            grouped.get(date).putIfAbsent(type, new ArrayList<>());
-            grouped.get(date).get(type).add(assignment);
+            groupedShifts.putIfAbsent(date, new TreeMap<>());
+            groupedShifts.get(date).putIfAbsent(type, new ArrayList<>());
+            groupedShifts.get(date).get(type).add(shift);
         }
 
-        if (grouped.isEmpty()) {
-            System.out.println("Weekly Assignment Report: No assignments found for this week.");
+        if (groupedShifts.isEmpty()) {
+            System.out.println("Weekly Assignment Report: No shifts found for this week.");
             return null;
         }
 
-        List <String> ListOfSentences = new ArrayList<>();
+        List<String> report = new ArrayList<>();
+        report.add("Weekly Assignment Report (All Shifts):  ");
 
-        ListOfSentences.add("Weekly Assignment Report (All Employees):");
-        for (String date : grouped.keySet()) {
-            ListOfSentences.add("Date: " + date);
-            Map<String, List<ShiftAssignment>> shiftsByType = grouped.get(date);
+        for (String date : groupedShifts.keySet()) {
+            report.add("");
+            report.add("Date: " + date + " ");
+            Map<String, List<Shift>> shiftsByType = groupedShifts.get(date);
 
             for (String type : shiftsByType.keySet()) {
-                ListOfSentences.add("  Shift: " + type);
-                for (ShiftAssignment assignment : shiftsByType.get(type)) {
-                    String roleName = assignment.getRole() != null ? assignment.getRole().getName() : "No role assigned";
-                    String employeeName = assignment.getEmployee().getName();
-                    ListOfSentences.add("    - Employee: " + employeeName + " | Role: " + roleName);
-                }
-            }
-        }
-        return ListOfSentences;
-    }
-    public void createShiftAssignment(String shiftID) {
-        Shift targetShift = null;
+                report.add("  Shift Type: " + type);
 
-        // first find the shift
-        for (Shift shift : DAO.shifts) {
-            if (shift.getId().equals(shiftID)) {
-                targetShift = shift;
-                break;
-            }
-        }
+                for (Shift shift : shiftsByType.get(type)) {
+                    // הצגת מנהל המשמרת אם קיים
+                    if (shift.getShiftManager() != null) {
+                        report.add("     Shift Manager: " + shift.getShiftManager().getName());
+                    } else {
+                        report.add("     Shift Manager: No assignment");
+                    }
 
-        if (targetShift == null) {
-            System.out.println("This shift does not exist in the system!");
-            return;
-        }
+                    List<Role> requiredRoles = shift.getRequiredRoles();
+                    List<ShiftAssignment> assignments = shift.getAssignments();
 
-        List<ShiftAssignment> newAssignments = new ArrayList<>();
-        ManagerController managerService = new ManagerController();
+                    for (Role role : requiredRoles) {
+                        // דלג על מנהל המשמרת כי כבר הודפס
+                        if (role.getName().equalsIgnoreCase("Shift Manager")) continue;
 
-        // go through all the required roles for this shift
-        for (Role requiredRole : targetShift.getRequiredRoles()) {
-            List<Employee> qualifiedEmployees = managerService.getAllEmployeesByRole(requiredRole.getName());
-            boolean foundMatch = false;
-
-            // now we need to check if these workers are available for this shift in order to make the assignment.
-            for (Employee employee : qualifiedEmployees) {
-                //first check if there is a shift manager available
-                if (requiredRole.getId().equals("1")){ //shift manager id
-                    if (qualifiedEmployees.isEmpty()){
-                        System.out.println("There are no employees qualified as shift manager. shift can't be created!");
-                        return;
+                        boolean assigned = false;
+                        for (ShiftAssignment assignment : assignments) {
+                            if (assignment.getRole().getId().equals(role.getId())) {
+                                String employeeName = assignment.getEmployee().getName();
+                                report.add("     " + role.getName() + ": " + employeeName);
+                                assigned = true;
+                            }
+                        }
+                        if (!assigned) {
+                            report.add("     " + role.getName() + ": No assignment");
+                        }
                     }
                 }
-                // checking the employee is not already assigned to this shift with a different role:
-                boolean alreadyAssigned = false;
-                for (ShiftAssignment assignment : targetShift.getAssignments()) {
-                    if (assignment.getEmployee().getId().equals(employee.getId())) {
-                        alreadyAssigned = true;
+            }
+        }
+
+        return report;
+    }
+
+    public void createShiftAssignment(String shiftID) {
+            Shift targetShift = null;
+
+            for (Shift shift : DAO.shifts) {
+                if (shift.getId().equals(shiftID)) {
+                    targetShift = shift;
+                    break;
+                }
+            }
+
+            if (targetShift == null) {
+                System.out.println("This shift does not exist in the system!");
+                return;
+            }
+
+            ManagerController managerService = new ManagerController();
+            Scanner scanner = new Scanner(System.in);
+            List<ShiftAssignment> newAssignments = targetShift.getAssignments();
+
+            List<Role> sortedRoles = targetShift.getRequiredRoles();
+            sortedRoles.sort(Comparator.comparing(Role::getId));//making sure the shift manager will be the first to be assigned ( role id is 1)
+            for (Role requiredRole : sortedRoles) {
+                System.out.println("\n--- Role: " + requiredRole.getName() + " ---");
+
+                //  בדיקה אם כבר שובץ מישהו לתפקיד הזה
+                boolean alreadyFilled = false;
+                for (ShiftAssignment existing : targetShift.getAssignments()) {
+                    if (existing.getRole().getName().equalsIgnoreCase(requiredRole.getName())) {
+                        System.out.println("Role \"" + requiredRole.getName() + "\" is already assigned to " + existing.getEmployee().getName());
+                        alreadyFilled = true;
                         break;
                     }
                 }
+                if (alreadyFilled) continue;
 
-                if (alreadyAssigned) {
+                // קבלת עובדים מתאימים לתפקיד
+                List<Employee> qualifiedEmployees = managerService.getAllEmployeesByRole(requiredRole.getName());
+
+                if (qualifiedEmployees == null || qualifiedEmployees.isEmpty()) {
                     continue;
                 }
 
-                // if the worker submitted this shift
-                boolean isAvailable = DAO.WeeklyPreferneces.containsKey(employee.getId()) &&
-                        DAO.WeeklyPreferneces.get(employee.getId()).contains(targetShift);
+                List<Employee> available = new ArrayList<>();
+                List<Employee> unavailable = new ArrayList<>();
 
-                if (!isAvailable) {
-                    System.out.println("Warning: Employee " + employee.getName() + " is not available but will still be assigned.");
+                for (Employee employee : qualifiedEmployees) {
+                    boolean alreadyAssigned = false;
+                    for (ShiftAssignment assignment : targetShift.getAssignments()) {
+                        if (assignment.getEmployee().getId().equals(employee.getId())) {
+                            alreadyAssigned = true;
+                            break;
+                        }
+                    }
+                    if (alreadyAssigned)
+                        continue; //if the employee is already assigned to a different role in the shift - continue.
+
+                    boolean isAvailable = DAO.WeeklyPreferneces.containsKey(employee.getId()) &&
+                            DAO.WeeklyPreferneces.get(employee.getId()).contains(targetShift);
+
+                    if (isAvailable) {
+                        available.add(employee);
+                    } else {
+                        unavailable.add(employee);
+                    }
                 }
 
-                // create the assignment
-                if (requiredRole.getId().equals("1")){
-                    targetShift.setShiftManager(employee);
+                List<Employee> allOptions = new ArrayList<>();
+                allOptions.addAll(available);
+                allOptions.addAll(unavailable);
+
+                for (int i = 0; i < allOptions.size(); i++) {
+                    Employee emp = allOptions.get(i);
+                    boolean isAvailable = available.contains(emp);
+                    String status = isAvailable ? "" : " [Not Available]";
+                    System.out.println((i + 1) + ". " + emp.getName() + " (ID: " + emp.getId() + ")" + status);
                 }
-                ShiftAssignment assignment = new ShiftAssignment(employee, targetShift, requiredRole, LocalDate.now());
-                newAssignments.add(assignment); //using the array to update the *array* of assignments in the shift
+
+                if (allOptions.isEmpty()) {
+                    System.out.println("No employees available for this role.");
+                    continue;
+                }
+
+                System.out.print("Choose an employee number (from list above, not ID. If you don't want to assign, press 0): ");
+                int choice;
+                try {
+                    choice = Integer.parseInt(scanner.next());
+                    if (choice < 0 || choice > allOptions.size()) {
+                        System.out.println("Invalid number.");
+                        continue;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a number only.");
+                    continue;
+                }
+                if (choice == 0){
+                    break;
+                }
+
+                Employee selected = allOptions.get(choice - 1);
+                if (unavailable.contains(selected)) {
+                    System.out.print("This employee is not available. Do you still want to assign? (yes/no): ");
+                    String confirm = scanner.next();
+                    if (!confirm.equalsIgnoreCase("yes")) {
+                        System.out.println("Skipping assignment for this role.");
+                        continue;
+                    }
+                }
+
+                ShiftAssignment assignment = new ShiftAssignment(selected, targetShift, requiredRole, LocalDate.now());
+                newAssignments.add(assignment);
                 DAO.assignments.add(assignment);
-                targetShift.setAssignments(newAssignments);
-                foundMatch = true;
-                break; // stop looking once we assign someone to this role
+                System.out.println("Assigned " + selected.getName() + " to role: " + requiredRole.getName());
+
+                if (requiredRole.getId().equals("1")) {
+                    targetShift.setShiftManager(selected);
+                }
             }
 
-            // if no employee matched this role
-            if (!foundMatch) {
-                System.out.printf("There is no matching employee for the role : %S in this shift", requiredRole.getName());
+            targetShift.setAssignments(newAssignments);
+
+
+            if (targetShift.getAssignments().size() == targetShift.getRequiredRoles().size()) {
+                System.out.println("\n All assignments completed for shift " + shiftID);
             }
-        }
+
     }
 
 
@@ -365,5 +447,4 @@ public class ShiftController {
 
 
 }
-
 
