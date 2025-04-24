@@ -12,7 +12,7 @@ public class Shift {
     private String type;
     private List<Role> requiredRoles;
     private List<ShiftAssignment> assignments;
-    private Employee shiftManager = null;
+    private Employee shiftManager;
     private LocalDate archivedAt; //date of putting the date in the archive
     private boolean isArchived; //if it's not in use anymore than it is archived.
 
