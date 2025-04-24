@@ -20,6 +20,8 @@ public abstract class Report {
         this.categories = categories;
     }
 
+    public abstract String generate();
+
     public String getReportID() {
         return reportID;
     }
