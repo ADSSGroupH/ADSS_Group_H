@@ -1,5 +1,7 @@
 package inventory.domain;
 
+import inventory.view.ProductDetailView;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,8 +44,14 @@ public class InventoryManager {
     }
 
     // MH: detailed product info
-    public Product getProductDetails(String pid) {
-        return products.get(pid);
+    public void getProductDetails(String pid) {
+        Product p = products.get(pid);
+        if (p == null) {
+            System.out.println("Product not found: " + pid);
+        } else {
+            // delegate to the console view
+            new ProductDetailView(p).display();
+        }
     }
 
     // MH: supplier discounts
