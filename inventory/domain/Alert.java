@@ -4,21 +4,26 @@ import java.util.Date;
 
 public class Alert {
     private String message;
+    private Product product;
     private Date date;
     private String pid;
 
-    public Alert(String message, Date date) {
-        this.message = message;
+    public Alert(Product product, Date date) {
+        this.product = product;
         this.date    = date;
-        this.pid    = pid;
+        this.pid    = product.getPid();
+        this.message = "Shortage alert: product " + product.getName() +
+                " (ID: " + product.getPid() + ") is low in stock.";
+    }
+    public Product getProduct() { return product; }
+
+    public void printShortageMessage() {
+        System.out.println(this.message);
     }
 
-    
-    public String getMessage() {
-        return message;
-    }
-    public void setMessage(String message) {
-        this.message = message;
+    @Override
+    public String toString() {
+        return this.message;
     }
 
     public Date getDate() {
