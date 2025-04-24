@@ -101,7 +101,7 @@ public class TransportationController {
             transportationMap.remove(id);
     }
 
-    private Transportation findTransportationById(int id) {
+    public Transportation findTransportationById(int id) {
         return transportationMap.get(id);
     }
     
