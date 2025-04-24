@@ -41,7 +41,7 @@ public class TransportationController {
         }
     }
 
-    public String makeTransportation(int id, String date, String departureTime, String truckPlateNumber, int driverID, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){ 
+    public String makeTransportation(int id, String date, String departureTime, String truckPlateNumber, int driverID, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
         // Check if the transportation already exists
         if (transportationMap.containsKey(id)) {
             return "Transportation with ID " + id + " already exists.";
@@ -51,23 +51,22 @@ public class TransportationController {
             if (!shipmentAreaMap.containsKey(areaID)) {
                 return "Shipment area with ID " + areaID + " does not exist.";
             }
-        }  
-        //Check if the site exists
+        }
+        // Check if the site exists
         if (!checkSiteExists(origin.getName(), shipmentAreasID)) {
-            return "Site with name " + origin.getName() + " doesn't exists in the shipment areas.";
+            return "Site with name " + origin.getName() + " doesn't exist in the shipment areas.";
         }
         for (ItemsDocument item : itemsDocument) {
             if (!checkSiteExists(item.getDestination().getName(), shipmentAreasID)) {
-                return "Destination site with name " + item.getDestination().getName() + " doesn't exists in the shipment areas.";
+                return "Destination site with name " + item.getDestination().getName() + " doesn't exist in the shipment areas.";
             }
-            
         }
         // Check if the truck exists
         if (!truckMap.containsKey(truckPlateNumber)) {
             return "Truck with plate number " + truckPlateNumber + " does not exist.";
         }
         // Check if there are available drivers with the required license type
-        if (checkAvalableDrivers(truckPlateNumber)) {
+        if (!checkAvalableDrivers(truckPlateNumber)) {
             return "No available drivers with the required license type for truck " + truckPlateNumber + ".";
         }
         // Check if the driver exists
@@ -77,15 +76,19 @@ public class TransportationController {
         // Check if the driver is available
         if (driverMap.get(driverID).isOccupied()) {
             return "Driver with ID " + driverID + " is already occupied.";
-        }    
-        if (driverMap.get(driverID).getLicenseType().equals(truckMap.get(truckPlateNumber).getLicenseType())) {
+        }
+        // Check if the driver has a matching license type
+        if (!driverMap.get(driverID).getLicenseType().equals(truckMap.get(truckPlateNumber).getLicenseType())) {
             return "Driver with ID " + driverID + " does not have the required license type for truck " + truckPlateNumber + ".";
         }
+
         Transportation t = new Transportation(id, date, departureTime, truckPlateNumber, driverID, itemsDocument, shipmentAreasID, origin);
+
         // Check if the items weight is less than the truck's max weight
         if (calculateItemsWeight(itemsDocument) > truckMap.get(truckPlateNumber).getMaxWeight()) {
             return "Items weight exceeds the truck's maximum weight.";
         }
+
         driverMap.get(driverID).setOccupied(true);
         transportationMap.put(id, t);
         String areasNotification = "";
@@ -94,6 +97,7 @@ public class TransportationController {
         }
         return "Transportation created with ID " + id + ", Date: " + date + ", Departure Time: " + departureTime + ", Truck Plate Number: " + truckPlateNumber + ", Driver ID: " + driverID + areasNotification;
     }
+
 
     public void deleteTransportation(int id){
         Transportation t = findTransportationById(id);
@@ -335,13 +339,16 @@ public class TransportationController {
 
     public String addSite(String name, String address, String phoneNumber, String contactPersonName, int shipmentAreaId) {
         Site site = new Site(name, address, phoneNumber, contactPersonName, shipmentAreaId);
-        // Check if the site already exists
-        if (shipmentAreaMap.containsKey(shipmentAreaId)) {
-            return "Site with ID " + shipmentAreaId + " already exists.";
+
+        ShipmentArea area = shipmentAreaMap.get(shipmentAreaId);
+        if (area == null) {
+            return "Shipment area with ID " + shipmentAreaId + " does not exist.";
         }
-        shipmentAreaMap.get(shipmentAreaId).addSite(site);
+
+        area.addSite(site);
         return "Site added with Name: " + name + ", Address: " + address;
     }
+
 
     public boolean checkSiteExists(String name, List<Integer> shipmentAreaId) {
         for (int id : shipmentAreaId) {

@@ -32,17 +32,24 @@ public class UserInteraction {
     private boolean login() {
         System.out.println("Please log in");
 
-        System.out.print("Username: ");
-        String username = scanner.nextLine();
+        while (true) {
+            System.out.print("Username: ");
+            String username = scanner.nextLine();
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+            System.out.print("Password: ");
+            String password = scanner.nextLine();
 
-        String response = userController.login(username, password);
-        System.out.println(response);
+            String response = userController.login(username, password);
+            System.out.println(response);
 
-        return response.equals("Login successful");
+            if (response.equals("Login successful")) {
+                return true;
+            } else {
+                System.out.println("Please try again.");
+            }
+        }
     }
+
 
 
     private void systemManagerMenu() {
@@ -168,18 +175,26 @@ public class UserInteraction {
     }
 
     private void addUser() {
-        System.out.print("Enter new username: ");
-        String username = scanner.nextLine();
+        while (true) {
+            System.out.print("Enter new username: ");
+            String username = scanner.nextLine();
 
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
 
-        System.out.print("Enter role (SystemManager / transportationManager / Driver): ");
-        String roleStr = scanner.nextLine();
+            System.out.print("Enter role (SystemManager / transportationManager / Driver): ");
+            String roleStr = scanner.nextLine();
 
-        User.Role role = User.Role.valueOf(roleStr);
-        String result = userController.addUser(username, password, role);
-        System.out.println(result);
+            if (!(roleStr.equals("SystemManager") || roleStr.equals("transportationManager") || roleStr.equals("Driver"))) {
+                System.out.println("Invalid role. Please enter exactly: SystemManager, transportationManager, or Driver. Try again.\n");
+                continue;
+            }
+
+            User.Role role = User.Role.valueOf(roleStr);
+            String result = userController.addUser(username, password, role);
+            System.out.println(result);
+            break;
+        }
     }
 
     private void deleteUser() {
