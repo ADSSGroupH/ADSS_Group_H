@@ -5,8 +5,14 @@ import java.util.List;
 
 public class CategoriesView {
     private List<Category> categories;
-    public void setCategories(List<Category> categories) {
+    public CategoriesView(List<Category> categories) {
         this.categories = categories;
     }
-    public List<Category> getCategories() { return categories; }
+    public void display() {
+        System.out.println("=== Categories List ===");
+        for (Category c : categories) {
+            System.out.printf("ID: %s | Name: %s\n",
+                    c.getId(), c.getName());
+        }
+    }
 }
