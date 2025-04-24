@@ -294,7 +294,7 @@ public class ShiftController {
 
             ManagerController managerService = new ManagerController();
             Scanner scanner = new Scanner(System.in);
-            List<ShiftAssignment> newAssignments = targetShift.getAssignments();
+        List<ShiftAssignment> newAssignments = new ArrayList<>(targetShift.getAssignments());
 
             List<Role> sortedRoles = targetShift.getRequiredRoles();
             sortedRoles.sort(Comparator.comparing(Role::getId));//making sure the shift manager will be the first to be assigned ( role id is 1)
@@ -385,7 +385,7 @@ public class ShiftController {
                     }
                 }
 
-                ShiftAssignment assignment = new ShiftAssignment(selected, targetShift, requiredRole, LocalDate.now());
+                ShiftAssignment assignment = new ShiftAssignment(selected, targetShift, requiredRole, null);
                 newAssignments.add(assignment);
                 DAO.assignments.add(assignment);
                 System.out.println("Assigned " + selected.getName() + " to role: " + requiredRole.getName());
