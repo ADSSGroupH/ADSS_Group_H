@@ -33,7 +33,8 @@ public class ManagerUI {
             System.out.println("15. Find employees by availability");
             System.out.println("16. Cancel an employee's assignment to a specific shift");
             System.out.println("17. View a specific shift details");
-            System.out.println("18. Exit");
+            System.out.println("18. View all roles in the system");
+            System.out.println("19. Exit");
             System.out.print("Choose: ");
 
             String input = scanner.nextLine();
@@ -119,9 +120,11 @@ public class ManagerUI {
                         Role role = null;
                         System.out.print("Role name: ");
                         String roleName = scanner.nextLine();
+                        String roleNameLowerCase = roleName.toLowerCase();
                         for (Role r: DAO.roles) {
-                            if (r.getName().equals(roleName)) {
-                                role = r;
+                            if (r.getName().equals(roleNameLowerCase)) {
+                                role = r; //found the role, add it to the employee
+                                roles.add(role);
                             }
                         }
                         if ( role == null){
@@ -146,7 +149,7 @@ public class ManagerUI {
                     System.out.print("password: ");
                     String password = scanner.nextLine();
 
-                    managerService.addEmployee(id, name, phone, branch, roles, bank, false,password);
+
 
                     // יצירת חוזה לעובד החדש
                     System.out.println("Enter contract details for the new employee:");
@@ -174,7 +177,10 @@ public class ManagerUI {
                     System.out.print("Salary: ");
                     int salary = Integer.parseInt(scanner.nextLine());
 
-                    managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
+                    EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
+                    managerService.addEmployee(id, name, phone, branch, roles,bank, false,password);
+                    Employee emp = managerService.getEmployeeById(id);
+                    emp.setContract(contract);
                     System.out.println("A new employee was successfully added along with a new active contract.");
                 }
 
@@ -211,18 +217,21 @@ public class ManagerUI {
                     Employee manager = null; // יתעדכן בהקצאת המשמרת בעתיד
                     List<Role> roles = new ArrayList<>();
 
+
                     System.out.print("Which roles do you need in this shift (shift manager is already included)? (separate the names by comma): ");
                     String neededRoles = scanner.nextLine();
                     String[] separatedNeededRoles = neededRoles.split(",");
 
                     for (String roleName : separatedNeededRoles) {
                         roleName = roleName.trim(); // מנקה רווחים מיותרים
+                        String LowerCaseroleName = roleName.toLowerCase();
                         boolean roleExists = false;
 
                         for (Role existedRole : DAO.roles) {
-                            if (existedRole.getName().equalsIgnoreCase(roleName)) {
+                            if (existedRole.getName().equalsIgnoreCase(LowerCaseroleName)) {
                                 roles.add(existedRole);
                                 roleExists = true;
+                                System.out.printf("The role: %s already exists in the system.%n", roleName);
                                 break;
                             }
                         }
@@ -241,12 +250,8 @@ public class ManagerUI {
                     }
 
                     List<ShiftAssignment> assignments = new ArrayList<>();
-                    Role shiftManager = new Role("1", "shift manager"); //make sure there is always a shift manager in a shift
-                    roles.add(shiftManager);
-                    if (!DAO.roles.contains(shiftManager)) {
-                        DAO.roles.add(shiftManager);
-                    }
-                    shiftService.createShift(id, Date, start, end, type, manager, roles, assignments);
+
+                    shiftService.createShift(id, Date, start, end, type, null, roles, assignments);
                     System.out.printf("Shift number: %s was created successfully", id);
                 }
 
@@ -291,7 +296,8 @@ public class ManagerUI {
                     String roleId = scanner.nextLine();
                     System.out.print("Enter new role name: ");
                     String roleName = scanner.nextLine();
-                    Role role = new Role(roleId, roleName);
+                    String LowerCaseroleName = roleName.toLowerCase();
+                    Role role = new Role(roleId, LowerCaseroleName);
                     DAO.roles.add(role);
                     System.out.println("New role added successfully.");
                 }
@@ -365,8 +371,13 @@ public class ManagerUI {
                         }
                     }
                 }
-
                 case "18" -> {
+                    for (Role role : DAO.roles){
+                        System.out.println("- " + role.getName());
+                    }
+                }
+
+                case "19" -> {
                     System.out.println("Logging out...");
                     new LoginForm().show();
                 }
