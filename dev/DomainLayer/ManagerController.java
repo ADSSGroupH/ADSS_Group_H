@@ -29,7 +29,9 @@ public class ManagerController {
     public void addRoleToEmployee(String employeeId, Role newRole) {
         for (Employee emp : DAO.employees) {
             if (emp.getId().equals(employeeId)) {
-                emp.getRoles().add(newRole);
+                Set<Role> curr_roles = emp.getRoles();
+                curr_roles.add(newRole);
+                emp.setRoles(curr_roles);
                 System.out.println("Role added to the employee.");
                 return;
             }
@@ -39,7 +41,7 @@ public class ManagerController {
 
     public Employee getEmployeeById(String id) {
         for (Employee emp : DAO.employees) {
-            if (emp.getId().equals(id)) {
+            if (emp.getId().trim().equals(id.trim())) {
                 return emp;
             }
         }
@@ -50,11 +52,11 @@ public class ManagerController {
         return DAO.employees;
     }
 
-    public void createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
+    public EmployeeContract createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
         Employee emp = getEmployeeById(employeeId);
         if (emp == null) {
             System.out.println("No employee found with the given ID.");
-            return;
+            return null;
         }
 
         // אם יש חוזה פעיל - לא נזרוק אותו, נארכב אותו
@@ -70,6 +72,7 @@ public class ManagerController {
 
         emp.setContract(newContract); // מעדכנים את החוזה הפעיל
         DAO.contracts.add(newContract); // שומרים את כל החוזים בארכיון כללי
+        return newContract;
     }
 
 
@@ -182,13 +185,13 @@ public class ManagerController {
         for (Role role : DAO.roles){
             if (role.getName().equalsIgnoreCase(RoleName.trim())){ //Role exists!
                 for (Employee employee : DAO.employees) {
-                   if (employee.getRoles().contains(role)){
+                    if (employee.getRoles().contains(role)){
                         result.add(employee);
                     }
                 }
 
                 if (result.isEmpty()){
-                    System.out.println("There are no workers qualified for this role");
+                    System.out.println("There are no employees qualified for this role");
                     return null;
                 }
 
