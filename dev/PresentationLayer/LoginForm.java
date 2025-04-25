@@ -143,7 +143,7 @@ public class LoginForm {
         HRManager manager = new HRManager("123456789","manager", "054-4332473", branch,roles,contract,"n",true, LocalDate.now(),"123");
         DAO.employees.add(manager);
         LoginForm loginForm = new LoginForm();
-        loginForm.loadSampleData(branch);
+        //loginForm.loadSampleData(branch);
         loginForm.show();
     }
 }
