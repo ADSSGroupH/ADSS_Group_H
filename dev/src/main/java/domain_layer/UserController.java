@@ -1,4 +1,4 @@
-package dev.domain_layer;
+package domain_layer;
 
 import java.util.ArrayList;
 import java.util.List;

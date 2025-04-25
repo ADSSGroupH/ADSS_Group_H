@@ -1,4 +1,4 @@
-package dev.domain_layer;
+package domain_layer;
 
 public class Item {
 	private int id;

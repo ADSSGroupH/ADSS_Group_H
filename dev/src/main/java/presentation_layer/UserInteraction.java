@@ -1,14 +1,19 @@
-package dev.presentation_layer;
+package presentation_layer;
 import java.util.ArrayList;
 import java.util.List;
-
-import dev.domain_layer.*;
-
 import java.util.Scanner;
 
+import domain_layer.Driver;
+import domain_layer.ItemsDocument;
+import domain_layer.Site;
+import domain_layer.Transportation;
+import domain_layer.TransportationController;
+import domain_layer.User;
+import domain_layer.UserController;
+
 public class UserInteraction {
-    private UserController userController = new UserController();              // אחראי על התחברות וניהול משתמשים
-    private TransportationController transportationController = new TransportationController(); // אחראי על כל הפעולות של משלוחים
+    private UserController userController = new UserController();              
+    private TransportationController transportationController = new TransportationController(); 
     private Scanner scanner = new Scanner(System.in);
 
     public void run() {
@@ -20,10 +25,18 @@ public class UserInteraction {
             String role = userController.getCurrentUserRole();
 
             switch (role) {
-                case "SystemManager" -> systemManagerMenu();
-                case "transportationManager" -> transportationManagerMenu();
-                case "Driver" -> driverMenu();
-                default -> System.out.println("Unknown role.");
+                case "SystemManager":
+                    systemManagerMenu();
+                    break;
+                case "transportationManager":
+                    transportationManagerMenu();
+                    break;
+                case "Driver":
+                    driverMenu();
+                    break;
+                default:
+                    System.out.println("Unknown role.");
+                    break;
             }
         }
     }
@@ -65,19 +78,19 @@ public class UserInteraction {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> addUser();
-                case 2 -> deleteUser();
-                case 3 -> {
+                case 1: addUser();
+                case 2: deleteUser();
+                case 3: {
                     System.out.println(userController.logout());
                     return;
                 }
-                case 0 -> System.exit(0);
-                default -> System.out.println("Invalid choice.");
+                case 0: System.exit(0);
+                default: System.out.println("Invalid choice.");
             }
         }
     }
 
-    // תפריט בסיסי למנהל תחבורה
+
     private void transportationManagerMenu() {
         while (true) {
             System.out.println("\n[Transportation Manager Menu]");
@@ -111,34 +124,104 @@ public class UserInteraction {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> addDriver();
-                case 2 -> addTruck();
-                case 3 -> createShipmentArea();
-                case 4 -> changeShipmentArea();
-                case 5 -> makeTransportation();
-                case 6 -> changeDate();
-                case 7 -> changeDepartureTime();
-                case 8 -> changeTruck();
-                case 9 -> changeDriver();
-                case 10 -> changeShipmentAreasID();
-                case 11 -> changeOrigin();
-                case 12 -> changeSucceeded();
-                case 13 -> addItems();
-                case 14 -> removeItems();
-                case 15 -> changeItemsDocument();
-                case 16 -> displayAllTransportations();
-                case 17 -> displayTrucks();
-                case 18 -> displayDrivers();
-                case 19 -> reportTransportationSuccess();
-                case 20 -> addSite();
-                case 21 -> removeTruck();
-                case 22 -> removeDriver();
-                case 23 -> {
-                    System.out.println(userController.logout());
-                    return;
+                case 1: {
+                    addDriver();
+                    break;
                 }
-                case 0 -> System.exit(0);
-                default -> System.out.println("Invalid choice.");
+                case 2: {
+                    addTruck();
+                    break;
+                }
+                case 3: {
+                    createShipmentArea();
+                    break;
+                }
+                case 4: 
+                    changeShipmentArea();
+                    break;
+                case 5: {
+                    makeTransportation();
+                    break;
+                } 
+                case 6: {
+                    changeDate();
+                    break;
+                }
+                case 7: {
+                    changeDepartureTime();
+                    break;
+                }
+                case 8: {
+                    changeTruck();
+                    break;
+                } 
+                case 9: {
+                    changeDriver();
+                    break;
+                }
+                case 10: {
+                    changeShipmentAreasID();
+                    break;
+                }
+                case 11: {
+                    changeOrigin();
+                    break;
+                }
+
+                case 12:{
+                     changeSucceeded();
+                    break;
+                }
+                case 13:{ 
+                    addItems();
+                    break;
+                }
+                case 14:{
+                    removeItems();
+                    break;
+                }
+                case 15: {
+                    changeItemsDocument();
+                    break;
+                }
+                case 16:{
+                    displayAllTransportations();
+                    break;
+                }
+                case 17: {
+                    displayTrucks();
+                    break;
+                }
+                case 18: {
+                    displayDrivers();
+                    break;
+                }
+                case 19: {
+                    reportTransportationSuccess();
+                    break;
+                }
+                case 20: {
+                    addSite();
+                    break;
+                }
+                case 21: {
+                    removeTruck();
+                    break;
+                }
+                case 22: {
+                    removeDriver();
+                    break;
+                }
+                case 23:{
+                    System.out.println(userController.logout());
+                    break;
+                }
+                case 0: {
+                    System.exit(0);
+                }
+                default: {
+                    System.out.println("Invalid choice.");
+                }
             }
         }
     }
@@ -146,7 +229,7 @@ public class UserInteraction {
 
 
 
-    // תפריט בסיסי לנהג
+
     private void driverMenu() {
         while (true) {
             System.out.println("\n[Driver Menu]");
@@ -161,15 +244,15 @@ public class UserInteraction {
             scanner.nextLine();
 
             switch (choice) {
-                case 1 -> reportAccident();
-                case 2 -> displayTransportationDocument();
-                case 3 -> displayItemsList();
-                case 4 -> {
+                case 1: reportAccident();
+                case 2: displayTransportationDocument();
+                case 3: displayItemsList();
+                case 4: {
                     System.out.println(userController.logout());
                     return;
                 }
-                case 0 -> System.exit(0);
-                default -> System.out.println("Invalid choice.");
+                case 0: System.exit(0);
+                default: System.out.println("Invalid choice.");
             }
         }
     }
@@ -193,6 +276,10 @@ public class UserInteraction {
             User.Role role = User.Role.valueOf(roleStr);
             String result = userController.addUser(username, password, role);
             System.out.println(result);
+            if (role.equals(User.Role.Driver)) {
+                Driver.LicenseType licenseType = Driver.LicenseType.valueOf(scanner.nextLine());
+                transportationController.addDriver(username, licenseType);
+            }
             break;
         }
     }
@@ -204,18 +291,20 @@ public class UserInteraction {
         System.out.println(result);
     }
     private void addDriver() {
-        System.out.print("Enter driver ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine(); // consume newline
-
         System.out.print("Enter driver name: ");
         String name = scanner.nextLine();
+
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
+
 
         System.out.print("Enter license type (A/B/C/D/E): ");
         String license = scanner.nextLine();
 
         Driver.LicenseType licenseType = Driver.LicenseType.valueOf(license);
-        String result = transportationController.addDriver(id, name, licenseType);
+        String result = transportationController.addDriver(name, licenseType);
+
+        userController.addUser(name, password, User.Role.Driver);
         System.out.println(result);
     }
 
@@ -292,8 +381,8 @@ public class UserInteraction {
         System.out.print("Enter truck plate number: ");
         String truckPlate = scanner.nextLine();
 
-        System.out.print("Enter driver ID: ");
-        int driverId = scanner.nextInt();
+        System.out.print("Enter driver Name: ");
+        String driverId = scanner.nextLine();
         scanner.nextLine();
 
         System.out.print("Enter origin site name: ");
@@ -350,11 +439,11 @@ public class UserInteraction {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        System.out.print("Enter new driver ID: ");
-        int driverId = scanner.nextInt();
+        System.out.print("Enter new driver name: ");
+        String driverName = scanner.nextLine();
         scanner.nextLine();
 
-        System.out.println(transportationController.changeDriverID(id, driverId));
+        System.out.println(transportationController.changeDriverName(id, driverName));
     }
 
     private void displayAllTransportations() {
@@ -374,7 +463,7 @@ public class UserInteraction {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        // אין קלט למסמכים כי לא בנינו ממשק לפריטים עדיין
+
         List<ItemsDocument> itemsToAdd = new ArrayList<>();
         System.out.println("[Simulation] Empty ItemsDocument list added.");
 
@@ -531,13 +620,13 @@ public class UserInteraction {
     }
 
     private void removeDriver() {
-        System.out.print("Enter driver ID to remove: ");
-        int id = scanner.nextInt();
+        System.out.print("Enter driver name to remove: ");
+        String name = scanner.nextLine();
         scanner.nextLine();
-        System.out.println(transportationController.removeDriver(id));
+        System.out.println(transportationController.removeDriver(name));
     }
     public static void main(String[] args) {
-        UserInteraction ui = new UserInteraction(); // יוצרים מופע של הממשק
+        UserInteraction ui = new UserInteraction(); 
         ui.run();
     }
 }

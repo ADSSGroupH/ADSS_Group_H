@@ -1,6 +1,6 @@
-package dev.domain_layer;
+package domain_layer;
 
-import dev.domain_layer.Driver.LicenseType;
+import domain_layer.Driver.LicenseType;
 
 public class Truck {
     private String plateNumber;

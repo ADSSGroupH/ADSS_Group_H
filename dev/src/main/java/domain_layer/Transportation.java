@@ -1,4 +1,4 @@
-package dev.domain_layer;
+package domain_layer;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ public class Transportation {
     private String date;
     private String departureTime;
     private String truckPlateNumber;
-    private int driverID;
+    private String driverName;
     private boolean succeeded;
     private List<ItemsDocument> itemsDocument; 
     private List<Integer> shipmentAreasID;
@@ -15,14 +15,14 @@ public class Transportation {
     private String accident;
 
     public Transportation(int id, String date, String departureTime,
-                          String truckPlateNumber, int driverID,
+                          String truckPlateNumber, String driverName,
                           List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID,
                           Site origin) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
         this.truckPlateNumber = truckPlateNumber;
-        this.driverID = driverID;
+        this.driverName = driverName;
         this.succeeded = false;
         this.itemsDocument = itemsDocument;
         this.shipmentAreasID = shipmentAreasID;
@@ -41,8 +41,8 @@ public class Transportation {
         this.truckPlateNumber = newPlate;
     }
 
-    public void setDriverID(int newDriverID) {
-        this.driverID = newDriverID;
+    public void setDriverName(String newDriverName) {
+        this.driverName = newDriverName;
     }
 
     public void setSucceeded(boolean newSucceeded) {
@@ -76,8 +76,8 @@ public class Transportation {
         return departureTime;
     }
 
-    public int getDriverID() {
-        return driverID;
+    public String getDriverName() {
+        return driverName;
     }
     public boolean isSucceeded() {
         return succeeded;
@@ -103,7 +103,7 @@ public class Transportation {
         sb.append("Date: ").append(date).append("\n");
         sb.append("Departure Time: ").append(departureTime).append("\n");
         sb.append("Truck Plate Number: ").append(truckPlateNumber).append("\n");
-        sb.append("Driver ID: ").append(driverID).append("\n");
+        sb.append("Driver name: ").append(driverName).append("\n");
         sb.append("Accident Report: ").append(accident).append("\n");
         sb.append("Origin: ").append(origin.getName()).append("\n");
         sb.append("Items Document:\n");
