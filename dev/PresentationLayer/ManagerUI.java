@@ -226,7 +226,7 @@ public class ManagerUI {
                         roleName = roleName.trim(); // מנקה רווחים מיותרים
                         String LowerCaseroleName = roleName.toLowerCase();
                         if (roleName.equals("shift manager")) {
-                            System.out.print("shift manager is already included");
+                            System.out.print("shift manager is already included\n");
                             continue;
                         }
                         boolean roleExists = false;
