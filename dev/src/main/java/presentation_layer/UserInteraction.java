@@ -496,7 +496,7 @@ public class UserInteraction {
         boolean done = false;
         List<Item> items = new ArrayList<>(); // Placeholder for actual item list
         while (!done) {
-            System.out.println("Enter item id: ");
+            System.out.print("Enter item id: ");
             int itemId = scanner.nextInt();
             System.out.print("Enter item name: ");
             String name = scanner.nextLine();
