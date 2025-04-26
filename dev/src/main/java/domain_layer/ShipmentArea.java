@@ -41,6 +41,15 @@ public class ShipmentArea {
         this.sites.remove(site);
     }
 
+    public Site getSiteByName(String name) {
+        for (Site site : sites) {
+            if (site.getName().equals(name)) {
+                return site;
+            }
+        }
+        return null;
+    }
+
     
     
 }

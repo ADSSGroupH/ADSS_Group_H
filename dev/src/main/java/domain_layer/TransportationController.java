@@ -265,23 +265,27 @@ public class TransportationController {
         return totalWeight;
     }
 
-    public String removeItems(int id, List<ItemsDocument> itemsToRemove) {
-        Transportation t = findTransportationById(id);
+    public String removeItems(int transportationId, int itemsDocumentId) {
+        Transportation t = findTransportationById(transportationId);
         if (t != null) {
+            ItemsDocument itemsToRemove = t.getItemsDocumentById(itemsDocumentId);
+            if (itemsToRemove == null) {
+                return "Items document with ID " + itemsDocumentId + " not found in transportation ID " + transportationId;
+            }
             List<ItemsDocument> itemsDocument = t.getItemsDocument();
-            itemsDocument.removeAll(itemsToRemove);
+            itemsDocument.remove(itemsToRemove);
             t.setItemsDocument(itemsDocument);
-            return "Items removed from transportation ID " + id;
+            return "Items removed from transportation ID " + transportationId;
         } else {
-            return "Transportation with ID " + id + " not found.";
+            return "Transportation with ID " + transportationId + " not found.";
         }
     }
 
-    public String addItems(int id, List<ItemsDocument> itemsToAdd) {
+    public String addItems(int id, ItemsDocument itemsToAdd) {
         Transportation t = findTransportationById(id);
         if (t != null) {
             List<ItemsDocument> itemsDocument = t.getItemsDocument();
-            itemsDocument.addAll(itemsToAdd);
+            itemsDocument.add(itemsToAdd);
             // Check if the items weight is less than the truck's max weight
             if (calculateItemsWeight(itemsDocument) > truckMap.get(t.getTruckPlateNumber()).getMaxWeight()) {
                 return "Items weight exceeds the truck's maximum weight.";
@@ -347,7 +351,7 @@ public class TransportationController {
         }
 
         area.addSite(site);
-        return "Site added with Name: " + name + ", Address: " + address;
+        return "Site added with Name: " + name;
     }
 
 
@@ -388,6 +392,14 @@ public class TransportationController {
             return "Driver with username " + username + " removed.";
         } else {
             return "Driver with username " + username + " not found.";
+        }
+    }
+    public ShipmentArea findShipmentAreaById(int id) {
+        ShipmentArea shipmentArea = shipmentAreaMap.get(id);
+        if (shipmentArea != null) {
+            return shipmentArea;
+        } else {
+            return null;
         }
     }
 }

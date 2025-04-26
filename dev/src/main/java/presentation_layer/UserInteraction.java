@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import domain_layer.Driver;
+import domain_layer.Item;
 import domain_layer.ItemsDocument;
 import domain_layer.Site;
 import domain_layer.Transportation;
@@ -66,7 +67,8 @@ public class UserInteraction {
 
 
     private void systemManagerMenu() {
-        while (true) {
+        boolean loggedIn = true;
+        while (loggedIn) {
             System.out.println("\n[System Manager Menu]");
             System.out.println("1. Add user");
             System.out.println("2. Delete user");
@@ -78,13 +80,23 @@ public class UserInteraction {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: addUser();
-                case 2: deleteUser();
+                case 1: {
+                    addUser();
+                    break;
+                }
+                case 2: {
+                    deleteUser();
+                    break;
+                }
                 case 3: {
                     System.out.println(userController.logout());
-                    return;
+                    loggedIn = false;
+                    break;
                 }
-                case 0: System.exit(0);
+                case 0:{
+                    System.exit(0);
+                    break;
+                } 
                 default: System.out.println("Invalid choice.");
             }
         }
@@ -92,7 +104,8 @@ public class UserInteraction {
 
 
     private void transportationManagerMenu() {
-        while (true) {
+        boolean loggedIn = true;
+        while (loggedIn) {
             System.out.println("\n[Transportation Manager Menu]");
             System.out.println("1. Add driver");
             System.out.println("2. Add truck");
@@ -108,7 +121,7 @@ public class UserInteraction {
             System.out.println("12. Change succeeded status");
             System.out.println("13. Add items");
             System.out.println("14. Remove items");
-            System.out.println("15. Change items document");
+            System.out.println("15. Display transportation document");
             System.out.println("16. Display all transportations");
             System.out.println("17. Display all trucks");
             System.out.println("18. Display all drivers");
@@ -180,8 +193,8 @@ public class UserInteraction {
                     removeItems();
                     break;
                 }
-                case 15: {
-                    changeItemsDocument();
+                case 15:{
+                    displayTransportationDocument();
                     break;
                 }
                 case 16:{
@@ -214,13 +227,16 @@ public class UserInteraction {
                 }
                 case 23:{
                     System.out.println(userController.logout());
+                    loggedIn = false;
                     break;
                 }
                 case 0: {
                     System.exit(0);
+                    break;
                 }
                 default: {
                     System.out.println("Invalid choice.");
+                    break;
                 }
             }
         }
@@ -231,6 +247,7 @@ public class UserInteraction {
 
 
     private void driverMenu() {
+        boolean loggedIn = true;
         while (true) {
             System.out.println("\n[Driver Menu]");
             System.out.println("1. Report accident");
@@ -244,15 +261,23 @@ public class UserInteraction {
             scanner.nextLine();
 
             switch (choice) {
-                case 1: reportAccident();
-                case 2: displayTransportationDocument();
-                case 3: displayItemsList();
-                case 4: {
+                case 1:
+                    reportAccident();
+                    break;
+                case 2:
+                    displayTransportationDocument();
+                    break;
+                case 3:
+                    displayItemsList();
+                    break;
+                case 4:
                     System.out.println(userController.logout());
+                    loggedIn = false;
                     return;
-                }
-                case 0: System.exit(0);
-                default: System.out.println("Invalid choice.");
+                case 0:
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice.");
             }
         }
     }
@@ -382,33 +407,25 @@ public class UserInteraction {
         String truckPlate = scanner.nextLine();
 
         System.out.print("Enter driver Name: ");
-        String driverId = scanner.nextLine();
-        scanner.nextLine();
+        String driverName = scanner.nextLine();
 
         System.out.print("Enter origin site name: ");
         String siteName = scanner.nextLine();
 
-        System.out.print("Enter origin site address: ");
-        String address = scanner.nextLine();
-
-        System.out.print("Enter origin site phone: ");
-        String phone = scanner.nextLine();
-
-        System.out.print("Enter origin site contact name: ");
-        String contact = scanner.nextLine();
-
         System.out.print("Enter origin site shipment area ID: ");
         int areaId = scanner.nextInt();
-        scanner.nextLine();
 
-        Site origin = new Site(siteName, address, phone, contact, areaId);
-
+        Site origin = transportationController.findShipmentAreaById(areaId).getSiteByName(siteName);
+        if (origin == null) {
+            System.out.println("Site not found.");
+            return;
+        } 
         // empty lists to allow basic creation without item logic yet
         List<ItemsDocument> itemsDocs = new ArrayList<>();
         List<Integer> shipmentAreas = new ArrayList<>();
         shipmentAreas.add(areaId);
 
-        String result = transportationController.makeTransportation(id, date, departureTime, truckPlate, driverId, itemsDocs, shipmentAreas, origin);
+        String result = transportationController.makeTransportation(id, date, departureTime, truckPlate, driverName, itemsDocs, shipmentAreas, origin);
         System.out.println(result);
     }
 
@@ -461,14 +478,50 @@ public class UserInteraction {
     private void addItems() {
         System.out.print("Enter transportation ID: ");
         int id = scanner.nextInt();
-        scanner.nextLine();
 
+        System.out.print("Enter ItemsDocument ID: ");
+        int itemsDocumentId = scanner.nextInt();
 
-        List<ItemsDocument> itemsToAdd = new ArrayList<>();
-        System.out.println("[Simulation] Empty ItemsDocument list added.");
+        System.out.print("Enter destination site name: ");
+        String siteName = scanner.nextLine();
 
-        String result = transportationController.addItems(id, itemsToAdd);
+        System.out.print("Enter destination site shipment area ID: ");
+        int areaId = scanner.nextInt();
+
+        Site destination = transportationController.findShipmentAreaById(areaId).getSiteByName(siteName);
+        if (destination == null) {
+            System.out.println("Site not found.");
+            return;
+        } 
+        boolean done = false;
+        List<Item> items = new ArrayList<>(); // Placeholder for actual item list
+        while (!done) {
+            System.out.println("Enter item id: ");
+            int itemId = scanner.nextInt();
+            System.out.print("Enter item name: ");
+            String name = scanner.nextLine();
+
+            System.out.print("Enter item quantity: ");
+            int quantity = scanner.nextInt();
+
+            System.out.print("Enter item weight: ");
+            int weight = scanner.nextInt();
+            Item item = new Item(itemId, name, weight, quantity); // ID is set to 0 for simplicity
+            items.add(item);
+            System.out.print("Done? (yes/no): ");
+            String doneInput = scanner.nextLine();
+            if (doneInput.equals("yes")) {
+                done = true;
+            }
+        }
+        ItemsDocument itemsDocument = new ItemsDocument(itemsDocumentId, destination, items); // Placeholder for actual ItemsDocument creation
+        // Add logic to create and add items to the document
+
+        System.out.println(transportationController.addItems(id, itemsDocument));        
+
+        String result = transportationController.addItems(id, itemsDocument);
         System.out.println(result);
+    
     }
 
     private void removeItems() {
@@ -476,29 +529,15 @@ public class UserInteraction {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        List<ItemsDocument> itemsToRemove = new ArrayList<>();
-        System.out.println("[Simulation] Empty ItemsDocument list removed.");
-
-        String result = transportationController.removeItems(id, itemsToRemove);
-        System.out.println(result);
-    }
-
-    private void changeItemsDocument() {
-        System.out.print("Enter transportation ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-
-        List<ItemsDocument> newDocs = new ArrayList<>();
-        System.out.println("[Simulation] Replaced with empty ItemsDocument list.");
-
-        String result = transportationController.changeItemsDocument(id, newDocs);
+        System.out.print("Enter ItemsDocument ID: ");
+        int itemsDocumentId = scanner.nextInt();
+        String result = transportationController.removeItems(id, itemsDocumentId);
         System.out.println(result);
     }
 
     private void changeOrigin() {
         System.out.print("Enter transportation ID: ");
         int id = scanner.nextInt();
-        scanner.nextLine();
 
         System.out.print("Enter new origin site name: ");
         String name = scanner.nextLine();
@@ -544,7 +583,7 @@ public class UserInteraction {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        Transportation t = transportationController.findTransportationById(id); // נדרשת חשיפה של הפונקציה
+        Transportation t = transportationController.findTransportationById(id); 
         if (t != null) {
             String result = transportationController.displayItemsList(t);
             System.out.println(result);

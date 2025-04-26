@@ -4,10 +4,12 @@ import java.util.List;
 
 public class ItemsDocument {
     
+    private int id;
     private Site destination;
     private List<Item> items;
 
-    public ItemsDocument(Site destination, List<Item> items) {
+    public ItemsDocument(int id, Site destination, List<Item> items) {
+        this.id = id;
         this.destination = destination;
         this.items = items;
     }
@@ -19,6 +21,19 @@ public class ItemsDocument {
     public List<Item> getItems() {
         return items;
     }    
+
+    public void setDestination(Site destination) {
+        this.destination = destination;
+    }
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String display() {
         StringBuilder sb = new StringBuilder();

@@ -9,7 +9,9 @@ public class UserController {
     
     public UserController() {
         // Initialize with some users
-        users.add(new User( "Tal","123", User.Role.SystemManager));
+        users.add(new User( "Admin","123", User.Role.SystemManager));
+        users.add(new User( "Manager","123", User.Role.transportationManager));
+        users.add(new User( "Driver","123", User.Role.Driver));
     }
     public String addUser(String userName, String password, User.Role role) {
         for (User user : users) {
@@ -58,6 +60,12 @@ public class UserController {
         return currentUser.getRole().toString();
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+    public List<User> getUsers() {
+        return users;
+    }
     
     
 }

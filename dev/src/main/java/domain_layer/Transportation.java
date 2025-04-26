@@ -113,6 +113,21 @@ public class Transportation {
         return sb.toString();
     }
 
+    public ItemsDocument getItemsDocumentById(int id) {
+        for (ItemsDocument doc : itemsDocument) {
+            if (doc.getId() == id) {
+                return doc;
+            }
+        }
+        return null;
+    }
+    public void addItemsDocument(ItemsDocument doc) {
+        this.itemsDocument.add(doc);
+    }
+    public void removeItemsDocument(ItemsDocument doc) {
+        this.itemsDocument.remove(doc);
+    }
+
 
 
     
