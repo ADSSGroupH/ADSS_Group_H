@@ -481,10 +481,11 @@ public class UserInteraction {
 
         System.out.print("Enter ItemsDocument ID: ");
         int itemsDocumentId = scanner.nextInt();
+        scanner.nextLine(); 
 
         System.out.print("Enter destination site name: ");
         String siteName = scanner.nextLine();
-        scanner.nextLine(); 
+
 
         System.out.print("Enter destination site shipment area ID: ");
         int areaId = scanner.nextInt();
@@ -499,6 +500,7 @@ public class UserInteraction {
         while (!done) {
             System.out.print("Enter item id: ");
             int itemId = scanner.nextInt();
+            scanner.nextLine(); 
             System.out.print("Enter item name: ");
             String name = scanner.nextLine();
 
@@ -510,16 +512,15 @@ public class UserInteraction {
             Item item = new Item(itemId, name, weight, quantity); // ID is set to 0 for simplicity
             items.add(item);
             System.out.print("Done? (yes/no): ");
-            String doneInput = scanner.nextLine();
             scanner.nextLine();
+            String doneInput = scanner.nextLine();
+
             if (doneInput.equals("yes")) {
                 done = true;
             }
         }
         ItemsDocument itemsDocument = new ItemsDocument(itemsDocumentId, destination, items); // Placeholder for actual ItemsDocument creation
-        // Add logic to create and add items to the document
-
-        System.out.println(transportationController.addItems(id, itemsDocument));        
+        // Add logic to create and add items to the document        
 
         String result = transportationController.addItems(id, itemsDocument);
         System.out.println(result);
@@ -663,7 +664,6 @@ public class UserInteraction {
     private void removeDriver() {
         System.out.print("Enter driver name to remove: ");
         String name = scanner.nextLine();
-        scanner.nextLine();
         System.out.println(transportationController.removeDriver(name));
     }
     public static void main(String[] args) {

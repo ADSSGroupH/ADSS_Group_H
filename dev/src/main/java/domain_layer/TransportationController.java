@@ -226,7 +226,7 @@ public class TransportationController {
         Driver driver = new Driver(name, licenseType);
         // Check if the driver already exists
         if (driverMap.containsKey(name)) {
-            return "Driver with ID " + name + " already exists.";
+            return "Driver with name " + name + " already exists.";
         }
         driverMap.put(name, driver);
         return "Driver added with Name: " + name + ", License Type: " + licenseType;

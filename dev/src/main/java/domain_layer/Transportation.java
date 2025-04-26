@@ -106,7 +106,6 @@ public class Transportation {
         sb.append("Driver name: ").append(driverName).append("\n");
         sb.append("Accident Report: ").append(accident).append("\n");
         sb.append("Origin: ").append(origin.getName()).append("\n");
-        sb.append("Items Document:\n");
         for (ItemsDocument doc : itemsDocument) {
             sb.append(doc.display()).append("\n");
         }
