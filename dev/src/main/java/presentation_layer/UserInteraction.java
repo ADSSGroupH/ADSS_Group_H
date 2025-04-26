@@ -484,6 +484,7 @@ public class UserInteraction {
 
         System.out.print("Enter destination site name: ");
         String siteName = scanner.nextLine();
+        scanner.nextLine(); 
 
         System.out.print("Enter destination site shipment area ID: ");
         int areaId = scanner.nextInt();
@@ -510,6 +511,7 @@ public class UserInteraction {
             items.add(item);
             System.out.print("Done? (yes/no): ");
             String doneInput = scanner.nextLine();
+            scanner.nextLine();
             if (doneInput.equals("yes")) {
                 done = true;
             }

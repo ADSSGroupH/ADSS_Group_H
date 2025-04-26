@@ -10,7 +10,6 @@ public class UserController {
     public UserController() {
         // Initialize with some users
         users.add(new User( "Admin","123", User.Role.SystemManager));
-        users.add(new User( "Manager","123", User.Role.transportationManager));
     }
     public String addUser(String userName, String password, User.Role role) {
         for (User user : users) {
