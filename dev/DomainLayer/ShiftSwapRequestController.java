@@ -86,17 +86,12 @@ public class ShiftSwapRequestController {
         Shift toShift = request.getToShift();
 
         ShiftAssignment fromAssignment = null;
-        ShiftAssignment toAssignment = null;
 
-        // מחפשים את השיבוצים הנוכחיים
         for (ShiftAssignment assignment : DAO.assignments) {
-            if (assignment.getShift().getId().equals(fromShift.getId()) &&
+            if (assignment.getShift().equals(fromShift) &&
                     assignment.getEmployee().getId().equals(requester.getId())) {
                 fromAssignment = assignment;
-            }
-
-            if (assignment.getShift().getId().equals(toShift.getId())) {
-                toAssignment = assignment;
+                break;
             }
         }
 
@@ -105,19 +100,54 @@ public class ShiftSwapRequestController {
             return false;
         }
 
-        // מחליפים בין העובדים
-        if (toAssignment != null) {
-            // שני העובדים קיימים – מבצעים החלפה
-            Employee otherEmployee = toAssignment.getEmployee();
+        Role targetRole = fromAssignment.getRole();
 
-            fromAssignment.setEmployee(otherEmployee);
+        // בדיקה שהעובד כשיר לתפקיד
+        boolean requesterQualified = requester.getRoles().stream()
+                .anyMatch(role -> role.getId().equals(targetRole.getId()));
+
+        if (!requesterQualified) {
+            System.out.printf("Cannot approve request: %s is not qualified for the role \"%s\" in the new shift.%n",
+                    requester.getName(), targetRole.getName());
+            return false;
+        }
+
+        // נבדוק אם יש שיבוץ קיים בתפקיד הזה במשמרת החדשה
+        ShiftAssignment toAssignment = null;
+
+        for (ShiftAssignment assignment : DAO.assignments) {
+            if (assignment.getShift().equals(toShift) &&
+                    assignment.getRole().getId().equals(targetRole.getId())) {
+                toAssignment = assignment;
+                break;
+            }
+        }
+
+        if (toAssignment != null) {
+            // החלפה מול עובד אחר
+            Employee other = toAssignment.getEmployee();
+
+            // בדיקה שגם הוא כשיר לתפקיד המקורי של מבקש ההחלפה
+            boolean otherQualified = other.getRoles().stream()
+                    .anyMatch(role -> role.getId().equals(targetRole.getId()));
+
+            if (!otherQualified) {
+                System.out.printf("Cannot swap: %s is not qualified for role \"%s\".%n",
+                        other.getName(), targetRole.getName());
+                return false;
+            }
+
+            fromAssignment.setEmployee(other);
             toAssignment.setEmployee(requester);
         } else {
-            // רק מבקש הבקשה קיים – הוא עובר למשמרת החדשה
+            // אין שיבוץ בתפקיד – פשוט מעבירים את השיבוץ של המבקש
             fromAssignment.setShift(toShift);
+            fromShift.getAssignments().remove(fromAssignment);
+            toShift.getAssignments().add(fromAssignment);
         }
 
         System.out.println("Shift swap applied successfully.");
         return true;
     }
+
 }
