@@ -56,23 +56,86 @@ public class EmployeeUI {
                 }
 
                 case "4" -> {
-                    System.out.print("Enter ID of shift to swap FROM: ");
-                    String fromId = scanner.nextLine();
-                    System.out.print("Enter ID of shift to swap TO: ");
-                    String toId = scanner.nextLine();
+                    try {
+                        List<ShiftAssignment> myAssignments = DAO.assignments.stream()
+                                .filter(a -> a.getEmployee().getId().equals(employee.getId()))
+                                .filter(a -> {
+                                    LocalDate date = a.getShift().getDate();
+                                    LocalDate start = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
+                                    LocalDate end = start.plusDays(6);
+                                    return !date.isBefore(start) && !date.isAfter(end);
+                                })
+                                .toList();
 
-                    Shift fromShift = shiftService.getShiftById(fromId);
-                    Shift toShift = shiftService.getShiftById(toId);
+                        if (myAssignments.isEmpty()) {
+                            System.out.println("You have no assigned shifts for this week.");
+                            break;
+                        }
 
-                    if (fromShift == null || toShift == null) {
-                        System.out.println("One or both shifts not found.");
-                        break;
+                        System.out.println("Your assigned shifts this week:");
+                        for (int i = 0; i < myAssignments.size(); i++) {
+                            Shift s = myAssignments.get(i).getShift();
+                            Role r = myAssignments.get(i).getRole();
+                            System.out.printf("%d. %s | %s | Role: %s\n", i + 1, s.getDate(), s.getType(), r.getName());
+                        }
+
+                        System.out.print("Select shift number to swap FROM: ");
+                        int choice = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                        if (choice < 0 || choice >= myAssignments.size()) {
+                            System.out.println("Invalid choice.");
+                            break;
+                        }
+
+                        Shift fromShift = myAssignments.get(choice).getShift();
+                        Role myRole = myAssignments.get(choice).getRole();
+
+                        // מצא את כל המשמרות השבועיות שדורשות את אותו תפקיד
+                        LocalDate weekStart = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
+                        LocalDate weekEnd = weekStart.plusDays(6);
+
+                        List<Shift> compatibleShifts = DAO.shifts.stream()
+                                .filter(s -> s.getDate().compareTo(weekStart) >= 0 && s.getDate().compareTo(weekEnd) <= 0)
+                                .filter(s -> s.getRequiredRoles().stream()
+                                        .anyMatch(r -> r.getId().equals(myRole.getId())))
+                                .filter(s -> !s.equals(fromShift))  // לא ניתן להחליף לאותה משמרת
+                                .filter(s -> s.getAssignments().stream()
+                                        .noneMatch(a -> a.getEmployee().getId().equals(employee.getId()))) // ❗️לא משובץ שם כבר
+                                .toList();
+
+                        if (compatibleShifts.isEmpty()) {
+                            System.out.println("No available shifts this week with the same role.");
+                            break;
+                        }
+
+                        System.out.println("Available shifts with role '" + myRole.getName() + "':");
+                        for (int i = 0; i < compatibleShifts.size(); i++) {
+                            Shift s = compatibleShifts.get(i);
+                            System.out.printf("%d. %s | %s\n", i + 1, s.getDate(), s.getType());
+                        }
+
+                        System.out.print("Select shift number to swap TO: ");
+                        int toChoice = Integer.parseInt(scanner.nextLine().trim()) - 1;
+                        if (toChoice < 0 || toChoice >= compatibleShifts.size()) {
+                            System.out.println("Invalid choice.");
+                            break;
+                        }
+
+                        Shift toShift = compatibleShifts.get(toChoice);
+
+                        String requestId = String.valueOf(DAO.swapRequests.size() + 1);
+                        ShiftSwapRequest request = new ShiftSwapRequestController().createRequest(
+                                requestId,
+                                employee,
+                                fromShift,
+                                toShift,
+                                LocalDate.now()
+                        );
+
+                        System.out.println("Swap request submitted.");
+
+                    } catch (Exception e) {
+                        System.out.println("Something went wrong: " + e.getMessage());
                     }
-
-                    String requestId = UUID.randomUUID().toString();
-                    LocalDate date = LocalDate.now();
-                    ShiftSwapRequest request = swapService.createRequest(requestId, employee, fromShift, toShift, date);
-                    System.out.println("Swap request submitted with ID: " + request.getId());
                 }
 
                 case "5" -> printEmployeeDetails();
