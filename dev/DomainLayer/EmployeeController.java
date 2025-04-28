@@ -23,7 +23,7 @@ public class EmployeeController {
 
     // מגיש בקשת החלפת משמרת
     public ShiftSwapRequest submitSwapRequest(Employee requester, Shift fromShift, Shift toShift) {
-        String requestId = UUID.randomUUID().toString();
+        String requestId = String.valueOf(DAO.swapRequests.size() + 1);
         LocalDate date = LocalDate.now(); //the date of the *creation* of the swap request.
         ShiftSwapRequestController service = new ShiftSwapRequestController();
         return service.createRequest(requestId, requester, fromShift, toShift, date);
@@ -34,59 +34,82 @@ public class EmployeeController {
         try {
             ShiftController shiftService = new ShiftController();
 
-            // קבע את היום הנוכחי
             LocalDate today = LocalDate.now();
             DayOfWeek todayDay = today.getDayOfWeek();
-
-            // אם היום שישי או שבת - ההעדפות הן לשבוע שאחר לשבוע הבא
             int weeksToAdd = (todayDay.getValue() > DayOfWeek.THURSDAY.getValue() || (todayDay == DayOfWeek.THURSDAY && LocalTime.now().getHour() >= 16)) ? 2 : 1;
 
-
-            // חשב את יום ראשון של השבוע הרצוי
             LocalDate targetWeekStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusWeeks(weeksToAdd - 1);
-            LocalDate targetWeekEnd = targetWeekStart.plusDays(6); // שבת
+            LocalDate targetWeekEnd = targetWeekStart.plusDays(6);
 
-            // שלוף את כל המשמרות בטווח הרצוי
             List<Shift> allShifts = shiftService.getShiftsBetween(targetWeekStart, targetWeekEnd);
-
-            Scanner scanner = new Scanner(System.in);
-            List<Shift> selectedShifts = new ArrayList<>();
-
-            System.out.println("Available Shifts for the week: " + targetWeekStart + " to " + targetWeekEnd);
-            for (Shift shift : allShifts) {
-                try {
-                    // בדיקה שהפורמט של התאריך חוקי אם הוא מגיע כמחרוזת
-                    LocalDate parsedDate = LocalDate.parse(shift.getDate().toString()); // רק אם shift.getDate() הוא String
-                    System.out.println("ID: " + shift.getId() + ", Date: " + shift.getDate() + ", Type: " + shift.getType());
-                } catch (DateTimeParseException e) {
-                    System.out.printf("Skipping shift with invalid date: ID=%s, Date=%s%n", shift.getId(), shift.getDate());
-                }
+            Employee employee = new ManagerController().getEmployeeById(employeeId);
+            if (employee == null) {
+                System.out.println("Employee not found.");
+                return;
             }
 
-            System.out.println("Enter the IDs of the shifts you want to select (separated by commas):");
-            String input = scanner.nextLine();
-            String[] shiftIds = input.split(",");
-
-            for (String id : shiftIds) {
-                String trimmedId = id.trim();
-                for (Shift shift : allShifts) {
-                    if (shift.getId().equals(trimmedId)) {
-                        selectedShifts.add(shift);
+            // סינון משמרות שרלוונטיות לפי תפקידים של העובד
+            List<Shift> eligibleShifts = new ArrayList<>();
+            for (Shift shift : allShifts) {
+                for (Role role : shift.getRequiredRoles()) {
+                    if (employee.getRoles().stream().anyMatch(r -> r.getId().equals(role.getId()))) {
+                        eligibleShifts.add(shift);
                         break;
                     }
                 }
             }
 
-            // שמור את הבחירה של העובד
-            DAO.WeeklyPreferneces.put(employeeId, selectedShifts);
+            if (eligibleShifts.isEmpty()) {
+                System.out.println("No eligible shifts available for you this week.");
+                return;
+            }
 
-        } catch (DateTimeParseException e) {
-            System.out.println("Error: One of the dates is in an invalid format. Please check your data (format should be yyyy-MM-dd).");
+            Scanner scanner = new Scanner(System.in);
+            List<Shift> selectedShifts = new ArrayList<>();
+
+            if (allShifts.isEmpty()) {
+                System.out.println("No shifts available for the selected week.");
+                return;
+            }
+
+            System.out.println("Available Shifts for the week: " + targetWeekStart + " to " + targetWeekEnd);
+
+            int index = 1;
+            for (Shift shift : allShifts) {
+                System.out.println(index + ". Date: " + shift.getDate() + ", Type: " + shift.getType() + " (ID: " + shift.getId() + ")");
+                index++;
+            }
+
+            System.out.println("Enter the numbers of the shifts you want to select (separated by commas):");
+            String input = scanner.nextLine();
+            String[] shiftNumbers = input.split(",");
+
+            for (String numStr : shiftNumbers) {
+                try {
+                    int num = Integer.parseInt(numStr.trim());
+                    if (num >= 1 && num <= allShifts.size()) {
+                        selectedShifts.add(allShifts.get(num - 1)); // נבחר לפי מספר
+                    } else {
+                        System.out.println("Invalid number: " + num);
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input: " + numStr);
+                }
+            }
+
+            if (selectedShifts.isEmpty()) {
+                System.out.println("No valid shifts selected.");
+            } else {
+                DAO.WeeklyPreferneces.put(employeeId, selectedShifts);
+                System.out.println("Shift preferences submitted successfully!");
+            }
+
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
 
 }
