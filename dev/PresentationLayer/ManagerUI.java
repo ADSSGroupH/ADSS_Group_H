@@ -43,10 +43,33 @@ public class ManagerUI {
                     List<Employee> employees = managerService.getAllEmployees();
                     for (Employee e : employees) {
                         if (Objects.equals(e.getBranch().getId(), LoggedInManager.getBranch().getId())) {
-                            System.out.println("- ID: " + e.getId() + ", Name: " + e.getName());
+                            System.out.println("ID: " + e.getId());
+                            System.out.println("Name: " + e.getName());
+                            System.out.println("Phone Number: " + e.getPhoneNumber());
+                            System.out.println("Password: " + e.getPassword());
+                            System.out.print("Roles: ");
+                            if (e.getRoles() == null || e.getRoles().isEmpty()) {
+                                System.out.println("None");
+                            } else {
+                                System.out.println(
+                                        e.getRoles().stream()
+                                                .map(Role::getName)
+                                                .reduce((a, b) -> a + ", " + b)
+                                                .orElse("None")
+                                );
+                            }
+
+                            if (e.getContract() != null) {
+                                System.out.println("Contract: Start=" + e.getContract().getStartDate()
+                                        + ", Salary=" + e.getContract().getSalary());
+                            } else {
+                                System.out.println("Contract: None");
+                            }
+                            System.out.println("=================================");
                         }
                     }
                 }
+
 
                 case "2" -> {
                     List<String> report = shiftService.MakeWeeklyAssignmentReport();
@@ -61,10 +84,48 @@ public class ManagerUI {
 
                 case "3" -> {
                     List<ShiftSwapRequest> requests = swapService.getAllRequests();
-                    for (ShiftSwapRequest r : requests) {
-                        System.out.println("Request ID: " + r.getId() + ", From: " + r.getFromShift().getId() + ", To: " + r.getToShift().getId() + ", Status: " + r.getStatus());
+
+                    if (requests == null || requests.isEmpty()) {
+                        System.out.println("No shift swap requests found.");
+                    } else {
+                        for (ShiftSwapRequest r : requests) {
+                            String requesterName = r.getRequester().getName();
+                            String requesterId = r.getRequester().getId();
+
+                            Shift fromShift = r.getFromShift();
+                            Shift toShift = r.getToShift();
+
+                            // Find requester's role in the FROM shift
+                            ShiftAssignment fromAssignment = DAO.assignments.stream()
+                                    .filter(a -> a.getShift().equals(fromShift))
+                                    .filter(a -> a.getEmployee().getId().equals(requesterId))
+                                    .findFirst()
+                                    .orElse(null);
+
+                            String roleName = (fromAssignment != null) ? fromAssignment.getRole().getName() : "Unknown";
+
+                            // Find who is currently assigned to that role in the TO shift
+                            ShiftAssignment toAssignment = DAO.assignments.stream()
+                                    .filter(a -> a.getShift().equals(toShift))
+                                    .filter(a -> a.getRole().getName().equalsIgnoreCase(roleName))
+                                    .findFirst()
+                                    .orElse(null);
+
+                            String currentAssignee = (toAssignment != null)
+                                    ? toAssignment.getEmployee().getName() + " (ID: " + toAssignment.getEmployee().getId() + ")"
+                                    : "No one assigned";
+
+                            System.out.println("Request ID: " + r.getId());
+                            System.out.println("Requested by: " + requesterName + " (ID: " + requesterId + ")");
+                            System.out.println("Request status: " + r.getStatus());
+                            System.out.println("Swap FROM: " + fromShift.getDate() + " | " + fromShift.getType());
+                            System.out.println("Swap TO: " + toShift.getDate() + " | " + toShift.getType());
+                            System.out.println("Role involved: " + roleName);
+                            System.out.println("If approved, will replace: " + currentAssignee);
+                        }
                     }
                 }
+
 
                 case "4" -> {
                     System.out.print("Enter request ID to update: ");
@@ -225,10 +286,6 @@ public class ManagerUI {
                     for (String roleName : separatedNeededRoles) {
                         roleName = roleName.trim(); // מנקה רווחים מיותרים
                         String LowerCaseroleName = roleName.toLowerCase();
-                        if (roleName.equals("shift manager")) {
-                            System.out.print("shift manager is already included\n");
-                            continue;
-                        }
                         boolean roleExists = false;
 
                         for (Role existedRole : DAO.roles) {
@@ -311,7 +368,7 @@ public class ManagerUI {
                     List<Employee> result = managerService.getAllEmployeesByRole(RoleName);
                     if (result != null) {
                         for (Employee e : result) {
-                            System.out.println(e);
+                            System.out.println("ID: " + e.getId() + ", Name: " + e.getName());
                         }
                     }
                 }
