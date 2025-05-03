@@ -35,23 +35,6 @@ public class DAO {
     // פונקציה למחיקת אובייקטים ישנים יותר מ-7 שנים
     public static void clearOldData() {
 
-//            // למחוק עובדים ישנים יותר מ-7 שנים
-//            Iterator<Employee> employeeIterator = employees.iterator();
-//            while (employeeIterator.hasNext()) {
-//                Employee employee = employeeIterator.next();
-//                if (new Date().getTime() - employee.getCreationDate().getTime() > sevenYearsInMillis) {
-//                    employeeIterator.remove();
-//                }
-//            }
-
-//            // למחוק סניפים ישנים יותר מ-7 שנים
-//            Iterator<Branch> branchIterator = branches.iterator();
-//            while (branchIterator.hasNext()) {
-//                Branch branch = branchIterator.next();
-//                if (new Date().getTime() - branch.getCreationDate().getTime() > sevenYearsInMillis) {
-//                    branchIterator.remove();
-//                }
-//            }
 
         // delete shifts that are older than 7 years
         Iterator<Shift> shiftIterator = shifts.iterator();
@@ -82,24 +65,7 @@ public class DAO {
                 swapRequestIterator.remove();
             }
         }
-
-//            // למחוק חוזים ישנים יותר מ-7 שנים
-//            Iterator<EmployeeContract> contractIterator = contracts.iterator();
-//            while (contractIterator.hasNext()) {
-//                EmployeeContract contract = contractIterator.next();
-//                if (new Date().getTime() - contract.getCreationDate().getTime() > sevenYearsInMillis) {
-//                    contractIterator.remove();
-//                }
-//            }
-
-//            // למחוק תפקידים ישנים יותר מ-7 שנים
-//            Iterator<Role> roleIterator = roles.iterator();
-//            while (roleIterator.hasNext()) {
-//                Role role = roleIterator.next();
-//                if (new Date().getTime() - role.getCreationDate().getTime() > sevenYearsInMillis) {
-//                    roleIterator.remove();
-//                }
-//            }
+        
     }
     public void startDailyClearTask() { //cleaned the datastore daily
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -110,4 +76,3 @@ public class DAO {
     }
 
 }
-
