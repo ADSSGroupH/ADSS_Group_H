@@ -28,22 +28,6 @@ public class ShiftController {
         return newShift;
     }
 
-//    public Shift createShift(String id, LocalDate date, String startTime, String endTime, String type, Employee shiftManager, List<Role> requiredRoles, List<ShiftAssignment> assignments) {
-//        // creating the shift
-//        Role shift_Manager = new Role("1", "shift manager"); //make sure there is always a shift manager in a shift
-//        requiredRoles.add(shift_Manager);
-//        if (!DAO.roles.contains(shift_Manager)) {
-//            DAO.roles.add(shift_Manager);
-//        }
-//        Shift newShift = new Shift(id, date, startTime, endTime, type, shiftManager, requiredRoles, assignments,LocalDate.now());
-//
-//        // adding the shift to the archive (data store)
-//        this.archiveShift(newShift);
-//
-//
-//        return newShift;
-//    }
-
     public void updateShiftField(String shiftId, String fieldName, Object newValue) {
         Shift shift = getShiftById(shiftId);
 
@@ -277,6 +261,7 @@ public class ShiftController {
                         report.add("     Shift Manager: " + shift.getShiftManager().getName());
                     } else {
                         report.add("     Shift Manager: No assignment");
+                        System.out.println("Warning: No shift manager assigned to shift ID '" + shift.getId() + "' on " + shift.getDate() + " (" + shift.getType() + ")");
                     }
 
                     List<Role> requiredRoles = shift.getRequiredRoles();
@@ -464,7 +449,7 @@ public class ShiftController {
                         if (shift.getShiftManager() != null &&
                                 shift.getShiftManager().getId().equals(employeeIdToDelete)) {
                             shift.setShiftManager(null);
-                            System.out.println("The shift manager removed from the shift!");
+                            System.out.println("Warning: the shift manager removed from the shift!");
                         }
 
                         System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!\n",
@@ -480,5 +465,4 @@ public class ShiftController {
         // Step 5: Shift not found
         System.out.println("This given shift does not exist!");
     }
-
 }
