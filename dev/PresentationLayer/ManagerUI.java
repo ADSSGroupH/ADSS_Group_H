@@ -6,6 +6,7 @@ import java.util.*;
 import DomainLayer.*;
 import ServiceLayer.*;
 
+
 public class ManagerUI {
     public HRManager LoggedInManager;
     private final Scanner scanner = new Scanner(System.in);
@@ -139,7 +140,18 @@ public class ManagerUI {
                     if (updated && status == ShiftSwapRequest.Status.approved) {
                         ShiftSwapRequest request = swapService.getRequestById(id);
                         if (request != null) {
-                            swapService.applyApprovedRequest(request);
+                            ShiftSwapRequest_Status swap_status = swapService.applyApprovedRequest(request);
+                            if (swap_status == ShiftSwapRequest_Status.RequestNotApproved){
+                                System.out.println("Request is not approved. Cannot apply.");
+                            } else if (swap_status == ShiftSwapRequest_Status.RequesterIsntAssignedToOgShift) {
+                                System.out.println("Requester is not assigned to the original shift.");
+                            } else if (swap_status == ShiftSwapRequest_Status.RequesterIsNotQualifiedForNewShift) {
+                                System.out.printf("Cannot approve request: %s is not qualified for the role needed in the new shift.%n", request.getRequester().getName());
+                            } else if (swap_status == ShiftSwapRequest_Status.OtherIsNotQualifiedForRequesterRole) {
+                                System.out.print("Cannot swap: the employee in the requested shift is not qualified for the requester role in the current shift.");
+                            }else {
+                                System.out.println("Shift swap applied successfully.");
+                            }
                         }
                     }
                 }
@@ -240,6 +252,9 @@ public class ManagerUI {
 
                     managerService.addEmployee(id, name, phone, branch, roles,bank, false,password);
                     EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
+                    if (contract == null){
+                        System.out.println("No employee found with the given ID.");
+                    }
                     Employee emp = managerService.getEmployeeById(id);
                     emp.setContract(contract);
                     System.out.println("A new employee was successfully added along with a new active contract.");
@@ -248,7 +263,12 @@ public class ManagerUI {
                 case "6" -> {
                     System.out.print("Enter ID of employee to delete: ");
                     String id = scanner.nextLine();
-                    managerService.deleteEmployee(id);
+                    ManagerController_Status delete_status = managerService.deleteEmployee(id);
+                    if (delete_status == ManagerController_Status.EmployeeIsArchived){
+                        System.out.println("Employee has been marked as archived.");
+                    }else{
+                        System.out.println("No employee found with the given ID.");
+                    }
                 }
 
                 case "7" -> {
@@ -321,7 +341,10 @@ public class ManagerUI {
                 case "8" -> {
                     System.out.print("Enter shift ID to delete: ");
                     String id = scanner.nextLine();
-                    shiftService.deleteShift(id);
+                    boolean result = shiftService.deleteShift(id);
+                    if (!result){
+                        System.out.println("you can't delete a shift if there are employees assigned to it!");
+                    }
                 }
 
                 case "9" -> {
@@ -331,7 +354,14 @@ public class ManagerUI {
                     String field = scanner.nextLine();
                     System.out.print("New value: ");
                     String value = scanner.nextLine();
-                    managerService.updateEmployeeField(id, field, value);
+                    ManagerController_Status update_status = managerService.updateEmployeeField(id, field, value);
+                    if (update_status == ManagerController_Status.EmployeeNotFound){
+                        System.out.println("Employee not found.");
+                    } else if (update_status == ManagerController_Status.Updated) {
+                        System.out.printf("%s updated successfully.", field);
+                    } else if (update_status == ManagerController_Status.InvalidFormat) {
+                        System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails, password, isManager, roles.");
+                    }
                 }
 
                 case "10" -> {
@@ -343,13 +373,16 @@ public class ManagerUI {
 
                 case "11" -> {
                     List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
+
                     if (shifts.isEmpty()) {
                         System.out.println("No shifts scheduled for this week.");
                     } else {
+                        System.out.println("Shifts scheduled between Sunday and Saturday this week:");
                         for (Shift s : shifts) {
                             System.out.println("- ID: " + s.getId() + ", Date: " + s.getDate() + ", Type: " + s.getType());
                         }
                     }
+
                 }
 
                 case "12" -> {
@@ -367,15 +400,86 @@ public class ManagerUI {
                     String RoleName = scanner.nextLine();
                     List<Employee> result = managerService.getAllEmployeesByRole(RoleName);
                     if (result != null) {
-                        for (Employee e : result) {
-                            System.out.println("ID: " + e.getId() + ", Name: " + e.getName());
+                        if (result.isEmpty()) {
+                            System.out.println("There are no employees qualified for this role");
+                        }else {
+                            for (Employee e : result) {
+                                System.out.println("ID: " + e.getId() + ", Name: " + e.getName());
+                            }
                         }
+                    }else{
+                        System.out.println("This Role Doesn't exist");
                     }
                 }
                 case "14" -> {
                     System.out.println("Enter the shift ID: ");
                     String ShiftId = scanner.nextLine();
-                    shiftService.createShiftAssignment(ShiftId);
+                    Shift targetShift = shiftService.getShiftById(ShiftId);
+                    if (targetShift == null) {
+                        System.out.println("This shift does not exist in the system!");
+                        continue;
+                    }
+
+                    List<Role> sortedRoles = targetShift.getRequiredRoles();
+                    sortedRoles.sort(Comparator.comparing(Role::getId)); // shift manager first
+                    for (Role requiredRole : sortedRoles) {
+                        System.out.println("\n--- Role: " + requiredRole.getName() + " ---");
+                        ShiftAssignment IsFilled = shiftService.CheckIfRoleIsFilled(targetShift,requiredRole);
+                        if (IsFilled != null){
+                            System.out.println("Role \"" + requiredRole.getName() + "\" is already assigned to " + IsFilled.getEmployee().getName());
+                            continue;
+                        }
+
+                        List<List<Employee>> AvailableUnavailableEmps = shiftService.AvailableAndUnavailableEmpForRoleInShift(targetShift,requiredRole);
+                        if (AvailableUnavailableEmps == null){
+                            System.out.printf("There are no qualified for the role : %s\n", requiredRole.getName());
+                            continue;
+                        }
+                        List<Employee> allOptions = AvailableUnavailableEmps.getFirst();
+                        List<Employee> available = AvailableUnavailableEmps.get(1);
+
+                        for (int i = 0; i < allOptions.size(); i++) {
+                            Employee emp = allOptions.get(i);
+                            boolean isAvailable = available.contains(emp);
+                            String status = isAvailable ? "" : " [Not Available]";
+                            System.out.println((i + 1) + ". " + emp.getName() + " (ID: " + emp.getId() + ")" + status);
+                        }
+
+                        if (allOptions.isEmpty()) {
+                            System.out.println("No employees available for this role.");
+                        }
+
+
+                        //choosing an employee to assign to the required role in the target shift
+                        System.out.print("Choose an employee number (from list above, not ID. If you don't want to assign, press 0): ");
+                        int choice;
+                        try {
+                            choice = Integer.parseInt(scanner.nextLine());
+                            if (choice < 0 || choice > allOptions.size()) {
+                                System.out.println("Invalid number.");
+                                continue;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number only.");
+                            continue;
+                        }
+                        if (choice == 0) {
+                            break;
+                        }
+
+                        Employee selected = allOptions.get(choice - 1);
+
+                        //assign:
+                        shiftService.createShiftAssignment(targetShift,requiredRole,selected);
+                        System.out.println("Assigned " + selected.getName() + " to role: " + requiredRole.getName());
+
+
+
+                    }
+                    if (targetShift.getAssignments().size() == targetShift.getRequiredRoles().size()) { //print the message at the end of the loop
+                        System.out.println("\nAll assignments completed for shift " + targetShift.getId());
+                    }
+
                 }
                 case "15" -> {
                     System.out.print("Enter date (yyyy-MM-dd): ");
@@ -400,10 +504,27 @@ public class ManagerUI {
                 }
                 case "16" -> {
                     System.out.print("Enter the Shift's Id: ");
-                    String ShiftId = scanner.nextLine();
+                    String shiftId = scanner.nextLine();
                     System.out.print("Enter the Employee's Id: ");
-                    String EmployeeId = scanner.nextLine();
-                    shiftService.DeleteShiftAssignment(ShiftId, EmployeeId);
+                    String employeeId = scanner.nextLine();
+
+                    Shift_Status result = shiftService.DeleteShiftAssignment(shiftId, employeeId);
+
+                    switch (result) {
+                        case SUCCESS:
+                            System.out.println("The shift assignment was successfully cancelled.");
+                            break;
+                        case SHIFT_MANAGER_REMOVED:
+                            System.out.println("Shift manager was removed from the shift!");
+                            break;
+                        case EMPLOYEE_NOT_FOUND:
+                            System.out.println("This employee is not assigned to the given shift.");
+                            break;
+                        case SHIFT_NOT_FOUND:
+                            System.out.println("This given shift does not exist.");
+                            break;
+                    }
+
                 }
 
                 case "17" -> {
@@ -443,7 +564,7 @@ public class ManagerUI {
                     new LoginForm().show();
                 }
 
-                default -> System.out.println("Invalid choice.");
+                default -> {System.out.println("Invalid choice.");}
             }
 
         }
