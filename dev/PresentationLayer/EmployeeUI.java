@@ -30,12 +30,62 @@ public class EmployeeUI {
 
             String input = scanner.nextLine();
             switch (input) {
-                case "1" -> employeeService.submitWeeklyShiftPreferences(employee.getId());
+                case "1" -> {
+                    try {
+                        List<Shift> eligibleShifts = employeeService.getEligibleShiftsForNextWeek(employee.getId());
+
+                        if (eligibleShifts.isEmpty()) {
+                            System.out.println("No eligible shifts available for you this week.");
+                            return;
+                        }
+
+                        System.out.println("Available eligible shifts:");
+                        int index = 1;
+                        for (Shift shift : eligibleShifts) {
+                            System.out.println(index + ". Date: " + shift.getDate() + ", Type: " + shift.getType() + " (ID: " + shift.getId() + ")");
+                            index++;
+                        }
+
+                        System.out.println("Enter the numbers of the shifts you want to select (separated by commas):");
+                        Scanner scanner = new Scanner(System.in);
+                        String input1 = scanner.nextLine();
+                        String[] shiftNumbers = input1.split(",");
+
+                        List<Shift> selectedShifts = new ArrayList<>();
+                        for (String numStr : shiftNumbers) {
+                            try {
+                                int num = Integer.parseInt(numStr.trim());
+                                if (num >= 1 && num <= eligibleShifts.size()) {
+                                    selectedShifts.add(eligibleShifts.get(num - 1));
+                                } else {
+                                    System.out.println("Invalid number: " + num);
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input: " + numStr);
+                            }
+                        }
+
+                        if (selectedShifts.isEmpty()) {
+                            System.out.println("No valid shifts selected.");
+                        } else {
+                            employeeService.submitSelectedShifts(employee.getId(), selectedShifts);
+                            System.out.println("Shift preferences submitted successfully!");
+                        }
+
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("An unexpected error occurred: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
 
                 case "2" -> {
                     List<ShiftAssignment> assignments = shiftService.getWeeklyAssignmentsForEmployee(employee.getId());
-                    if (assignments == null || assignments.isEmpty()) {
-                        System.out.println("No assignments for this week.");
+                    if (assignments == null) {
+                        System.out.println("Invalid date format in one of the shifts this week");
+                    } else if (assignments.isEmpty()) {
+                        System.out.println("No assignments found for employee ID: " + employee.getId());
                     } else {
                         System.out.println("Weekly Assignments:");
                         for (ShiftAssignment a : assignments) {
@@ -57,15 +107,11 @@ public class EmployeeUI {
 
                 case "4" -> {
                     try {
-                        List<ShiftAssignment> myAssignments = DAO.assignments.stream()
-                                .filter(a -> a.getEmployee().getId().equals(employee.getId()))
-                                .filter(a -> {
+                        List<ShiftAssignment> myAssignments = DAO.assignments.stream().filter(a -> a.getEmployee().getId().equals(employee.getId())).filter(a -> {
                                     LocalDate date = a.getShift().getDate();
                                     LocalDate start = LocalDate.now().with(java.time.DayOfWeek.SUNDAY);
                                     LocalDate end = start.plusDays(6);
-                                    return !date.isBefore(start) && !date.isAfter(end);
-                                })
-                                .toList();
+                                    return !date.isBefore(start) && !date.isAfter(end);}).toList();
 
                         if (myAssignments.isEmpty()) {
                             System.out.println("You have no assigned shifts for this week.");
@@ -99,7 +145,7 @@ public class EmployeeUI {
                                         .anyMatch(r -> r.getId().equals(myRole.getId())))
                                 .filter(s -> !s.equals(fromShift))  // לא ניתן להחליף לאותה משמרת
                                 .filter(s -> s.getAssignments().stream()
-                                        .noneMatch(a -> a.getEmployee().getId().equals(employee.getId()))) // ❗️לא משובץ שם כבר
+                                        .noneMatch(a -> a.getEmployee().getId().equals(employee.getId()))) // לא משובץ שם כבר
                                 .toList();
 
                         if (compatibleShifts.isEmpty()) {
