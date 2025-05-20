@@ -16,12 +16,9 @@ public class HRManagerService {
         managerController.addEmployee(id,name,phoneNumber,branch,roles, bankDetails,isManager,password);
     }
 
-    public void deleteEmployee(String id) {
-        managerController.deleteEmployee(id);
-    }
+    public ManagerController_Status deleteEmployee(String id) {return managerController.deleteEmployee(id);}
 
-    public void addRoleToEmployee(String employeeId, Role newRole) {
-        managerController.addRoleToEmployee(employeeId,newRole);
+    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) {return managerController.addRoleToEmployee(employeeId,newRole);
     }
 
     public Employee getEmployeeById(String id) {
@@ -38,21 +35,19 @@ public class HRManagerService {
     }
 
 
-    public void deleteContract(String employeeId) {
-        managerController.deleteContract(employeeId);
+    public ManagerController_Status deleteContract(String employeeId) {return managerController.deleteContract(employeeId);
     }
 
     public EmployeeContract getContractByEmployeeId(String employeeId) {
         return managerController.getContractByEmployeeId(employeeId);
     }
 
-    public void archiveContract(String employeeId) {
-        managerController.archiveContract(employeeId);
+    public ManagerController_Status archiveContract(String employeeId) {return managerController.archiveContract(employeeId);
     }
 
 
-    public void updateEmployeeField(String employeeId, String fieldName, String newValue) {
-        managerController.updateEmployeeField(employeeId,fieldName,newValue);
+    public ManagerController_Status updateEmployeeField(String employeeId, String fieldName, String newValue) {
+        return managerController.updateEmployeeField(employeeId,fieldName,newValue);
     }
 
     public List <Employee> getAllEmployeesByRole(String RoleName) {
