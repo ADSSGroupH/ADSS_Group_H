@@ -1,5 +1,7 @@
 package DomainLayer;
 
+import ServiceLayer.HRManagerService;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,23 +30,20 @@ public class ShiftController {
         return newShift;
     }
 
-    public void updateShiftField(String shiftId, String fieldName, Object newValue) {
+    public Shift_Status updateShiftField(String shiftId, String fieldName, Object newValue) {
         Shift shift = getShiftById(shiftId);
 
         if (shift == null) {
-            System.out.println("Shift not found.");
-            return;
+            return Shift_Status.SHIFT_NOT_FOUND;
         }
 
         switch (fieldName.toLowerCase()) {
             case "shiftmanager":
                 if (newValue instanceof Employee) {
                     shift.setShiftManager((Employee) newValue);
-                    System.out.println("Shift manager updated successfully.");
-                } else {
-                    System.out.println("Invalid value. Expected an Employee.");
+                    return Shift_Status.SUCCESS;
                 }
-                break;
+                return Shift_Status.INVALID_VALUE_TYPE;
 
             case "assignments":
                 if (newValue instanceof List<?>) {
@@ -52,14 +51,12 @@ public class ShiftController {
                         @SuppressWarnings("unchecked")
                         List<ShiftAssignment> assignments = (List<ShiftAssignment>) newValue;
                         shift.setAssignments(assignments);
-                        System.out.println("Assignments updated successfully.");
+                        return Shift_Status.SUCCESS;
                     } catch (ClassCastException e) {
-                        System.out.println("Invalid assignments list.");
+                        return Shift_Status.INVALID_LIST_TYPE;
                     }
-                } else {
-                    System.out.println("Invalid value. Expected a list of ShiftAssignment.");
                 }
-                break;
+                return Shift_Status.INVALID_VALUE_TYPE;
 
             case "requiredroles":
                 if (newValue instanceof List<?>) {
@@ -67,19 +64,18 @@ public class ShiftController {
                         @SuppressWarnings("unchecked")
                         List<Role> roles = (List<Role>) newValue;
                         shift.setRequiredRoles(roles);
-                        System.out.println("Required roles updated successfully.");
+                        return Shift_Status.SUCCESS;
                     } catch (ClassCastException e) {
-                        System.out.println("Invalid roles list.");
+                        return Shift_Status.INVALID_LIST_TYPE;
                     }
-                } else {
-                    System.out.println("Invalid value. Expected a list of Role.");
                 }
-                break;
+                return Shift_Status.INVALID_VALUE_TYPE;
 
             default:
-                System.out.println("Invalid field name. Allowed: shiftManager, assignments, requiredRoles.");
+                return Shift_Status.INVALID_FIELD;
         }
     }
+
 
 
     public void archiveShift(Shift shift) {
@@ -95,7 +91,6 @@ public class ShiftController {
             Shift shift = iterator.next();
             if (shift.getId().equals(shiftId)) {
                 if (!shift.getAssignments().isEmpty()) {
-                    System.out.println("you can't delete a shift if there are employees assigned to it!");
                     return false;
                 } else {
                     shift.setArchived(true);  // shift is not in use anymore so it's archived
@@ -123,12 +118,8 @@ public class ShiftController {
         List<Shift> allShifts = new ArrayList<>();
 
         LocalDate today = LocalDate.now();
-
-        // לחשב את יום ראשון הבא (אפילו אם היום ראשון – נלך לראשון הבא)
         LocalDate weekStart = today.with(java.time.temporal.TemporalAdjusters.nextOrSame(java.time.DayOfWeek.SUNDAY));
         LocalDate weekEnd = weekStart.plusDays(6);
-
-        System.out.println("Checking shifts between: " + weekStart + " to " + weekEnd);
 
         for (Shift shift : DAO.shifts) {
             if (!shift.isArchived()) continue;
@@ -139,15 +130,15 @@ public class ShiftController {
                     allShifts.add(shift);
                 }
             } catch (Exception e) {
-                System.out.println("Invalid date format in shift: " + shift.getDate());
+                // לא מדפיסים כאן – נוכל לדווח על שגיאות בפונקציה נפרדת בעתיד אם נרצה
             }
         }
 
-        if (allShifts.isEmpty()) {
-            System.out.println("No shifts scheduled between " + weekStart + " and " + weekEnd);
-        }
         return allShifts;
     }
+
+
+
 
     public List<ShiftAssignment> getAllAssignmentsForThisWeek() {
         List<ShiftAssignment> weeklyAssignments = new ArrayList<>();
@@ -166,7 +157,8 @@ public class ShiftController {
                     weeklyAssignments.add(assignment);
                 }
             } catch (Exception e) {
-                System.out.println("Invalid date format in shift: " + shift.getDate());
+                return null;
+
             }
         }
 
@@ -206,6 +198,9 @@ public class ShiftController {
 
     public List<ShiftAssignment> getWeeklyAssignmentsForEmployee (String employeeId) {
         List<ShiftAssignment> result = new ArrayList<>();
+        if (this.getAllAssignmentsForThisWeek() == null){
+            return null;
+        }
 
         for (ShiftAssignment assignment : this.getAllAssignmentsForThisWeek()) {
             if (assignment.getEmployee().getId().equals(employeeId)) {
@@ -213,10 +208,6 @@ public class ShiftController {
             }
         }
 
-        if (result.isEmpty()) {
-            System.out.println("No assignments found for employee ID: " + employeeId);
-            return null;
-        }
         return result;
 
     }
@@ -234,20 +225,19 @@ public class ShiftController {
             groupedShifts.get(date).get(type).add(shift);
         }
 
+        List<String> report = new ArrayList<>();
         if (groupedShifts.isEmpty()) {
-            System.out.println("Weekly Assignment Report: No shifts found for this week.");
-            return null;
+            report.add("Weekly Assignment Report: No shifts found for this week.");
+            return report;
         }
 
-        List<String> report = new ArrayList<>();
-        report.add("Weekly Assignment Report (All Shifts):  ");
+        report.add("Weekly Assignment Report (All Shifts):");
 
         for (String date : groupedShifts.keySet()) {
             report.add("");
-            report.add("Date: " + date + " ");
+            report.add("Date: " + date);
             Map<String, List<Shift>> shiftsByType = groupedShifts.get(date);
 
-            // סדר ידני - קודם Morning ואז Evening
             List<String> orderedTypes = new ArrayList<>();
             if (shiftsByType.containsKey("Morning")) orderedTypes.add("Morning");
             if (shiftsByType.containsKey("Evening")) orderedTypes.add("Evening");
@@ -256,12 +246,11 @@ public class ShiftController {
                 report.add("  Shift Type: " + type);
 
                 for (Shift shift : shiftsByType.get(type)) {
-                    // הצגת מנהל המשמרת אם קיים
                     if (shift.getShiftManager() != null) {
                         report.add("     Shift Manager: " + shift.getShiftManager().getName());
                     } else {
                         report.add("     Shift Manager: No assignment");
-                        System.out.println("Warning: No shift manager assigned to shift ID '" + shift.getId() + "' on " + shift.getDate() + " (" + shift.getType() + ")");
+                        report.add("     [Warning] No shift manager assigned to shift ID '" + shift.getId() + "' on " + shift.getDate() + " (" + shift.getType() + ")");
                     }
 
                     List<Role> requiredRoles = shift.getRequiredRoles();
@@ -273,9 +262,9 @@ public class ShiftController {
                         boolean assigned = false;
                         for (ShiftAssignment assignment : assignments) {
                             if (assignment.getRole().getId().equals(role.getId())) {
-                                String employeeName = assignment.getEmployee().getName();
-                                report.add("     " + role.getName() + ": " + employeeName);
+                                report.add("     " + role.getName() + ": " + assignment.getEmployee().getName());
                                 assigned = true;
+                                break;
                             }
                         }
                         if (!assigned) {
@@ -285,60 +274,39 @@ public class ShiftController {
                 }
             }
         }
+
         return report;
     }
 
 
-    public void createShiftAssignment(String shiftID) {
-        Shift targetShift = null;
 
-        for (Shift shift : DAO.shifts) {
-            if (shift.getId().equals(shiftID)) {
-                targetShift = shift;
-                break;
-            }
-        }
-
-        if (targetShift == null) {
-            System.out.println("This shift does not exist in the system!");
-            return;
-        }
-
-        ManagerController managerService = new ManagerController();
-        Scanner scanner = new Scanner(System.in);
-        List<ShiftAssignment> newAssignments = new ArrayList<>(targetShift.getAssignments());
-
-        List<Role> sortedRoles = targetShift.getRequiredRoles();
-        sortedRoles.sort(Comparator.comparing(Role::getId)); // shift manager first
-
-        for (Role requiredRole : sortedRoles) {
-            System.out.println("\n--- Role: " + requiredRole.getName() + " ---");
-
-            boolean alreadyFilled = false;
-            for (ShiftAssignment existing : targetShift.getAssignments()) {
-                if (existing.getRole().getName().equalsIgnoreCase(requiredRole.getName())) {
-                    System.out.println("Role \"" + requiredRole.getName() + "\" is already assigned to " + existing.getEmployee().getName());
-                    alreadyFilled = true;
-                    break;
+    public ShiftAssignment CheckIfRoleIsFilled(Shift Shift, Role role) { //returns the assignment if the role is already filled
+            for (ShiftAssignment existing : Shift.getAssignments()) {
+                if (existing.getRole().getName().equalsIgnoreCase(role.getName())) {
+                    return existing;
                 }
             }
-            if (alreadyFilled) continue;
+            return null;
+    }
 
+    public List<List<Employee>> AvailableAndUnavailableEmpForRoleInShift(Shift targetShift, Role requiredRole) { //gets all the employees that submitted this shift and are qualified for the given role
+            HRManagerService managerService = new HRManagerService();
             List<Employee> qualifiedEmployees = managerService.getAllEmployeesByRole(requiredRole.getName());
 
             if (qualifiedEmployees == null || qualifiedEmployees.isEmpty()) {
-                continue;
+                return null;
             }
 
             List<Employee> available = new ArrayList<>();
             List<Employee> unavailable = new ArrayList<>();
+            List<List<Employee>> result = new ArrayList<>(); //first element will be allOptions, second will be available and the third will be unavailable.
 
             for (Employee employee : qualifiedEmployees) {
                 boolean alreadyAssigned = false;
                 for (ShiftAssignment assignment : targetShift.getAssignments()) {
                     if (assignment.getEmployee().getId().equals(employee.getId())) {
                         alreadyAssigned = true;
-                        break;
+                        break; //irrelevant so he won't be in the list at all
                     }
                 }
                 if (alreadyAssigned)
@@ -358,66 +326,27 @@ public class ShiftController {
             allOptions.addAll(available);
             allOptions.addAll(unavailable);
 
-            for (int i = 0; i < allOptions.size(); i++) {
-                Employee emp = allOptions.get(i);
-                boolean isAvailable = available.contains(emp);
-                String status = isAvailable ? "" : " [Not Available]";
-                System.out.println((i + 1) + ". " + emp.getName() + " (ID: " + emp.getId() + ")" + status);
-            }
+            result.add(allOptions);
+            result.add(available);
+            result.add(unavailable);
+            return result;
 
-            if (allOptions.isEmpty()) {
-                System.out.println("No employees available for this role.");
-                continue;
-            }
+    }
 
-            System.out.print("Choose an employee number (from list above, not ID. If you don't want to assign, press 0): ");
-            int choice;
-            try {
-                choice = Integer.parseInt(scanner.next());
-                if (choice < 0 || choice > allOptions.size()) {
-                    System.out.println("Invalid number.");
-                    continue;
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number only.");
-                continue;
-            }
-            if (choice == 0) {
-                break;
-            }
 
-            Employee selected = allOptions.get(choice - 1);
+    public void createShiftAssignment(Shift shift, Role requiredRole, Employee SelectedEmployee) { //the assignment is for one employee to *one* role
 
-            // בדיקת כשירות של העובד לתפקיד
-            if (!selected.getRoles().contains(requiredRole)) {
-                System.out.println("This employee is NOT qualified for the role: " + requiredRole.getName());
-                continue;
-            }
-
-            if (unavailable.contains(selected)) {
-                System.out.print("This employee is not available. Do you still want to assign? (yes/no): ");
-                String confirm = scanner.next();
-                if (!confirm.equalsIgnoreCase("yes")) {
-                    System.out.println("Skipping assignment for this role.");
-                    continue;
-                }
-            }
-
-            ShiftAssignment assignment = new ShiftAssignment(selected, targetShift, requiredRole, null);
+        List<ShiftAssignment> newAssignments = new ArrayList<>(shift.getAssignments());
+            ShiftAssignment assignment = new ShiftAssignment(SelectedEmployee, shift, requiredRole, null);
             newAssignments.add(assignment);
             DAO.assignments.add(assignment);
-            System.out.println("Assigned " + selected.getName() + " to role: " + requiredRole.getName());
 
             if (requiredRole.getId().equals("1")) {
-                targetShift.setShiftManager(selected);
+                shift.setShiftManager(SelectedEmployee);
             }
-        }
 
-        targetShift.setAssignments(newAssignments);
+        shift.setAssignments(newAssignments);
 
-        if (targetShift.getAssignments().size() == targetShift.getRequiredRoles().size()) {
-            System.out.println("\nAll assignments completed for shift " + shiftID);
-        }
     }
 
 
@@ -433,36 +362,30 @@ public class ShiftController {
         }
         return result;
     }
-    public void DeleteShiftAssignment(String shiftId, String employeeIdToDelete) {
+    public Shift_Status DeleteShiftAssignment(String shiftId, String employeeIdToDelete) {
         for (Shift shift : DAO.shifts) {
             if (shift.getId().equals(shiftId)) {
                 Iterator<ShiftAssignment> iterator = shift.getAssignments().iterator();
                 while (iterator.hasNext()) {
                     ShiftAssignment assignment = iterator.next();
                     if (assignment.getEmployee().getId().equals(employeeIdToDelete)) {
-                        // Step 1: Remove from assignments
                         iterator.remove();
                         assignment.setArchived(true);
                         assignment.setArchiveDate(LocalDate.now());
 
-                        // Step 2: If the removed employee was the shift manager - set it to null
                         if (shift.getShiftManager() != null &&
                                 shift.getShiftManager().getId().equals(employeeIdToDelete)) {
                             shift.setShiftManager(null);
-                            System.out.println("Warning: the shift manager removed from the shift!");
+                            return Shift_Status.SHIFT_MANAGER_REMOVED;
                         }
 
-                        System.out.printf("%s's shift assignment was successfully cancelled. Please notice that there are not enough employees in this shift!\n",
-                                assignment.getEmployee().getName());
-                        return;
+                        return Shift_Status.SUCCESS;
                     }
                 }
-                // Step 4: Employee wasn't assigned to this shift
-                System.out.println("This employee is not assigned to the given shift!");
-                return;
+                return Shift_Status.EMPLOYEE_NOT_FOUND;
             }
         }
-        // Step 5: Shift not found
-        System.out.println("This given shift does not exist!");
+        return Shift_Status.SHIFT_NOT_FOUND;
     }
+
 }
