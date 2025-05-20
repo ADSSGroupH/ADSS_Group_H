@@ -15,8 +15,8 @@ public class ShiftService {
         return shiftController.createShift(id,date,startTime,endTime,type,shiftManager,requiredRoles,assignments);
     }
 
-    public void updateShiftField(String shiftId, String fieldName, Object newValue) {
-        shiftController.updateShiftField(shiftId,fieldName,newValue);
+    public Shift_Status updateShiftField(String shiftId, String fieldName, Object newValue) {
+        return shiftController.updateShiftField(shiftId,fieldName,newValue);
     }
 
 
@@ -62,8 +62,16 @@ public class ShiftService {
         return shiftController.MakeWeeklyAssignmentReport();
     }
 
-    public void createShiftAssignment(String shiftID) {
-        shiftController.createShiftAssignment(shiftID);
+    public ShiftAssignment CheckIfRoleIsFilled(Shift Shift, Role role){
+        return shiftController.CheckIfRoleIsFilled(Shift,role);
+    }
+
+    public List<List<Employee>> AvailableAndUnavailableEmpForRoleInShift(Shift targetShift, Role requiredRole){
+        return shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift,requiredRole);
+    }
+
+    public void createShiftAssignment(Shift shift, Role requiredRole, Employee SelectedEmployee) {
+        shiftController.createShiftAssignment(shift,requiredRole,SelectedEmployee);
     }
 
 
@@ -71,8 +79,8 @@ public class ShiftService {
         return shiftController.getShiftsBetween(from,to);
     }
 
-    public void DeleteShiftAssignment(String shiftId, String employeeIdToDelete) {
-        shiftController.DeleteShiftAssignment(shiftId,employeeIdToDelete);
+    public Shift_Status DeleteShiftAssignment(String shiftId, String employeeIdToDelete) {
+        return shiftController.DeleteShiftAssignment(shiftId,employeeIdToDelete);
     }
 
 }
