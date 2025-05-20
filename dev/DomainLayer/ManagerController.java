@@ -14,29 +14,27 @@ public class ManagerController {
         branch.UpdateEmployees(newEmployee);
     }
 
-    public void deleteEmployee(String id) {
+    public ManagerController_Status deleteEmployee(String id) {
         for (Employee emp : DAO.employees) {
             if (emp.getId().equals(id)) {
                 emp.setArchived(true);
                 emp.setArchivedAt(LocalDate.now());
-                System.out.println("Employee has been marked as archived.");
-                return;
+                return ManagerController_Status.EmployeeIsArchived;
             }
         }
-        System.out.println("No employee found with the given ID.");
+        return ManagerController_Status.EmployeeNotFound;
     }
 
-    public void addRoleToEmployee(String employeeId, Role newRole) {
+    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) {
         for (Employee emp : DAO.employees) {
             if (emp.getId().equals(employeeId)) {
                 Set<Role> curr_roles = emp.getRoles();
                 curr_roles.add(newRole);
                 emp.setRoles(curr_roles);
-                System.out.println("Role added to the employee.");
-                return;
+                return ManagerController_Status.RoleAddedToEmployee;
             }
         }
-        System.out.println("No employee found with the given ID.");
+        return ManagerController_Status.EmployeeNotFound;
     }
 
     public Employee getEmployeeById(String id) {
@@ -55,7 +53,6 @@ public class ManagerController {
     public EmployeeContract createContract(String employeeId, LocalDate startDate, int freeDays, int sicknessDays, int monthlyWorkHours, String socialContributions, String advancedStudyFund, int salary) {
         Employee emp = getEmployeeById(employeeId);
         if (emp == null) {
-            System.out.println("No employee found with the given ID.");
             return null;
         }
 
@@ -76,17 +73,17 @@ public class ManagerController {
     }
 
 
-    public void deleteContract(String employeeId) {
+    public ManagerController_Status deleteContract(String employeeId) {
         Employee emp = getEmployeeById(employeeId);
         if (emp == null || emp.getContract() == null) {
-            System.out.println("Employee or contract not found.");
-            return;
+            return ManagerController_Status.EmployeeOrContractNotFound;
         }
         emp.getContract().setArchived(true); //making the contract not active.
         emp.getContract().setArchivedAt(LocalDate.now().toString());
         emp.setContract(null);
 
-        System.out.println("Contract deleted from employee.");
+
+        return ManagerController_Status.ContractDeleted;
     }
 
     public EmployeeContract getContractByEmployeeId(String employeeId) {
@@ -97,55 +94,48 @@ public class ManagerController {
         return null;
     }
 
-    public void archiveContract(String employeeId) {
+    public ManagerController_Status archiveContract(String employeeId) {
         Employee emp = getEmployeeById(employeeId);
 
         if (emp == null) {
-            System.out.println("Employee not found.");
-            return;
+            return ManagerController_Status.EmployeeNotFound;
         }
 
         EmployeeContract contract = emp.getContract();
         if (contract == null) {
-            System.out.println("No active contract found for employee " + emp.getName() + ".");
-            return;
+            return ManagerController_Status.NoActiveContract;
         }
 
         contract.setArchived(true);
         contract.setArchivedAt(LocalDate.now().toString());
         emp.setContract(null); // מסירים את הקישור מהעובד
 
-        System.out.println("Contract archived successfully.");
+        return ManagerController_Status.ContractArchived;
     }
 
 
-    public void updateEmployeeField(String employeeId, String fieldName, String newValue) {
+    public ManagerController_Status updateEmployeeField(String employeeId, String fieldName, String newValue) {
         Employee emp = getEmployeeById(employeeId);
 
         if (emp == null) {
-            System.out.println("Employee not found.");
-            return;
+            return ManagerController_Status.EmployeeNotFound;
         }
 
         switch (fieldName.toLowerCase()) {
             case "name":
                 emp.setName(newValue);
-                System.out.println("Name updated successfully.");
                 break;
 
             case "phonenumber":
                 emp.setPhoneNumber(newValue);
-                System.out.println("Phone number updated successfully.");
                 break;
 
             case "bankdetails":
                 emp.setBankDetails(newValue);
-                System.out.println("Bank details updated successfully.");
                 break;
 
             case "password":
                 emp.setPassword(newValue);
-                System.out.println("Password updated successfully.");
                 break;
 
             case "roles":
@@ -168,17 +158,15 @@ public class ManagerController {
                     }
                 }
 
-                if (!newRoles.isEmpty()) {
-                    emp.setRoles(newRoles);
-                    System.out.println("Roles updated successfully.");
-                } else {
-                    System.out.println("No valid roles provided. No changes made.");
-                }
+
+                emp.setRoles(newRoles);
+
                 break;
 
             default:
-                System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails, password, isManager, roles.");
+                return ManagerController_Status.InvalidFormat;
         }
+        return ManagerController_Status.Updated;
     }
     public List <Employee> getAllEmployeesByRole(String RoleName) {
         List <Employee> result= new ArrayList<>();
@@ -190,17 +178,12 @@ public class ManagerController {
                     }
                 }
 
-                if (result.isEmpty()){
-                    System.out.println("There are no employees qualified for this role");
-                    return null;
-                }
-
                 return result;
 
             }
         }
-        System.out.println("This Role Doesn't exist");
-        return new ArrayList<>();
+
+        return null;
     }
 
     public List<Employee> getEmployeesByAvailability(LocalDate date, String shiftType) {
@@ -220,9 +203,7 @@ public class ManagerController {
                 }
             }
         }
-        if (availableEmployees.isEmpty()){
-            System.out.println("There are no workers Available for this shift");
-        }
+
         return availableEmployees;
     }
 
