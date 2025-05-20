@@ -43,7 +43,7 @@ public class ShiftSwapRequestService {
         return shiftSwapRequestController.getRequestsByStatus(status);
     }
 
-    public boolean applyApprovedRequest(ShiftSwapRequest request) {
+    public ShiftSwapRequest_Status applyApprovedRequest(ShiftSwapRequest request) {
         return shiftSwapRequestController.applyApprovedRequest(request);
     }
 }
