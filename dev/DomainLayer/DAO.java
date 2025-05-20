@@ -65,7 +65,7 @@ public class DAO {
                 swapRequestIterator.remove();
             }
         }
-        
+
     }
     public void startDailyClearTask() { //cleaned the datastore daily
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
