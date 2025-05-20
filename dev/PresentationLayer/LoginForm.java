@@ -107,7 +107,7 @@ public class LoginForm {
             String dateStr = date.toString();
 
             Shift morningShift = shiftService.createShift("morn_" + i, date, "08:00", "14:00", "Morning", null, new ArrayList<>(List.of(cashier, stocker, butcher)), new ArrayList<>());
-            Shift eveningShift = shiftService.createShift("eve_" + i, date, "15:00", "21:00", "Evening", null, new ArrayList<>(List.of(driver)), new ArrayList<>());
+            Shift eveningShift = shiftService.createShift("eve_" + i, date, "14:00", "21:00", "Evening", null, new ArrayList<>(List.of(driver)), new ArrayList<>());
 
             // --- יצירת שיבוצים ---
             List<ShiftAssignment> morningAssignments = new ArrayList<>();
