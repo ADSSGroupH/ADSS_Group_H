@@ -18,9 +18,12 @@ public class EmployeeService {
         return employeeController.submitSwapRequest(requester,fromShift,toShift);
     }
 
+    public List<Shift> getEligibleShiftsForNextWeek(String employeeId) throws Exception {
+        return employeeController.getEligibleShiftsForNextWeek(employeeId);
+    }
 
-    public void submitWeeklyShiftPreferences(String employeeId) {
-        employeeController.submitWeeklyShiftPreferences(employeeId);
+    public void submitSelectedShifts(String employeeId, List<Shift> selectedShifts) {
+        employeeController.submitSelectedShifts(employeeId, selectedShifts);
     }
 
 
