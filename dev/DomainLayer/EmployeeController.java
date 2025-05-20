@@ -30,84 +30,37 @@ public class EmployeeController {
     }
 
 
-    public void submitWeeklyShiftPreferences(String employeeId) {
-        try {
-            ShiftController shiftService = new ShiftController();
+    public List<Shift> getEligibleShiftsForNextWeek(String employeeId) throws Exception {
+        ShiftController shiftService = new ShiftController();
+        Employee employee = new ManagerController().getEmployeeById(employeeId);
 
-            LocalDate today = LocalDate.now();
-            DayOfWeek todayDay = today.getDayOfWeek();
-            int weeksToAdd = (todayDay.getValue() > DayOfWeek.THURSDAY.getValue() || (todayDay == DayOfWeek.THURSDAY && LocalTime.now().getHour() >= 16)) ? 2 : 1;
+        if (employee == null)
+            throw new IllegalArgumentException("Employee not found.");
 
-            LocalDate targetWeekStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusWeeks(weeksToAdd - 1);
-            LocalDate targetWeekEnd = targetWeekStart.plusDays(6);
+        LocalDate today = LocalDate.now();
+        DayOfWeek todayDay = today.getDayOfWeek();
+        int weeksToAdd = (todayDay.getValue() > DayOfWeek.THURSDAY.getValue() || (todayDay == DayOfWeek.THURSDAY && LocalTime.now().getHour() >= 16)) ? 2 : 1;
 
-            List<Shift> allShifts = shiftService.getShiftsBetween(targetWeekStart, targetWeekEnd);
-            Employee employee = new ManagerController().getEmployeeById(employeeId);
-            if (employee == null) {
-                System.out.println("Employee not found.");
-                return;
-            }
+        LocalDate targetWeekStart = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusWeeks(weeksToAdd - 1);
+        LocalDate targetWeekEnd = targetWeekStart.plusDays(6);
 
-            // סינון משמרות שרלוונטיות לפי תפקידים של העובד
-            List<Shift> eligibleShifts = new ArrayList<>();
-            for (Shift shift : allShifts) {
-                for (Role role : shift.getRequiredRoles()) {
-                    if (employee.getRoles().stream().anyMatch(r -> r.getId().equals(role.getId()))) {
-                        eligibleShifts.add(shift);
-                        break;
-                    }
+        List<Shift> allShifts = shiftService.getShiftsBetween(targetWeekStart, targetWeekEnd);
+
+        List<Shift> eligibleShifts = new ArrayList<>();
+        for (Shift shift : allShifts) {
+            for (Role role : shift.getRequiredRoles()) {
+                if (employee.getRoles().stream().anyMatch(r -> r.getId().equals(role.getId()))) {
+                    eligibleShifts.add(shift);
+                    break;
                 }
             }
-
-            if (eligibleShifts.isEmpty()) {
-                System.out.println("No eligible shifts available for you this week.");
-                return;
-            }
-
-            Scanner scanner = new Scanner(System.in);
-            List<Shift> selectedShifts = new ArrayList<>();
-
-            if (allShifts.isEmpty()) {
-                System.out.println("No shifts available for the selected week.");
-                return;
-            }
-
-            System.out.println("Available Shifts for the week: " + targetWeekStart + " to " + targetWeekEnd);
-
-            int index = 1;
-            for (Shift shift : allShifts) {
-                System.out.println(index + ". Date: " + shift.getDate() + ", Type: " + shift.getType() + " (ID: " + shift.getId() + ")");
-                index++;
-            }
-
-            System.out.println("Enter the numbers of the shifts you want to select (separated by commas):");
-            String input = scanner.nextLine();
-            String[] shiftNumbers = input.split(",");
-
-            for (String numStr : shiftNumbers) {
-                try {
-                    int num = Integer.parseInt(numStr.trim());
-                    if (num >= 1 && num <= allShifts.size()) {
-                        selectedShifts.add(allShifts.get(num - 1)); // נבחר לפי מספר
-                    } else {
-                        System.out.println("Invalid number: " + num);
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input: " + numStr);
-                }
-            }
-
-            if (selectedShifts.isEmpty()) {
-                System.out.println("No valid shifts selected.");
-            } else {
-                DAO.WeeklyPreferneces.put(employeeId, selectedShifts);
-                System.out.println("Shift preferences submitted successfully!");
-            }
-
-        } catch (Exception e) {
-            System.out.println("An unexpected error occurred: " + e.getMessage());
-            e.printStackTrace();
         }
+
+        return eligibleShifts;
+    }
+
+    public void submitSelectedShifts(String employeeId, List<Shift> selectedShifts) {
+        DAO.WeeklyPreferneces.put(employeeId, selectedShifts);
     }
 
 
