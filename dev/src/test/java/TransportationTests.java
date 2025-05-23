@@ -1,5 +1,6 @@
-
-
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,15 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
-import domain_layer.Driver.LicenseType;
-import domain_layer.Item;
-import domain_layer.ItemsDocument;
-import domain_layer.ShipmentArea;
-import domain_layer.Site;
-import domain_layer.Transportation;
-import domain_layer.TransportationController;
 import domain_layer.User;
 import domain_layer.UserController;
+import domain_layer.transportationDomain.Driver.LicenseType;
+import domain_layer.transportationDomain.Item;
+import domain_layer.transportationDomain.ItemsDocument;
+import domain_layer.transportationDomain.ShipmentArea;
+import domain_layer.transportationDomain.Site;
+import domain_layer.transportationDomain.Transportation;
+import domain_layer.transportationDomain.TransportationController;
 
 
 
@@ -69,7 +70,14 @@ public class TransportationTests {
     @Test
     public void testTransportationDisplayIncludesBasicFields() {
         Site origin = new Site("Origin", "Addr", "123", "Rep", 1);
-        Transportation t = new Transportation(1, "2025-05-01", "09:00", "ABC123", "afg", new ArrayList<>(), Arrays.asList(1), origin);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String input = "2025-05-01";
+        LocalDate userDate = LocalDate.parse(input, formatter);
+        String input3 = "09:00";
+        LocalTime departuretime = LocalTime.parse(input3);
+        String input2 = "11:00";
+        LocalTime arrivaltime = LocalTime.parse(input2);
+        Transportation t = new Transportation(1, userDate, departuretime, arrivaltime, "ABC123", "afg", new ArrayList<>(), Arrays.asList(1), origin);
         String display = t.display();
         assertTrue(display.contains("Transportation ID: 1"));
         assertTrue(display.contains("Origin: Origin"));
@@ -100,8 +108,15 @@ public class TransportationTests {
         List<Integer> shipmentAreas = new ArrayList<>();
         shipmentAreas.add(1); 
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String input = "2025-05-01";
+        LocalDate userDate = LocalDate.parse(input, formatter);
+        String input3 = "09:00";
+        LocalTime departuretime = LocalTime.parse(input3);
+        String input2 = "11:00";
+        LocalTime arrivaltime = LocalTime.parse(input2);
         // Create the transportation
-        String creationResult = tc.makeTransportation(100, "2025-05-01", "10:00", "TR1", "Driver1",docs, shipmentAreas, origin);
+        String creationResult = tc.makeTransportation(100, userDate, departuretime, arrivaltime, "TR1", "Driver1",docs, shipmentAreas, origin);
         assertTrue(creationResult.startsWith("Transportation created"));
 
         // Add another document
@@ -140,7 +155,14 @@ public class TransportationTests {
         ItemsDocument doc = new ItemsDocument(4, origin, items);
         List<ItemsDocument> docs = Arrays.asList(doc);
 
-        String result = tc.makeTransportation(1, "2025-05-01", "09:00", "TR1", "D1", docs, Arrays.asList(1), origin);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String input = "2025-05-01";
+        LocalDate userDate = LocalDate.parse(input, formatter);
+        String input3 = "09:00";
+        LocalTime departuretime = LocalTime.parse(input3);
+        String input2 = "11:00";
+        LocalTime arrivaltime = LocalTime.parse(input2);
+        String result = tc.makeTransportation(1, userDate, departuretime, arrivaltime, "TR1", "D1", docs, Arrays.asList(1), origin);
         System.out.println(result);
 
         Transportation t = tc.findTransportationById(1);

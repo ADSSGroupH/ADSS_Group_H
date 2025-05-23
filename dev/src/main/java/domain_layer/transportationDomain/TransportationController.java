@@ -1,11 +1,13 @@
-package domain_layer;
+package domain_layer.transportationDomain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import domain_layer.Driver.LicenseType;
+import domain_layer.transportationDomain.Driver.LicenseType;
 
 
 public class TransportationController {
@@ -42,7 +44,7 @@ public class TransportationController {
         }
     }
 
-    public String makeTransportation(int id, String date, String departureTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
+    public String makeTransportation(int id, LocalDate date, LocalTime departureTime,LocalTime arrivalTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
         // Check if the transportation already exists
         if (transportationMap.containsKey(id)) {
             return "Transportation with ID " + id + " already exists.";
@@ -83,7 +85,7 @@ public class TransportationController {
             return "Driver with ID " + drivername + " does not have the required license type for truck " + truckPlateNumber + ".";
         }
 
-        Transportation t = new Transportation(id, date, departureTime, truckPlateNumber, drivername, itemsDocument, shipmentAreasID, origin);
+        Transportation t = new Transportation(id, date, departureTime, arrivalTime, truckPlateNumber, drivername, itemsDocument, shipmentAreasID, origin);
 
         // Check if the items weight is less than the truck's max weight
         if (calculateItemsWeight(itemsDocument) > truckMap.get(truckPlateNumber).getMaxWeight()) {
@@ -110,7 +112,7 @@ public class TransportationController {
         return transportationMap.get(id);
     }
     
-    public String changeDate(int id, String newDate) {
+    public String changeDate(int id, LocalDate newDate) {
         Transportation t = findTransportationById(id);
         if (t != null){
             t.setDate(newDate);
@@ -121,7 +123,7 @@ public class TransportationController {
         } 
     }
 
-    public String changeDepartureTime(int id, String newDepartureTime) {
+    public String changeDepartureTime(int id, LocalTime newDepartureTime) {
         Transportation t = findTransportationById(id);
         if (t != null) {
             t.setDepartureTime(newDepartureTime);
@@ -285,11 +287,12 @@ public class TransportationController {
         Transportation t = findTransportationById(id);
         if (t != null) {
             List<ItemsDocument> itemsDocument = t.getItemsDocument();
-            itemsDocument.add(itemsToAdd);
+            
             // Check if the items weight is less than the truck's max weight
             if (calculateItemsWeight(itemsDocument) > truckMap.get(t.getTruckPlateNumber()).getMaxWeight()) {
                 return "Items weight exceeds the truck's maximum weight.";
             }
+            itemsDocument.add(itemsToAdd);
             t.setItemsDocument(itemsDocument);
             return "Items added to transportation ID " + id;
         } else {

@@ -1,16 +1,20 @@
 package presentation_layer;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import domain_layer.Driver;
-import domain_layer.Item;
-import domain_layer.ItemsDocument;
-import domain_layer.Site;
-import domain_layer.Transportation;
-import domain_layer.TransportationController;
 import domain_layer.User;
 import domain_layer.UserController;
+import domain_layer.transportationDomain.Driver;
+import domain_layer.transportationDomain.Item;
+import domain_layer.transportationDomain.ItemsDocument;
+import domain_layer.transportationDomain.Site;
+import domain_layer.transportationDomain.Transportation;
+import domain_layer.transportationDomain.TransportationController;
 
 public class UserInteraction {
     private UserController userController = new UserController();              
@@ -396,12 +400,27 @@ public class UserInteraction {
         System.out.print("Enter transportation ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.print("Enter date (e.g., 2025-05-01): ");
-        String date = scanner.nextLine();
+        LocalDate date = null;
+        String input = scanner.nextLine();
+        try {
+            date = LocalDate.parse(input, formatter);
+
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid format. Please use yyyy-MM-dd (e.g. 2025-05-23).");
+        }
+        if(date == null) {
+            return;
+        }
 
         System.out.print("Enter departure time (e.g., 08:00): ");
-        String departureTime = scanner.nextLine();
+        String input2 = scanner.nextLine();
+        LocalTime departureTime = LocalTime.parse(input2);
+
+        System.out.print("Enter arrival time (e.g., 08:00): ");
+        String input3 = scanner.nextLine();
+        LocalTime arrivalTime = LocalTime.parse(input3);
 
         System.out.print("Enter truck plate number: ");
         String truckPlate = scanner.nextLine();
@@ -425,7 +444,7 @@ public class UserInteraction {
         List<Integer> shipmentAreas = new ArrayList<>();
         shipmentAreas.add(areaId);
 
-        String result = transportationController.makeTransportation(id, date, departureTime, truckPlate, driverName, itemsDocs, shipmentAreas, origin);
+        String result = transportationController.makeTransportation(id, date, departureTime, arrivalTime, truckPlate, driverName, itemsDocs, shipmentAreas, origin);
         System.out.println(result);
     }
 
@@ -433,10 +452,19 @@ public class UserInteraction {
         System.out.print("Enter transportation ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         System.out.print("Enter new date: ");
-        String date = scanner.nextLine();
+        LocalDate date = null;
+        String input = scanner.nextLine();
+        try {
+            date = LocalDate.parse(input, formatter);
 
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid format. Please use yyyy-MM-dd (e.g. 2025-05-23).");
+        }
+        if(date == null) {
+            return;
+        }
         System.out.println(transportationController.changeDate(id, date));
     }
 
@@ -601,7 +629,8 @@ public class UserInteraction {
         scanner.nextLine();
 
         System.out.print("Enter new departure time: ");
-        String time = scanner.nextLine();
+        String input = scanner.nextLine();
+        LocalTime time = LocalTime.parse(input);
 
         System.out.println(transportationController.changeDepartureTime(id, time));
     }

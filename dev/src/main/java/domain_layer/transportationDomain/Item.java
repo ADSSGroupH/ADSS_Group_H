@@ -1,4 +1,4 @@
-package domain_layer;
+package domain_layer.transportationDomain;
 
 public class Item {
 	private int id;

@@ -1,11 +1,14 @@
-package domain_layer;
+package domain_layer.transportationDomain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class Transportation {
     private int id;
-    private String date;
-    private String departureTime;
+    private LocalDate date;
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
     private String truckPlateNumber;
     private String driverName;
     private boolean succeeded;
@@ -14,13 +17,14 @@ public class Transportation {
     private Site origin;
     private String accident;
 
-    public Transportation(int id, String date, String departureTime,
-                          String truckPlateNumber, String driverName,
+    public Transportation(int id, LocalDate date, LocalTime departureTime,
+                          LocalTime arrivalTime, String truckPlateNumber, String driverName,
                           List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID,
                           Site origin) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
         this.truckPlateNumber = truckPlateNumber;
         this.driverName = driverName;
         this.succeeded = false;
@@ -29,11 +33,11 @@ public class Transportation {
         this.origin = origin;
         this.accident = "No accidents reported";
     }
-    public void setDate(String newDate) {
+    public void setDate(LocalDate newDate) {
         this.date = newDate;
     }
 
-    public void setDepartureTime(String newDepartureTime) {
+    public void setDepartureTime(LocalTime newDepartureTime) {
         this.departureTime = newDepartureTime;
     }
 
@@ -60,6 +64,9 @@ public class Transportation {
     public void setOrigin(Site newOrigin) {
         this.origin = newOrigin;
     }
+    public void setArrivalTime(LocalTime newArrivalTime) {
+        this.arrivalTime = newArrivalTime;
+    }
 
     public int getId() {
         return id;
@@ -69,10 +76,10 @@ public class Transportation {
         return truckPlateNumber;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
-    public String getDepartureTime() {
+    public LocalTime getDepartureTime() {
         return departureTime;
     }
 
@@ -93,6 +100,9 @@ public class Transportation {
     }
     public String getAccident() {
         return accident;
+    }
+    public LocalTime getArrivalTime() {
+        return arrivalTime;
     }
     public void setAccident(String accident) {
         this.accident = accident;
