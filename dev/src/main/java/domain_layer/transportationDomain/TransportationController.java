@@ -12,32 +12,32 @@ import domain_layer.transportationDomain.Driver.LicenseType;
 
 public class TransportationController {
 
-    private Map<Integer, Transportation> transportationMap;
-    private Map<Integer, ShipmentArea> shipmentAreaMap; 
-    private Map<String, Driver> driverMap; 
-    private Map<String, Truck> truckMap;
+    private TransportationRepository transportationRep;
+    private ShipmentAreaRepository shipmentAreaRep;
+    private DriverRepository driverRep;
+    private TruckRepository truckRep;
 
     public TransportationController() {
-        transportationMap = new HashMap<>();
-        shipmentAreaMap = new HashMap<>();
-        driverMap = new HashMap<>();
-        truckMap = new HashMap<>();
+        transportationRep = new TransportationRepository();
+        shipmentAreaRep = new ShipmentAreaRepository();
+        driverRep = new DriverRepository();
+        truckRep = new TruckRepository();
     }
 
     public String makeShipmentArea(int id, String name){
         // Check if the shipment area already exists
-        if (shipmentAreaMap.containsKey(id)) {
+        if (shipmentAreaRep.shipmentAreaExists(id)) {
             return "Shipment area with ID " + id + " already exists.";
         }
         ShipmentArea shipmentArea = new ShipmentArea(id, name, new ArrayList<>()); 
-        shipmentAreaMap.put(id, shipmentArea);
+        shipmentAreaRep.addShipmentArea(shipmentArea);
         return "Shipment area created with ID " + id + " and name " + name;
     }
     
     public String changeShipmentArea(int id, String newName){
         // Check if the shipment area exists
-        if (shipmentAreaMap.containsKey(id)) {
-            shipmentAreaMap.get(id).setName(newName);
+        if (shipmentAreaRep.shipmentAreaExists(id)) {
+            shipmentAreaRep.getShipmentArea(id).setName(newName);
             return "Shipment area with ID " + id + " changed to " + newName;
         } else {
             return "Shipment area with ID " + id + " not found.";
@@ -46,12 +46,12 @@ public class TransportationController {
 
     public String makeTransportation(int id, LocalDate date, LocalTime departureTime,LocalTime arrivalTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
         // Check if the transportation already exists
-        if (transportationMap.containsKey(id)) {
+        if (transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " already exists.";
         }
         // Check if the shipment areas exist
         for (int areaID : shipmentAreasID) {
-            if (!shipmentAreaMap.containsKey(areaID)) {
+            if (!shipmentAreaRep.shipmentAreaExists(id)) {
                 return "Shipment area with ID " + areaID + " does not exist.";
             }
         }
@@ -59,41 +59,36 @@ public class TransportationController {
         if (!checkSiteExists(origin.getName(), shipmentAreasID)) {
             return "Site with name " + origin.getName() + " doesn't exist in the shipment areas.";
         }
-        for (ItemsDocument item : itemsDocument) {
-            if (!checkSiteExists(item.getDestination().getName(), shipmentAreasID)) {
-                return "Destination site with name " + item.getDestination().getName() + " doesn't exist in the shipment areas.";
-            }
-        }
         // Check if the truck exists
-        if (!truckMap.containsKey(truckPlateNumber)) {
+        if (!truckRep.truckExists(truckPlateNumber)) {
             return "Truck with plate number " + truckPlateNumber + " does not exist.";
         }
         // Check if there are available drivers with the required license type
-        if (!checkAvalableDrivers(truckPlateNumber)) {
+        if (!checkAvalableDrivers(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "No available drivers with the required license type for truck " + truckPlateNumber + ".";
         }
         // Check if the driver exists
-        if (!driverMap.containsKey(drivername)) {
+        if (!driverRep.driverExists(drivername)) {
             return "Driver with ID " + drivername + " does not exist.";
         }
         // Check if the driver is available
-        if (driverMap.get(drivername).isOccupied()) {
+        if (driverRep.getDriver(drivername).isOccupied()) {
             return "Driver with ID " + drivername + " is already occupied.";
         }
         // Check if the driver has a matching license type
-        if (!driverMap.get(drivername).getLicenseType().equals(truckMap.get(truckPlateNumber).getLicenseType())) {
+        if (!driverRep.getDriver(drivername).getLicenseType().equals(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "Driver with ID " + drivername + " does not have the required license type for truck " + truckPlateNumber + ".";
         }
 
         Transportation t = new Transportation(id, date, departureTime, arrivalTime, truckPlateNumber, drivername, itemsDocument, shipmentAreasID, origin);
 
         // Check if the items weight is less than the truck's max weight
-        if (calculateItemsWeight(itemsDocument) > truckMap.get(truckPlateNumber).getMaxWeight()) {
+        if (calculateItemsWeight(itemsDocument) > truckRep.getTruck(truckPlateNumber).getMaxWeight()) {
             return "Items weight exceeds the truck's maximum weight.";
         }
 
-        driverMap.get(drivername).setOccupied(true);
-        transportationMap.put(id, t);
+        driverRep.getDriver(drivername).setOccupied(true);
+        transportationRep.addTransportation(id, t);
         String areasNotification = "";
         if (shipmentAreasID.size() > 1){
             areasNotification += "\n The transportation needs to go through more than one shipment area";
@@ -145,7 +140,7 @@ public class TransportationController {
     
     public String changeDriverName(int id, String newDriverName) {
         // Check if the driver exists
-        if (!driverMap.containsKey(newDriverName)) {
+        if (!driverRep.driverExists(newDriverName)) {
             return "Driver with ID " + newDriverName + " does not exist.";
         }
         // Check if the transportation exists
@@ -156,14 +151,14 @@ public class TransportationController {
         if (t == null) {
             return "Transportation with ID " + id + " not found.";
         }
-        Driver driver = driverMap.get(newDriverName);
+        Driver driver = driverRep.getDriver(newDriverName);
         // Check if the driver is available
         if (driver.isOccupied()) {
             return "Driver with name " + newDriverName + " is already occupied.";
         }
         // Set the driver as occupied
         driver.setOccupied(true);
-        if (driver.getLicenseType().equals(truckMap.get(t.getTruckPlateNumber()).getLicenseType())) {
+        if (driver.getLicenseType().equals(truckRep.getTruck(t.getTruckPlateNumber()).getLicenseType())) {
             return "Driver with name " + newDriverName + " does not have the required license type for truck " + t.getTruckPlateNumber() + ".";
         }
         t.setDriverName(newDriverName);
@@ -185,7 +180,7 @@ public class TransportationController {
         Transportation t = findTransportationById(id);
         if (t != null) {
             // Check if the items weight is less than the truck's max weight
-            if (calculateItemsWeight(newItemsDocument) > truckMap.get(t.getTruckPlateNumber()).getMaxWeight()) {
+            if (calculateItemsWeight(newItemsDocument) > truckRep.getTruck(t.getTruckPlateNumber()).getMaxWeight()) {
                 return "Items weight exceeds the truck's maximum weight.";
             }
             t.setItemsDocument(newItemsDocument);
@@ -227,20 +222,20 @@ public class TransportationController {
     public String addDriver(String name, LicenseType licenseType) {
         Driver driver = new Driver(name, licenseType);
         // Check if the driver already exists
-        if (driverMap.containsKey(name)) {
+        if (driverRep.driverExists(name)) {
             return "Driver with name " + name + " already exists.";
         }
-        driverMap.put(name, driver);
+        driverRep.addDriver(name, driver);
         return "Driver added with Name: " + name + ", License Type: " + licenseType;
     }
 
     public String addTruck(String plateNumber, String model, int netWeight, int maxWeight, LicenseType licenseType) {
         Truck truck = new Truck(plateNumber, model, netWeight, maxWeight, licenseType);
         // Check if the truck already exists
-        if (truckMap.containsKey(plateNumber)) {
+        if (truckRep.truckExists(plateNumber)) {
             return "Truck with plate number " + plateNumber + " already exists.";
         }
-        truckMap.put(plateNumber, truck);
+        truckRep.addTruck(plateNumber, truck);
         return "Truck added with plate number " + plateNumber + ", License Type: " + licenseType;
     }
 
@@ -289,7 +284,7 @@ public class TransportationController {
             List<ItemsDocument> itemsDocument = t.getItemsDocument();
             
             // Check if the items weight is less than the truck's max weight
-            if (calculateItemsWeight(itemsDocument) > truckMap.get(t.getTruckPlateNumber()).getMaxWeight()) {
+            if (calculateItemsWeight(itemsDocument) > truckRep.getTruck(t.getTruckPlateNumber()).getMaxWeight()) {
                 return "Items weight exceeds the truck's maximum weight.";
             }
             itemsDocument.add(itemsToAdd);
@@ -301,32 +296,15 @@ public class TransportationController {
     }
 
     public String displayTrucks(){
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Truck> entry : truckMap.entrySet()) {
-            Truck truck = entry.getValue();
-            sb.append(truck.display()).append("\n");
-        }
-        return sb.toString();
+        return truckRep.displayTrucks();
     }
 
     public String displayDrivers(){
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Driver> entry : driverMap.entrySet()) {
-            Driver driver = entry.getValue();
-            sb.append(driver.display()).append("\n");
-        }
-        return sb.toString();
+        return driverRep.displayDrivers();
     }
 
-    public boolean checkAvalableDrivers(String truckPlateNumber) {
-        Truck truck = truckMap.get(truckPlateNumber);
-        for (Map.Entry<String, Driver> entry : driverMap.entrySet()) {
-            Driver driver = entry.getValue();
-            if (!driver.isOccupied() && driver.getLicenseType().equals(truck.getLicenseType())) {
-                return true; // Found an available driver with the required license type
-            }
-        }
-        return false;
+    public boolean checkAvalableDrivers(LicenseType licenseType) {
+        return driverRep.checkAvalableDrivers(licenseType);
     }
 
     public String displayItemsList(Transportation t) {
@@ -348,7 +326,7 @@ public class TransportationController {
     public String addSite(String name, String address, String phoneNumber, String contactPersonName, int shipmentAreaId) {
         Site site = new Site(name, address, phoneNumber, contactPersonName, shipmentAreaId);
 
-        ShipmentArea area = shipmentAreaMap.get(shipmentAreaId);
+        ShipmentArea area = shipmentAreaRep.getShipmentArea(shipmentAreaId);
         if (area == null) {
             return "Shipment area with ID " + shipmentAreaId + " does not exist.";
         }
@@ -360,8 +338,8 @@ public class TransportationController {
 
     public boolean checkSiteExists(String name, List<Integer> shipmentAreaId) {
         for (int id : shipmentAreaId) {
-            if (shipmentAreaMap.containsKey(id)) {
-                ShipmentArea shipmentArea = shipmentAreaMap.get(id);
+            if (shipmentAreaRep.shipmentAreaExists(id)) {
+                ShipmentArea shipmentArea = shipmentAreaRep.getShipmentArea(id);
                 for (Site site : shipmentArea.getSites()) {
                     if (site.getName().equals(name)) {
                         return true; // Site with the same name exists in the shipment area
@@ -382,23 +360,23 @@ public class TransportationController {
         }
     }
     public String removeTruck(String plateNumber) {
-        if (truckMap.containsKey(plateNumber)) {
-            truckMap.remove(plateNumber);
+        if (truckRep.truckExists(plateNumber)) {
+            truckRep.removeTruck(plateNumber);
             return "Truck with plate number " + plateNumber + " removed.";
         } else {
             return "Truck with plate number " + plateNumber + " not found.";
         }
     }
     public String removeDriver(String username) {
-        if (driverMap.containsKey(username)) {
-            driverMap.remove(username);
+        if (driverRep.driverExists(username)) {
+            driverRep.removeDriver(username);
             return "Driver with username " + username + " removed.";
         } else {
             return "Driver with username " + username + " not found.";
         }
     }
     public ShipmentArea findShipmentAreaById(int id) {
-        ShipmentArea shipmentArea = shipmentAreaMap.get(id);
+        ShipmentArea shipmentArea = shipmentAreaRep.getShipmentArea(id);
         if (shipmentArea != null) {
             return shipmentArea;
         } else {
