@@ -1,6 +1,7 @@
 package inventory.domain;
 
 import java.util.List;
+import java.time.LocalDate;
 
 public class Product {
     private String pid;
@@ -52,7 +53,21 @@ public class Product {
     }
 
     public double getSalePrice() {
-        return salePrice;
+        double discountedPrice = this.salePrice;
+        LocalDate today = LocalDate.now();
+
+        for (Promotion promo : promotions) {
+            boolean isForThisProduct = promo.getPromotedProduct() == this;
+            boolean isActive = !today.isBefore(promo.getStartDate()) && !today.isAfter(promo.getEndDate());
+
+            if (isForThisProduct && isActive) {
+                double discount = promo.getDiscountPercentage();
+                discountedPrice *= (1 - discount / 100.0);
+            }
+        }
+
+        // עיגול לשתי ספרות אחרי הנקודה
+        return Math.round(discountedPrice * 100.0) / 100.0;
     }
     public void setSalePrice(double salePrice) {
         this.salePrice = salePrice;
