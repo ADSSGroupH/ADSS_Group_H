@@ -21,5 +21,16 @@ public class TransportationRepository {
     public boolean transportationExists(int id) {
         return transportationMap.containsKey(id);
     }
+    public String displayAllTransportations() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Integer, Transportation> entry : transportationMap.entrySet()) {
+            Transportation t = entry.getValue();
+            sb.append("ID: ").append(t.getId()).append(", Date: ").append(t.getDate())
+              .append(", Departure Time: ").append(t.getDepartureTime())
+              .append(", Truck Plate Number: ").append(t.getTruckPlateNumber())
+              .append(", Driver Name: ").append(t.getDriverName()).append("\n");
+        }
+        return sb.toString();
+    }
 
 }

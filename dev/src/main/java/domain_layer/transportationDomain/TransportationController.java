@@ -3,9 +3,7 @@ package domain_layer.transportationDomain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import domain_layer.transportationDomain.Driver.LicenseType;
 
@@ -98,17 +96,13 @@ public class TransportationController {
 
 
     public void deleteTransportation(int id){
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) 
-            transportationMap.remove(id);
-    }
-
-    public Transportation findTransportationById(int id) {
-        return transportationMap.get(id);
+            transportationRep.removeTransportation(id);
     }
     
     public String changeDate(int id, LocalDate newDate) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);;
         if (t != null){
             t.setDate(newDate);
             return "Transportation date changed to " + newDate + " for ID " + id;
@@ -119,7 +113,7 @@ public class TransportationController {
     }
 
     public String changeDepartureTime(int id, LocalTime newDepartureTime) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             t.setDepartureTime(newDepartureTime);
             return "Departure time changed to " + newDepartureTime + " for ID " + id;
@@ -129,12 +123,16 @@ public class TransportationController {
     }
     
     public String changeTruckPlateNumber(int id, String newPlate) {
-        Transportation t = findTransportationById(id);
-        if (t != null) {
-            t.setTruckPlateNumber(newPlate);
-            return "Truck plate number changed to " + newPlate + " for ID " + id;
-        } else {
-            return "Transportation with ID " + id + " not found.";
+        Transportation t = transportationRep.getTransportation(id);
+        if(truckRep.truckExists(newPlate)){
+            if (t != null) {
+                t.setTruckPlateNumber(newPlate);
+                return "Truck plate number changed to " + newPlate + " for ID " + id;
+            } else {
+                return "Transportation with ID " + id + " not found.";
+            }
+        }else{
+            return "Truck with plate number " + newPlate + " does not exist.";
         }
     }
     
@@ -144,10 +142,10 @@ public class TransportationController {
             return "Driver with ID " + newDriverName + " does not exist.";
         }
         // Check if the transportation exists
-        if (!transportationMap.containsKey(id)) {
+        if (!transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " does not exist.";
         }
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t == null) {
             return "Transportation with ID " + id + " not found.";
         }
@@ -167,7 +165,7 @@ public class TransportationController {
     }
     
     public String changeSucceeded(int id, boolean newSucceeded) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             t.setSucceeded(newSucceeded);
             return "Success status changed to " + newSucceeded + " for ID " + id;
@@ -177,7 +175,7 @@ public class TransportationController {
     }
     
     public String changeItemsDocument(int id, List<ItemsDocument> newItemsDocument) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             // Check if the items weight is less than the truck's max weight
             if (calculateItemsWeight(newItemsDocument) > truckRep.getTruck(t.getTruckPlateNumber()).getMaxWeight()) {
@@ -191,7 +189,7 @@ public class TransportationController {
     }
     
     public String changeShipmentAreasID(int id, List<Integer> newShipmentAreasID) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             t.setShipmentAreasID(newShipmentAreasID);
             return "Shipment areas updated for ID " + id;
@@ -201,7 +199,7 @@ public class TransportationController {
     }
     
     public String changeOrigin(int id, Site newOrigin) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             t.setOrigin(newOrigin);
             return "Origin changed for ID " + id;
@@ -211,7 +209,7 @@ public class TransportationController {
     }
     
     public String reportAccident(int transportationID, String accident){
-        Transportation t = findTransportationById(transportationID);
+        Transportation t = transportationRep.getTransportation(transportationID);
         if (t == null) {
             return "Transportation with ID " + transportationID + " not found.";
         }
@@ -240,15 +238,7 @@ public class TransportationController {
     }
 
     public String displayAllTransportations() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<Integer, Transportation> entry : transportationMap.entrySet()) {
-            Transportation t = entry.getValue();
-            sb.append("ID: ").append(t.getId()).append(", Date: ").append(t.getDate())
-              .append(", Departure Time: ").append(t.getDepartureTime())
-              .append(", Truck Plate Number: ").append(t.getTruckPlateNumber())
-              .append(", Driver Name: ").append(t.getDriverName()).append("\n");
-        }
-        return sb.toString();
+        return transportationRep.displayAllTransportations();
     }
 
     private int calculateItemsWeight(List<ItemsDocument> itemsDocument) {
@@ -263,7 +253,7 @@ public class TransportationController {
     }
 
     public String removeItems(int transportationId, int itemsDocumentId) {
-        Transportation t = findTransportationById(transportationId);
+        Transportation t = transportationRep.getTransportation(transportationId);
         if (t != null) {
             ItemsDocument itemsToRemove = t.getItemsDocumentById(itemsDocumentId);
             if (itemsToRemove == null) {
@@ -279,7 +269,7 @@ public class TransportationController {
     }
 
     public String addItems(int id, ItemsDocument itemsToAdd) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             List<ItemsDocument> itemsDocument = t.getItemsDocument();
             
@@ -316,7 +306,7 @@ public class TransportationController {
         return sb.toString();
     }
     public String displayTransportationDocument(int transportationID) {
-        Transportation t = findTransportationById(transportationID);
+        Transportation t = transportationRep.getTransportation(transportationID);
         if (t == null) {
             return "Transportation with ID " + transportationID + " not found.";
         }
@@ -351,7 +341,7 @@ public class TransportationController {
     }
 
     public String reportTransportationSuccess(int id) {
-        Transportation t = findTransportationById(id);
+        Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
             t.setSucceeded(true);
             return "Transportation with ID " + id + " marked as successful.";
@@ -383,4 +373,12 @@ public class TransportationController {
             return null;
         }
     }
+    public Transportation findTransportationById(int id) {
+        Transportation transportation = transportationRep.getTransportation(id);
+        if (transportation != null) {
+            return transportation;
+        } else {
+            return null;
+        }
+}
 }
