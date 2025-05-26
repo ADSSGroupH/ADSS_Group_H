@@ -97,4 +97,6 @@ public class Item {
         System.out.println("Promotions: " + this.getProduct().getPromotions());
         System.out.println("Supplier Discounts: " + this.getProduct().getSupplierDiscounts());
     }
+
+        public void setExpirationDate(Date date) {this.expirationDate = date;}
 };
