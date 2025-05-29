@@ -3,7 +3,7 @@ package domain_layer.transportationDomain;
 import java.util.HashMap;
 import java.util.Map;
 
-import domain_layer.transportationDomain.Driver.LicenseType;
+import dto_folder.LicenseType;;
 
 public class DriverRepository {
     private Map<String, Driver> driverMap; 

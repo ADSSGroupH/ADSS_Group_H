@@ -1,6 +1,6 @@
 package domain_layer.transportationDomain;
 
-import domain_layer.transportationDomain.Driver.LicenseType;
+import dto_folder.LicenseType;;
 
 public class Truck {
     private String plateNumber;

@@ -1,15 +1,14 @@
 package domain_layer.transportationDomain;
 
+import dto_folder.LicenseType;
+
 public class Driver {
-    private String name;
+    private String id;
     private LicenseType licenseType;
     private boolean occupied;
-    public enum LicenseType {
-        A, B, C, D, E
-    }
 
-    public Driver(String name, LicenseType licenseType) {
-        this.name = name;
+    public Driver(String id, LicenseType licenseType) {
+        this.id = id;
         this.licenseType = licenseType;
         occupied = false;
     }
@@ -24,12 +23,12 @@ public class Driver {
         return licenseType;
     }
     public String getName() {
-        return name;
+        return id;
     }
 
     public String display() {
         return "Driver{" +
-                "name='" + name + '\'' +
+                "id='" + id + '\'' +
                 ", licenseType=" + licenseType +
                 ", occupied=" + occupied +
                 '}';

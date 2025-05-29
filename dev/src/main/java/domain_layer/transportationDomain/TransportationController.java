@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import domain_layer.transportationDomain.Driver.LicenseType;
+import dto_folder.LicenseType;
 
 
 public class TransportationController {
@@ -380,5 +380,5 @@ public class TransportationController {
         } else {
             return null;
         }
-}
+    }
 }

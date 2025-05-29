@@ -1,5 +1,6 @@
 package domain_layer.transportationDomain;
 
+import java.time.LocalTime;
 import java.util.List;
 
 public class ItemsDocument {
@@ -7,11 +8,13 @@ public class ItemsDocument {
     private int id;
     private Site destination;
     private List<Item> items;
+    private LocalTime arrivalTime;
 
-    public ItemsDocument(int id, Site destination, List<Item> items) {
+    public ItemsDocument(int id, Site destination, LocalTime arrivalTime, List<Item> items) {
         this.id = id;
         this.destination = destination;
         this.items = items;
+        this.arrivalTime = arrivalTime;
     }
 
     public Site getDestination() {
@@ -21,6 +24,9 @@ public class ItemsDocument {
     public List<Item> getItems() {
         return items;
     }    
+    public LocalTime getArrivalTime() {
+        return arrivalTime;
+    }
 
     public void setDestination(Site destination) {
         this.destination = destination;
@@ -33,6 +39,9 @@ public class ItemsDocument {
     }
     public void setId(int id) {
         this.id = id;
+    }
+    public void setArrivalTime(LocalTime arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     public String display() {
