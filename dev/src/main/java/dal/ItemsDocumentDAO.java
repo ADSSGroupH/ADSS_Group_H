@@ -1,5 +1,7 @@
 package dal;
 
-public class ItemsDocumentDAO {
+import dto_folder.ItemsDocumentDTO;
 
+public interface ItemsDocumentDAO {
+    public ItemsDocumentDTO getItemsDocument(int id);
 }
