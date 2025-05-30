@@ -1,4 +1,4 @@
-package dal;
+package dal.transportation_dal;
 
 import dto_folder.ItemsDocumentDTO;
 

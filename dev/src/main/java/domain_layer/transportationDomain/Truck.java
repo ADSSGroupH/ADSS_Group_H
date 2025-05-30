@@ -1,6 +1,8 @@
 package domain_layer.transportationDomain;
 
-import dto_folder.LicenseType;;
+import dto_folder.LicenseType;
+import dto_folder.TruckDTO;
+;
 
 public class Truck {
     private String plateNumber;
@@ -15,6 +17,14 @@ public class Truck {
         this.netWeight = netWeight;
         this.maxWeight = maxWeight;
         this.licenseType = licenseType;
+    }
+
+    public Truck(TruckDTO truckDTO) {
+        this.plateNumber = truckDTO.getPlateNumber();
+        this.model = truckDTO.getModel();
+        this.netWeight = truckDTO.getNetWeight();
+        this.maxWeight = truckDTO.getMaxWeight();
+        this.licenseType = truckDTO.getLicenseType();
     }
 
     public LicenseType getLicenseType() {
@@ -42,5 +52,9 @@ public class Truck {
                 ", maxWeight=" + maxWeight +
                 ", licenseType=" + licenseType +
                 '}';
+    }
+
+    public TruckDTO toDTO() {
+        return new TruckDTO(plateNumber, model, netWeight, maxWeight, licenseType);
     }
 }
