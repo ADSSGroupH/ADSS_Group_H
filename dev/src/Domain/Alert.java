@@ -14,7 +14,7 @@ public class Alert {
         this.pid    = product.getPid();
         this.message = "\nShortage alert:\n" + product.getName() +
                 " (ID: " + product.getPid() + ") is low in stock.\n" +
-                "Minimum quantity:" + product.getMinQuantity() +"\nStock quantity:" + product.getStockQuantity();
+                "Minimum quantity:" + product.getMinQuantity() +"\nStock quantity:" + product.getStockQuantity() +"\n";
     }
     public Product getProduct() { return product; }
 

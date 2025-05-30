@@ -70,6 +70,8 @@ public class SystemController {
                 new Alert(p, new Date()).printShortageMessage();
             }
         }
+
+        showProductsInStock();
     }
 
     public int parseIntSafe(String s) {
@@ -201,6 +203,7 @@ public class SystemController {
     public void showProductsInStock() {
         System.out.println("=== Products in stock ===");
         repositories.getProductRepository().display();
+        System.out.println("\n");
     }
 
     public void showItemDetails() {
