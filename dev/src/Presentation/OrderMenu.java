@@ -76,7 +76,7 @@ public class OrderMenu {
         Map<String, Integer> orderedItems = new HashMap<>();
         float total = 0;
 
-        System.out.println("Start adding items to the order.");
+        System.out.println("Start adding Products to the order.");
         do {
             System.out.print("Item ID: ");
             String itemId = scanner.nextLine();
