@@ -1,10 +1,6 @@
 package Presentation;
 
-import Domain.Agreement;
-import Domain.AgreementItem;
-import Domain.Item;
-import Domain.Supplier;
-import controller.SystemController;
+import Domain.*;
 
 import java.util.*;
 
@@ -46,13 +42,13 @@ public class ItemMenu {
         System.out.print("Enter Item ID to edit: ");
         String itemId = scanner.nextLine();
 
-        Item item = controller.getItemById(itemId);
-        if (item == null) {
+        Product product = controller.getItemById(itemId);
+        if (product == null) {
             System.out.println("Item not found.");
             return;
         }
 
-        System.out.println("\nEditing item: " + item.getName() + " (ID: " + item.getItemId() + ")");
+        System.out.println("\nEditing item: " + product.getName() + " (ID: " + product.getPid() + ")");
         while (true) {
             System.out.println("\nWhat would you like to update?");
             System.out.println("1. Change item name");
@@ -66,7 +62,7 @@ public class ItemMenu {
                     System.out.print("Enter new name: ");
                     String newName = scanner.nextLine().trim();
                     if (!newName.isEmpty()) {
-                        item.setName(newName);
+                        product.setName(newName);
                         System.out.println("✔️ Name updated to " + newName);
                     } else {
                         System.out.println("Name cannot be empty.");
@@ -76,7 +72,7 @@ public class ItemMenu {
                     System.out.print("Enter new ID: ");
                     String newId = scanner.nextLine().trim();
                     if (!newId.isEmpty()) {
-                        controller.updateItemId(item, newId);
+                        controller.updateProductId(product, newId);
                         System.out.println("✔️ ID updated to " + newId);
                     } else {
                         System.out.println("ID cannot be empty.");
@@ -93,12 +89,12 @@ public class ItemMenu {
 
     // Show all items currently in the system
     private void showAllItems() {
-        Collection<Item> items = controller.getAllItems();
+        Collection<Product> items = controller.getAllItems();
         if (items.isEmpty()) {
             System.out.println("No items in the system.");
         } else {
             int i = 1;
-            for (Item item : items) {
+            for (Product item : items) {
                 System.out.println("Item " + i + " - ");
                 System.out.println(item);
                 i++;

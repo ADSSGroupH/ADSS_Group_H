@@ -38,9 +38,11 @@ public class AgreementItem {
         return catalogNumber;
     }
 
+
+
     public float getPrice(int quantity) {
-        if (this.quantity <= quantity) {
-            return price - (price * (discount/100));
+        if (this.quantity <= quantity && discount > 0 && discount < 100) {
+            return price - (price * (discount / 100));
         }
         return price;
     }

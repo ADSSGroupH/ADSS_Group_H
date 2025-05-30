@@ -14,14 +14,46 @@ public class Order {
 
 
     public Order(String orderId, Supplier supplier, Map<String, Integer> items,
-                 String orderDate, int totalPrice, OrderStatus status) {
+                 String orderDate, OrderStatus status) {
         this.orderId = orderId;
         this.supplier = supplier;
         this.items = items;
         this.orderDate = orderDate;
-        this.totalPrice = totalPrice;
+        this.totalPrice = calculateTotalPrice();
         this.status = status;
     }
+
+    private double calculateTotalPrice() {
+        double total = 0.0;
+
+        for (Map.Entry<String, Integer> entry : items.entrySet()) {
+            String itemId = entry.getKey();
+            int quantity = entry.getValue();
+
+            AgreementItem matchedItem = null;
+
+            // חיפוש הפריט בהסכמים של הספק
+            for (Agreement agreement : supplier.getAgreements()) {
+                for (AgreementItem ai : agreement.getItems().keySet()) {
+                    if (ai.getItemId().equals(itemId)) {
+                        matchedItem = ai;
+                        break;
+                    }
+                }
+                if (matchedItem != null) break;
+            }
+
+            if (matchedItem != null) {
+                double price = matchedItem.getPrice(quantity); // מחיר לפי כמות
+                total += price * quantity;
+            } else {
+                System.out.println("⚠️ Item " + itemId + " not found in supplier agreements. Skipping.");
+            }
+        }
+
+        return Math.round(total * 100.0) / 100.0;  // עיגול ל-2 ספרות אחרי הנקודה
+    }
+
 
     // Getters
     public String getOrderId() {

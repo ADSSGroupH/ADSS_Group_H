@@ -1,9 +1,13 @@
 package Presentation;
 
 import Domain.*;
-import controller.SystemController;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 public class OrderMenu {
@@ -16,6 +20,8 @@ public class OrderMenu {
         this.controller = controller;
     }
 
+
+
     // Display the order management main menu
     public void display() {
         while (true) {
@@ -25,6 +31,8 @@ public class OrderMenu {
             System.out.println("3. View order details");
             System.out.println("4. Update order");
             System.out.println("5. Show orders by specific supplier");
+            System.out.println("6. Create order by best price");
+            System.out.println("7. Add a periodic order");
             System.out.println("0. Back to main menu");
             System.out.print("Your choice: ");
 
@@ -35,6 +43,8 @@ public class OrderMenu {
                 case "3" -> viewOrderDetails();
                 case "4" -> updateOrderMenu();
                 case "5" -> showOrdersBySupplier();
+                case "6" -> createOrderByBestPrice();
+                case "7"-> addPeriodicOrder();
                 case "0" -> { return; }
                 default -> System.out.println("Invalid choice.");
             }
@@ -313,4 +323,172 @@ public class OrderMenu {
             }
         }
     }
+
+    // Create and place orders automatically by selecting the cheapest supplier for each item
+    private void createOrderByBestPrice() {
+        Map<String, Integer> itemQuantities = new HashMap<>();
+
+        System.out.println("Enter item IDs and quantities to include in the order (type 'done' to finish):");
+
+        while (true) {
+            System.out.print("Item ID: ");
+            String itemId = scanner.nextLine().trim();
+            if (itemId.equalsIgnoreCase("done")) break;
+
+            if (itemId.isEmpty()) {
+                System.out.println("Item ID cannot be empty.");
+                continue;
+            }
+
+            if (controller.getItemById(itemId) == null) {
+                System.out.println("⚠️ Item not found in the system.");
+                continue;
+            }
+
+            System.out.print("Quantity: ");
+            String quantityInput = scanner.nextLine().trim();
+            int quantity;
+            try {
+                quantity = Integer.parseInt(quantityInput);
+                if (quantity <= 0) {
+                    System.out.println("Quantity must be positive.");
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number.");
+                continue;
+            }
+
+            itemQuantities.put(itemId, quantity);
+        }
+
+        if (itemQuantities.isEmpty()) {
+            System.out.println("No valid items entered. Order cancelled.");
+            return;
+        }
+
+        String orderDate = LocalDate.now().toString();
+        controller.createBestPriceOrders(orderDate, itemQuantities); // ← שים לב, שינוי פרמטרים
+        System.out.println("✔️ Orders created based on best prices and requested quantities.");
+    }
+
+    private void addPeriodicOrder() {
+        System.out.print("Enter Supplier ID: ");
+        String supplierId = scanner.nextLine();
+        Supplier supplier = controller.getSupplierById(supplierId);
+        if (supplier == null) {
+            System.out.println("Supplier not found.");
+            return;
+        }
+
+        Map<String, Integer> orderedItems = new HashMap<>();
+        float total = 0;
+
+        System.out.println("Start adding items to the periodic order.");
+        do {
+            System.out.print("Item ID: ");
+            String itemId = scanner.nextLine();
+
+            AgreementItem matchedItem = null;
+            for (Agreement agreement : supplier.getAgreements()) {
+                for (AgreementItem ai : agreement.getItems().keySet()) {
+                    if (ai.getItemId().equals(itemId)) {
+                        matchedItem = ai;
+                        break;
+                    }
+                }
+                if (matchedItem != null) break;
+            }
+
+            if (matchedItem == null) {
+                System.out.println("Item " + itemId + " is not available from this supplier.");
+            } else {
+                System.out.print("Quantity: ");
+                int quantity = Integer.parseInt(scanner.nextLine());
+                float basePrice = matchedItem.getPrice(1);
+                float price = matchedItem.getPrice(quantity);
+                float discount = matchedItem.getDiscount();
+                String name = matchedItem.getName();
+                float itemTotal = price * quantity;
+                total += itemTotal;
+                orderedItems.put(itemId, quantity);
+
+                System.out.printf("✔️ Item added: %s | Name: %s | Quantity: %d | Base Price per unit: %.2f | Discount: %.2f | Total: %.2f\n",
+                        itemId, name, quantity, basePrice, discount, itemTotal);
+            }
+
+            System.out.print("Add another item? (y/n): ");
+        } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
+
+        if (orderedItems.isEmpty()) {
+            System.out.println("No valid items in order. Periodic order cancelled.");
+            return;
+        }
+
+        System.out.print("Order ID: ");
+        String orderId = scanner.nextLine();
+
+        System.out.print("Frequency in days (e.g., every 7 days): ");
+        int frequencyInDays = Integer.parseInt(scanner.nextLine());
+        Period deliveryPeriod = Period.ofDays(frequencyInDays);
+
+        DeliveryWeekday selectedDay = promptForDeliveryWeekday(scanner);
+        LocalDateTime nextDeliveryTime = calculateNextDeliveryDate(selectedDay);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy 'At' hh:mma", Locale.ENGLISH);
+        System.out.println("📦 First delivery scheduled for: " + nextDeliveryTime.format(formatter));
+
+        PeriodicOrder periodicOrder = controller.CreatePeriodicOrder(
+                orderId,
+                supplier,
+                orderedItems,
+                LocalDate.now().toString(),
+                OrderStatus.PENDING,
+                deliveryPeriod,
+                nextDeliveryTime
+        );
+
+        controller.placeOrder(periodicOrder);
+
+        System.out.printf("📦 Periodic Order placed successfully!\nTotal: %.2f\nNext Delivery: %s\nFrequency: Every %d days\n",
+                total, nextDeliveryTime.format(formatter), frequencyInDays);
+    }
+
+
+    private DeliveryWeekday promptForDeliveryWeekday(Scanner scanner) {
+        System.out.println("Select a weekday for the first delivery:");
+
+        DeliveryWeekday[] weekdays = DeliveryWeekday.values();
+        for (int i = 0; i < weekdays.length; i++) {
+            System.out.printf("%d. %s\n", i + 1, weekdays[i].name());
+        }
+
+        while (true) {
+            System.out.print("Your choice (1-7): ");
+            String input = scanner.nextLine();
+            try {
+                int choice = Integer.parseInt(input);
+                if (choice >= 1 && choice <= 7) {
+                    return weekdays[choice - 1];
+                }
+            } catch (NumberFormatException ignored) {}
+            System.out.println("❌ Invalid input. Please enter a number between 1 and 7.");
+        }
+    }
+
+    private LocalDateTime calculateNextDeliveryDate(DeliveryWeekday selectedDay) {
+        DayOfWeek today = LocalDate.now().getDayOfWeek(); // נניח היום MONDAY
+        DayOfWeek target = DayOfWeek.valueOf(selectedDay.name());
+
+        int daysToAdd = (target.getValue() - today.getValue() + 7) % 7;
+        if (daysToAdd == 0) {
+            daysToAdd = 7; // אם נבחר היום – תזיז לשבוע הבא
+        }
+
+        return LocalDate.now().plusDays(daysToAdd).atTime(9, 0); // משלוח קבוע ב־09:00
+    }
+
+
+
+
 }
