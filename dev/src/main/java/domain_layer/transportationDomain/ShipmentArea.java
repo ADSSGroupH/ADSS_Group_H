@@ -1,6 +1,10 @@
 package domain_layer.transportationDomain;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import dto_folder.ShipmentAreaDTO;
+import dto_folder.SiteDTO;
 
 public class ShipmentArea {
 
@@ -12,6 +16,14 @@ public class ShipmentArea {
         this.id = id;
         this.name = name;
         this.sites = sites;
+    }
+    public ShipmentArea(ShipmentAreaDTO shipmentAreaDTO, List<SiteDTO> sites) {
+        this.id = shipmentAreaDTO.getId();
+        this.name = shipmentAreaDTO.getName();
+        this.sites = new ArrayList<>();
+        for (SiteDTO siteDTO : sites) {
+            this.sites.add(new Site(siteDTO));
+        }
     }
     public int getId() {
         return id;
@@ -48,6 +60,10 @@ public class ShipmentArea {
             }
         }
         return null;
+    }
+
+    public ShipmentAreaDTO toDTO() {
+        return new ShipmentAreaDTO(id, name);
     }
 
     

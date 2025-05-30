@@ -27,7 +27,7 @@ public class JdbcTruckDAO implements TruckDAO {
     }
 
     @Override
-    public TruckDTO save(TruckDTO truck) throws SQLException {
+    public void save(TruckDTO truck) throws SQLException {
            String sql = "INSERT INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
                 ps.setString(1, truck.getPlateNumber());
@@ -36,10 +36,9 @@ public class JdbcTruckDAO implements TruckDAO {
                 ps.setInt(4, truck.getMaxWeight());
                 ps.setString(5, truck.getLicenseType().name());
                 ps.executeUpdate();
-                return truck;
         }
     }
-
+    @Override
     public void delete(String plateNumber) throws SQLException {
         String sql = "DELETE FROM trucks WHERE plateNumber = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {

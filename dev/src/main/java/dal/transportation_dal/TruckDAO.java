@@ -7,6 +7,6 @@ import dto_folder.TruckDTO;
 
 public interface TruckDAO {
     public Optional<TruckDTO> findTruckById(String plateNumber) throws SQLException;
-    public TruckDTO save(TruckDTO user) throws SQLException;
+    public void save(TruckDTO user) throws SQLException;
     public void delete(String plateNumber) throws SQLException;
 }

@@ -1,5 +1,7 @@
 package domain_layer.transportationDomain;
 
+import dto_folder.SiteDTO;
+
 public class Site {
     private String name;
     private String address;
@@ -13,6 +15,13 @@ public class Site {
         this.phoneNumber = phoneNumber;
         this.contactPersonName = contactPersonName;
         this.shipmentAreaId = shipmentAreaId;
+    }
+    public Site(SiteDTO siteDTO) {
+        this.name = siteDTO.getName();
+        this.address = siteDTO.getAddress();
+        this.phoneNumber = siteDTO.getPhoneNumber();
+        this.contactPersonName = siteDTO.getContactPersonName();
+        this.shipmentAreaId = siteDTO.getShipmentAreaId();
     }
     public String getName() {
         return name;
@@ -53,5 +62,8 @@ public class Site {
                 ", contactPersonName='" + contactPersonName + '\'' +
                 ", shipmentAreaId=" + shipmentAreaId +
                 '}' + "\n";
+    }
+    public SiteDTO toDTO() {
+        return new SiteDTO(name, shipmentAreaId, address, phoneNumber, contactPersonName);
     }
 }
