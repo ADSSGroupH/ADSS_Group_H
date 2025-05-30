@@ -112,7 +112,7 @@ public class OrderMenu {
         } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
 
         if (orderedItems.isEmpty()) {
-            System.out.println("No valid items in order. Order cancelled.");
+            System.out.println("No valid Products in order. Order cancelled.");
             return;
         }
 
