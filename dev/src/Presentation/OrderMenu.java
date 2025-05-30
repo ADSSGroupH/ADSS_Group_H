@@ -151,7 +151,7 @@ public class OrderMenu {
 
         while (true) {
             System.out.println("\n=== Update Order ===");
-            System.out.println("1. Modify items (if status is PENDING)");
+            System.out.println("1. Modify Products (if status is PENDING)");
             System.out.println("2. Change order status");
             System.out.println("0. Back");
             System.out.print("Your choice: ");
