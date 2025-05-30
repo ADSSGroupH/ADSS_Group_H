@@ -76,7 +76,7 @@ public class OrderMenu {
         Map<String, Integer> orderedItems = new HashMap<>();
         float total = 0;
 
-        System.out.println("Start adding items to the order.");
+        System.out.println("Start adding Products to the order.");
         do {
             System.out.print("Item ID: ");
             String itemId = scanner.nextLine();
@@ -112,7 +112,7 @@ public class OrderMenu {
         } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
 
         if (orderedItems.isEmpty()) {
-            System.out.println("No valid items in order. Order cancelled.");
+            System.out.println("No valid Product in order. Order cancelled.");
             return;
         }
 
@@ -151,7 +151,7 @@ public class OrderMenu {
 
         while (true) {
             System.out.println("\n=== Update Order ===");
-            System.out.println("1. Modify items (if status is PENDING)");
+            System.out.println("1. Modify Products (if status is PENDING)");
             System.out.println("2. Change order status");
             System.out.println("0. Back");
             System.out.print("Your choice: ");
