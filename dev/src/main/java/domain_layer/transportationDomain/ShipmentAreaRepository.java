@@ -53,9 +53,65 @@ public class ShipmentAreaRepository {
         }
     }
     public void removeShipmentArea(int id) {
-        shipmentAreaMap.remove(id);
+        if(shipmentAreaExists(id))
+            shipmentAreaMap.remove(id);
+        try {
+            jdbcShipmentAreaDAO.delete(id);
+            jdbcSiteDAO.deleteAllSitesByShipmentAreaId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public boolean shipmentAreaExists(int id) {
-        return shipmentAreaMap.containsKey(id);
+        if (shipmentAreaMap.containsKey(id)) {
+            return true;
+        }
+        try {
+        Optional<ShipmentAreaDTO> tempShipmentArea = jdbcShipmentAreaDAO.findById(id);
+        return tempShipmentArea.isPresent();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void addSiteToShipmentArea(int shipmentAreaId, Site site) {
+        ShipmentArea shipmentArea = getShipmentArea(shipmentAreaId);
+        if (shipmentArea != null) {
+            shipmentArea.addSite(site);
+            try {
+                jdbcSiteDAO.save(site.toDTO());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void removeSiteFromShipmentArea(int shipmentAreaId, Site site) {
+        ShipmentArea shipmentArea = getShipmentArea(shipmentAreaId);
+        if (shipmentArea != null) {
+            shipmentArea.removeSite(site);
+            try {
+                jdbcSiteDAO.delete(site.getName(), shipmentAreaId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean siteExistsInShipmentArea(int shipmentAreaId, String siteName) {
+        ShipmentArea shipmentArea = getShipmentArea(shipmentAreaId);
+        if (shipmentArea != null) {
+            return shipmentArea.getSiteByName(siteName) != null;
+        }
+        return false;
+    }
+
+    public  boolean checkSiteExists(String siteName, List<Integer> shipmentAreaIds) {
+     for (Integer id : shipmentAreaIds) {
+            if (siteExistsInShipmentArea(id, siteName)) {
+                return true;
+            }
+        }
+        return false;   
     }
 }

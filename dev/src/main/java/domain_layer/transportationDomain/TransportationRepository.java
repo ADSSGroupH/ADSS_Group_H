@@ -3,12 +3,21 @@ package domain_layer.transportationDomain;
 import java.util.HashMap;
 import java.util.Map;
 
+import dal.transportation_dal.JdbcItemDAO;
+import dal.transportation_dal.JdbcItemsDocumentDAO;
+import dal.transportation_dal.JdbcTransportationDAO;
+
 public class TransportationRepository {
     private Map<Integer, Transportation> transportationMap;
-
+    private JdbcTransportationDAO jdbcTransportationDAO;
+    private JdbcItemsDocumentDAO jdbcItemsDocumentDAO;
+    private JdbcItemDAO jdbcItemDAO;
 
     public TransportationRepository() {
         this.transportationMap = new HashMap<>();
+        this.jdbcTransportationDAO = new JdbcTransportationDAO();
+        this.jdbcItemsDocumentDAO = new JdbcItemsDocumentDAO();
+        this.jdbcItemDAO = new JdbcItemDAO();
     }
     public void addTransportation(int id, Transportation transportation) {
         transportationMap.put(id, transportation);

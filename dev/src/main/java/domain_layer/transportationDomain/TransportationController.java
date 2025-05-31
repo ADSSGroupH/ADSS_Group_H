@@ -54,7 +54,7 @@ public class TransportationController {
             }
         }
         // Check if the site exists
-        if (!checkSiteExists(origin.getName(), shipmentAreasID)) {
+        if (!shipmentAreaRep.checkSiteExists(origin.getName(), shipmentAreasID)) {
             return "Site with name " + origin.getName() + " doesn't exist in the shipment areas.";
         }
         // Check if the truck exists
@@ -320,24 +320,13 @@ public class TransportationController {
         if (area == null) {
             return "Shipment area with ID " + shipmentAreaId + " does not exist.";
         }
-
-        area.addSite(site);
-        return "Site added with Name: " + name;
-    }
-
-
-    public boolean checkSiteExists(String name, List<Integer> shipmentAreaId) {
-        for (int id : shipmentAreaId) {
-            if (shipmentAreaRep.shipmentAreaExists(id)) {
-                ShipmentArea shipmentArea = shipmentAreaRep.getShipmentArea(id);
-                for (Site site : shipmentArea.getSites()) {
-                    if (site.getName().equals(name)) {
-                        return true; // Site with the same name exists in the shipment area
-                    }
-                }
-            }
+        // Check if the site already exists in the shipment area
+        if (shipmentAreaRep.siteExistsInShipmentArea(shipmentAreaId, name)) {
+            return "Site with name " + name + " already exists in the shipment area.";
         }
-        return false; // Site with the same name does not exist in the shipment area
+
+        shipmentAreaRep.addSiteToShipmentArea(shipmentAreaId, site);
+        return "Site added with Name: " + name;
     }
 
     public String reportTransportationSuccess(int id) {

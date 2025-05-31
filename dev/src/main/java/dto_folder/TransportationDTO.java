@@ -1,27 +1,20 @@
 package dto_folder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-
-import domain_layer.transportationDomain.Site;
-
 public class TransportationDTO {
     private int id;
-    private LocalDate date;
-    private LocalTime departureTime;
-    private LocalTime arrivalTime;
+    private String date;
+    private String departureTime;
+    private String arrivalTime;
     private String truckPlateNumber;
     private String driverName;
     private boolean succeeded;
-    private List<Integer> itemsDocumentsId; 
     private String originName;
     private int originShipmentAreaId;
     private String accident;
 
-    public TransportationDTO(int id, LocalDate date, LocalTime departureTime, LocalTime arrivalTime,
+    public TransportationDTO(int id, String date, String departureTime, String arrivalTime,
                             String truckPlateNumber, String driverName, boolean succeeded,
-                            List<Integer> itemsDocumentsId, Site origin, String accident) {
+                            String originName, int shipmentAreaId, String accident) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
@@ -29,9 +22,8 @@ public class TransportationDTO {
         this.truckPlateNumber = truckPlateNumber;
         this.driverName = driverName;
         this.succeeded = succeeded;
-        this.itemsDocumentsId = itemsDocumentsId;
-        this.originName = origin.getName();
-        this.originShipmentAreaId = origin.getShipmentAreaId();
+        this.originName = originName;
+        this.originShipmentAreaId = shipmentAreaId;
         this.accident = accident;
     }
 
@@ -39,15 +31,15 @@ public class TransportationDTO {
         return id;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public LocalTime getDepartureTime() {
+    public String getDepartureTime() {
         return departureTime;
     }
 
-    public LocalTime getArrivalTime() {
+    public String getArrivalTime() {
         return arrivalTime;
     }
 
@@ -61,10 +53,6 @@ public class TransportationDTO {
 
     public boolean isSucceeded() {
         return succeeded;
-    }
-
-    public List<Integer> getItemsDocumentsId() {
-        return itemsDocumentsId;
     }
 
     public String getOriginName() {
