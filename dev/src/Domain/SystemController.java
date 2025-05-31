@@ -10,7 +10,7 @@ import java.util.*;
 
 public class SystemController {
 
-
+    private final Scanner scanner = new Scanner(System.in);
     private static SystemController instance = null;
     private final IRepositoryManager repositories;
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -112,6 +112,8 @@ public class SystemController {
         }
     }
 
+
+
     public void addProduct() {
         System.out.println("=== Add product ===");
         System.out.print("Product ID: ");
@@ -147,36 +149,210 @@ public class SystemController {
         System.out.println(removed ? "Product successfully removed" : "Product does not exist");
     }
 
-    public void addItem() throws ParseException {
-        System.out.print("Item ID: ");
-        String iid = scan.nextLine().trim();
-        System.out.print("Name: ");
-        String iname = scan.nextLine().trim();
-        System.out.print("Product Name: ");
-        String name = scan.nextLine().trim();
-        Product product = repositories.getProductRepository().getProductByName(name);
+    public void addItem() {
+        try {
+            // 1. קלט מזהה הפריט (Item ID) ושם הפריט
+            System.out.print("Item ID: ");
+            String iid = scan.nextLine().trim();
 
-        System.out.print("Classification ID: ");
-        String classId = scan.nextLine().trim();
-        System.out.print("Category: ");
-        String category = scan.nextLine().trim();
-        System.out.print("Subcategory: ");
-        String subcategory = scan.nextLine().trim();
-        System.out.print("Size: ");
-        double size = Double.parseDouble(scan.nextLine().trim());
-        Classification cls = new Classification(classId, category, subcategory, size);
+            System.out.print("Name: ");
+            String iname = scan.nextLine().trim();
 
-        System.out.print("Location (WareHouse=0, Store=1): ");
-        Location loc = parseIntSafe(scan.nextLine()) == 0 ? Location.WareHouse : Location.Store;
-        System.out.print("Expiration Date (yyyy-MM-dd): ");
-        Date exp = sdf.parse(scan.nextLine().trim());
+            // 2. לולאה עבור קלט שם המוצר (Product Name) – לוודא שהמוצר קיים
+            Product product;
+            while (true) {
+                System.out.print("Product Name: ");
+                String productName = scan.nextLine().trim();
 
-        Item item = new Item(iid, iname, loc, exp, cls, product);
-        repositories.getItemRepository().addItem(item);
+                product = repositories.getProductRepository().getProductByName(productName);
+                if (product != null) {
+                    break;  // המוצר נמצא – נמשיך הלאה
+                }
+                System.out.println("❌ Product \"" + productName + "\" not found. Please enter an existing product name.");
+            }
 
-        if (product.getStockQuantity() < product.getMinQuantity()) {
-            Alert alert = new Alert(product, new Date());
-            alert.printShortageMessage();
+            // 3. קלט פרטי Classification (ID, קטגוריה, תת-קטגוריה, גודל)
+            System.out.print("Classification ID: ");
+            String classId = scan.nextLine().trim();
+
+            System.out.print("Category: ");
+            String category = scan.nextLine().trim();
+
+            System.out.print("Subcategory: ");
+            String subcategory = scan.nextLine().trim();
+
+            System.out.print("Size: ");
+            double size;
+            try {
+                size = Double.parseDouble(scan.nextLine().trim());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid size format. Aborting item creation.");
+                return;
+            }
+            Classification cls = new Classification(classId, category, subcategory, size);
+
+            // 4. קלט מיקום (Location)
+            System.out.print("Location (WareHouse=0, Store=1): ");
+            int locChoice = parseIntSafe(scan.nextLine().trim());
+            Location loc = (locChoice == 0) ? Location.WareHouse : Location.Store;
+
+            // 5. לולאה לבדיקת פורמט תאריך התפוגה (Expiration Date) – רק תאריך חוקי מתקבל
+            Date exp;
+            while (true) {
+                System.out.print("Expiration Date (yyyy-MM-dd): ");
+                String dateStr = scan.nextLine().trim();
+                try {
+                    exp = sdf.parse(dateStr);
+                    break;
+                } catch (ParseException pe) {
+                    System.out.println("❌ Invalid date format. Please enter a date in yyyy-MM-dd format.");
+                }
+            }
+
+            // 6. יצירת ה־Item והוספה לריפוזיטורי
+            Item item = new Item(iid, iname, loc, exp, cls, product);
+            repositories.getItemRepository().addItem(item);
+            System.out.println("✅ Item \"" + iname + "\" added successfully.");
+
+            // 7. בדיקה אם המלאי ירד מתחת לרמת המינימום – אם כן, מציגי התראה
+            if (product.getStockQuantity() < product.getMinQuantity()) {
+                Alert alert = new Alert(product, new Date());
+                alert.printShortageMessage();
+            }
+
+        } catch (Exception e) {
+            // כל חריגה בלתי צפויה תיתפס כאן, כדי שלא לקרוס את התוכנית
+            System.out.println("❌ Unexpected error while adding item: " + e.getMessage());
+        }
+    }
+
+    public void addAgreementToSupplier() {
+        System.out.print("Supplier ID: ");
+        String supplierId = scanner.nextLine().trim();
+
+        Supplier supplier = getSupplierById(supplierId);
+        if (supplier == null) {
+            System.out.println("❌ Supplier not found.");
+            return;
+        }
+
+        System.out.print("Agreement ID: ");
+        String agreementId = scanner.nextLine().trim();
+        if (agreementId.isEmpty()) {
+            System.out.println("❌ Agreement ID cannot be empty.");
+            return;
+        }
+
+        boolean supportsDelivery = askYesNo("Supports delivery?");
+
+        List<DeliveryWeekday> days = new ArrayList<>();
+        if (supportsDelivery) {
+            for (DeliveryWeekday day : DeliveryWeekday.values()) {
+                if (askYesNo("Delivery on " + day.name().toLowerCase() + "?")) {
+                    days.add(day);
+                }
+            }
+        }
+
+        Map<AgreementItem, Double> items = new HashMap<>();
+        int itemCount = 1;
+
+        while (askYesNo("Add product " + itemCount + " to agreement?")) {
+            try {
+                System.out.print("Product ID: ");
+                String itemId = scanner.nextLine().trim();
+                if (itemId.isEmpty()) {
+                    System.out.println("❌ Product ID cannot be empty.");
+                    continue;
+                }
+
+                System.out.print("Name: ");
+                String name = scanner.nextLine().trim();
+                if (name.isEmpty()) {
+                    System.out.println("❌ Product name cannot be empty.");
+                    continue;
+                }
+                double price=0;
+                // בדיקה אם המוצר כבר קיים
+                Product product = repositories.getProductRepository().getProductById(itemId);
+                if (product == null) {
+                    System.out.println("🔔 Product does not exist. Please enter the details to create it.");
+
+                    System.out.print("Price: ");
+                    double costPrice = Double.parseDouble(scanner.nextLine().trim());
+
+                    System.out.print("Sale Price: ");
+                    double salePrice = Double.parseDouble(scanner.nextLine().trim());
+
+                    System.out.print("Manufacturer: ");
+                    String manufacturer = scanner.nextLine().trim();
+
+                    System.out.print("Min Quantity: ");
+                    int minQuantity = Integer.parseInt(scanner.nextLine().trim());
+
+                    product = new Product(itemId, name, costPrice, salePrice, manufacturer,
+                            new ArrayList<>(), new ArrayList<>(), minQuantity);
+
+                    repositories.getProductRepository().addProduct(product);
+                    System.out.println("✅ Product added to system.");
+
+                    price = costPrice;
+                }else{
+                    System.out.print("Price: ");
+                     price = Float.parseFloat(scanner.nextLine().trim());
+                    if (price < 0) {
+                        System.out.println("❌ Price cannot be negative.");
+                        continue;
+                    }
+                }
+
+                System.out.print("Catalog Number: ");
+                String catalog = scanner.nextLine().trim();
+                if (catalog.isEmpty()) {
+                    System.out.println("❌ Catalog number cannot be empty.");
+                    continue;
+                }
+
+                System.out.print("Discount (0–100%): ");
+                float discount = Float.parseFloat(scanner.nextLine().trim());
+                if (discount < 0 || discount > 100) {
+                    System.out.println("❌ Discount must be between 0 and 100.");
+                    continue;
+                }
+
+                System.out.print("Min Quantity for Discount: ");
+                int quantity = Integer.parseInt(scanner.nextLine().trim());
+                if (quantity < 0) {
+                    System.out.println("❌ Minimum quantity cannot be negative.");
+                    continue;
+                }
+
+                AgreementItem ai = createAgreementItem(itemId, catalog, (float) price, discount, quantity, name);
+                items.put(ai,  price);
+                itemCount++;
+
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid number. Please try again.");
+            } catch (Exception e) {
+                System.out.println("❌ Unexpected error: " + e.getMessage());
+            }
+        }
+
+        boolean success = addAgreementToSupplier(supplierId, agreementId, supportsDelivery, days, items);
+        if (success) {
+            System.out.println("✅ Agreement added successfully.");
+        } else {
+            System.out.println("❌ Failed to add agreement. Please check the supplier and try again.");
+        }
+    }
+
+    private boolean askYesNo(String prompt) {
+        while (true) {
+            System.out.print(prompt + " (y/n): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("y") || input.equals("yes")) return true;
+            if (input.equals("n") || input.equals("no")) return false;
+            System.out.println("Please enter 'y' or 'n'.");
         }
     }
 

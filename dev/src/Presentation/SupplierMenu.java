@@ -31,7 +31,7 @@ public class SupplierMenu {
                 case "1" -> printAllSuppliers();
                 case "2" -> addSupplier();
                 case "3" -> selectSupplier();
-                case "4" -> addAgreementToSupplier();
+                case "4" -> controller.addAgreementToSupplier();
                 case "5" -> viewItemsInSupplierAgreements();
                 case "0" -> { return; }
                 default -> System.out.println("Invalid choice.");
@@ -179,100 +179,102 @@ public class SupplierMenu {
     }
 
     // Add a new agreement for a specific supplier
-    private void addAgreementToSupplier() {
-        System.out.print("Supplier ID: ");
-        String supplierId = scanner.nextLine().trim();
+//    private void addAgreementToSupplier() {
+//        System.out.print("Supplier ID: ");
+//        String supplierId = scanner.nextLine().trim();
+//
+//        Supplier supplier = controller.getSupplierById(supplierId);
+//        if (supplier == null) {
+//            System.out.println("❌ Supplier not found.");
+//            return;
+//        }
+//
+//        System.out.print("Agreement ID: ");
+//        String agreementId = scanner.nextLine().trim();
+//        if (agreementId.isEmpty()) {
+//            System.out.println("❌ Agreement ID cannot be empty.");
+//            return;
+//        }
+//
+//        boolean supportsDelivery = askYesNo("Supports delivery?");
+//
+//        List<DeliveryWeekday> days = new ArrayList<>();
+//        if (supportsDelivery) {
+//            for (DeliveryWeekday day : DeliveryWeekday.values()) {
+//                if (askYesNo("Delivery on " + day.name().toLowerCase() + "?")) {
+//                    days.add(day);
+//                }
+//            }
+//        }
+//
+//        Map<AgreementItem, Double> items = new HashMap<>();
+//        int itemCount = 1;
+//
+//        while (askYesNo("Add product " + itemCount + " to agreement?")) {
+//            try {
+//                System.out.print("product ID: ");
+//                String itemId = scanner.nextLine().trim();
+//                if (itemId.isEmpty()) {
+//                    System.out.println("product ID cannot be empty.");
+//                    continue;
+//                }
+//
+//                System.out.print("Name: ");
+//                String name = scanner.nextLine().trim();
+//                if (name.isEmpty()) {
+//                    System.out.println("Product name cannot be empty.");
+//                    continue;
+//                }
+//
+//                System.out.print("Catalog Number: ");
+//                String catalog = scanner.nextLine().trim();
+//                if (catalog.isEmpty()) {
+//                    System.out.println("Catalog number cannot be empty.");
+//                    continue;
+//                }
+//
+//                System.out.print("Price: ");
+//                float price = Float.parseFloat(scanner.nextLine().trim());
+//                if (price < 0) {
+//                    System.out.println("Price cannot be negative.");
+//                    continue;
+//                }
+//
+//                System.out.print("Discount (0–100%): ");
+//                float discount = Float.parseFloat(scanner.nextLine().trim());
+//                if (discount < 0 || discount > 100) {
+//                    System.out.println("Discount must be between 0 and 100.");
+//                    continue;
+//                }
+//
+//                System.out.print("Min Quantity for Discount: ");
+//                int quantity = Integer.parseInt(scanner.nextLine().trim());
+//                if (quantity < 0) {
+//                    System.out.println("Minimum quantity cannot be negative.");
+//                    continue;
+//                }
+//
+//                AgreementItem ai = controller.createAgreementItem(itemId, catalog, price, discount, quantity, name);
+//                items.put(ai, (double) price);
+//
+//                itemCount++;
+//
+//            } catch (NumberFormatException e) {
+//                System.out.println("❌ Invalid number. Please try again.");
+//            } catch (Exception e) {
+//                System.out.println("❌ Unexpected error: " + e.getMessage());
+//            }
+//        }
+//
+//        boolean success = controller.addAgreementToSupplier(supplierId, agreementId, supportsDelivery, days, items);
+//        if (success) {
+//            System.out.println("✅ Agreement added successfully.");
+//        } else {
+//            System.out.println("❌ Failed to add agreement. Please check the supplier and try again.");
+//        }
+//    }
 
-        Supplier supplier = controller.getSupplierById(supplierId);
-        if (supplier == null) {
-            System.out.println("❌ Supplier not found.");
-            return;
-        }
 
-        System.out.print("Agreement ID: ");
-        String agreementId = scanner.nextLine().trim();
-        if (agreementId.isEmpty()) {
-            System.out.println("❌ Agreement ID cannot be empty.");
-            return;
-        }
-
-        boolean supportsDelivery = askYesNo("Supports delivery?");
-
-        List<DeliveryWeekday> days = new ArrayList<>();
-        if (supportsDelivery) {
-            for (DeliveryWeekday day : DeliveryWeekday.values()) {
-                if (askYesNo("Delivery on " + day.name().toLowerCase() + "?")) {
-                    days.add(day);
-                }
-            }
-        }
-
-        Map<AgreementItem, Double> items = new HashMap<>();
-        int itemCount = 1;
-
-        while (askYesNo("Add product " + itemCount + " to agreement?")) {
-            try {
-                System.out.print("product ID: ");
-                String itemId = scanner.nextLine().trim();
-                if (itemId.isEmpty()) {
-                    System.out.println("product ID cannot be empty.");
-                    continue;
-                }
-
-                System.out.print("Name: ");
-                String name = scanner.nextLine().trim();
-                if (name.isEmpty()) {
-                    System.out.println("Product name cannot be empty.");
-                    continue;
-                }
-
-                System.out.print("Catalog Number: ");
-                String catalog = scanner.nextLine().trim();
-                if (catalog.isEmpty()) {
-                    System.out.println("Catalog number cannot be empty.");
-                    continue;
-                }
-
-                System.out.print("Price: ");
-                float price = Float.parseFloat(scanner.nextLine().trim());
-                if (price < 0) {
-                    System.out.println("Price cannot be negative.");
-                    continue;
-                }
-
-                System.out.print("Discount (0–100%): ");
-                float discount = Float.parseFloat(scanner.nextLine().trim());
-                if (discount < 0 || discount > 100) {
-                    System.out.println("Discount must be between 0 and 100.");
-                    continue;
-                }
-
-                System.out.print("Min Quantity for Discount: ");
-                int quantity = Integer.parseInt(scanner.nextLine().trim());
-                if (quantity < 0) {
-                    System.out.println("Minimum quantity cannot be negative.");
-                    continue;
-                }
-
-                AgreementItem ai = controller.createAgreementItem(itemId, catalog, price, discount, quantity, name);
-                items.put(ai, (double) price);
-
-                itemCount++;
-
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Invalid number. Please try again.");
-            } catch (Exception e) {
-                System.out.println("❌ Unexpected error: " + e.getMessage());
-            }
-        }
-
-        boolean success = controller.addAgreementToSupplier(supplierId, agreementId, supportsDelivery, days, items);
-        if (success) {
-            System.out.println("✅ Agreement added successfully.");
-        } else {
-            System.out.println("❌ Failed to add agreement. Please check the supplier and try again.");
-        }
-    }
     // View all items included in a supplier's agreements
     private void viewItemsInSupplierAgreements() {
         System.out.print("Enter Supplier ID: ");
@@ -394,16 +396,7 @@ public class SupplierMenu {
         }
     }
 
-    // Ask the user a yes/no question
-    private boolean askYesNo(String prompt) {
-        while (true) {
-            System.out.print(prompt + " (y/n): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("y") || input.equals("yes")) return true;
-            if (input.equals("n") || input.equals("no")) return false;
-            System.out.println("Please enter 'y' or 'n'.");
-        }
-    }
+
 
     // Show all contact persons of a supplier
     private void showSupplierContacts(Supplier supplier) {

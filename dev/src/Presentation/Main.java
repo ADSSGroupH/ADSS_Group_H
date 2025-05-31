@@ -1,6 +1,10 @@
 package Presentation;
 
 import java.text.ParseException;
+
+import dao.ItemDao;
+import dao.SupplierDao;
+import dao.ProductDao;
 import java.util.*;
 import Domain.*;
 
@@ -16,13 +20,12 @@ public class Main {
         System.out.print("Initialize with sample data? (Y/N): ");
         String ans = scanner.nextLine().trim();
         if (ans.equalsIgnoreCase("Y")) {
-            seedTestData();
-            controller.initializeSampleData();
-            System.out.println("Test data loaded successfully!");
+            loadDataFromDatabase(); // ← טען את הנתונים מה־DB
+//            controller.initializeSampleData(); // ← אם יש פעולות חישוב/השלמה
+            System.out.println("✔️ Data loaded successfully from database!");
         } else {
             System.out.println("Manual data entry selected.");
         }
-
         // User authentication
         while (true) {
             System.out.print("Enter username: ");
@@ -83,44 +86,77 @@ public class Main {
             }
         }
     }
+    public static void loadDataFromDatabase() {
+        SupplierDao supplierDao = new SupplierDao();
+        ProductDao productDao = new ProductDao();
+        ItemDao itemDao = new ItemDao();
 
+        List<Supplier> suppliers = supplierDao.getAllSuppliers();
+        for (Supplier supplier : suppliers) {
+            controller.addSupplier(
+                    supplier.getSupplierId(),
+                    supplier.getName(),
+                    supplier.getDeliveryAddress(),
+                    supplier.getBankAccount(),
+                    supplier.getPaymentMethod(),
+                    supplier.getContactPeople()
+            );
+        }
 
-    private static void seedTestData() {
+        List<Product> products = productDao.getAll();
+        for (Product product : products) {
+            if (repositories.getProductRepository().getProductByName(product.getName()) == null) {
+                repositories.getProductRepository().addProduct(product);
+            }
+        }
 
-        List<ContactPerson> contacts1 = List.of(
-                controller.createContactPerson("David Cohen", "050-1234567", "david@example.com"));
-        controller.addSupplier("sup1", "Tnuva", "Tel Aviv", "123-456", PaymentMethod.CASH, contacts1);
+        List<Item> items = itemDao.getAll();
+        for (Item item : items) {
+            repositories.getItemRepository().addItem(item);
+        }
 
-        List<ContactPerson> contacts2 = List.of(
-                controller.createContactPerson("Sarah Levi", "052-7654321", "sarah@example.com"));
-        controller.addSupplier("sup2", "Strauss", "Haifa", "654-321", PaymentMethod.CREDIT_CARD, contacts2);
-
-        Map<AgreementItem, Double> itemsMap1 = new HashMap<>();
-        itemsMap1.put(controller.createAgreementItem("P1", "cat100", 5.0f, 10.0f, 10, "milk"), 5.0);
-        itemsMap1.put(controller.createAgreementItem("P2", "cat101", 3.0f, 5.0f, 5, "bread"), 3.0);
-        List<DeliveryWeekday> days1 = List.of(DeliveryWeekday.SUNDAY, DeliveryWeekday.WEDNESDAY);
-        controller.addAgreementToSupplier("sup1", "agr1", true, days1, itemsMap1);
-
-        Map<AgreementItem, Double> itemsMap2 = new HashMap<>();
-        itemsMap2.put(controller.createAgreementItem("P3", "cat200", 8.0f, 12.0f, 7, "cheese"), 8.0);
-        itemsMap2.put(controller.createAgreementItem("P3", "cat201", 4.0f, 6.0f, 3, "butter"), 4.0);
-        itemsMap2.put(controller.createAgreementItem("P2", "cat202", 6.0f, 9.0f, 5, "juice"), 6.0);
-        List<DeliveryWeekday> days2 = List.of(DeliveryWeekday.MONDAY, DeliveryWeekday.THURSDAY);
-        controller.addAgreementToSupplier("sup2", "agr2", true, days2, itemsMap2);
-
-        Map<String, Integer> orderedItems1 = new HashMap<>();
-        orderedItems1.put("P1", 10);
-        orderedItems1.put("P2", 6);
-        Order order1 = new Order("ord1", controller.getSupplierById("sup1"), orderedItems1,
-                java.time.LocalDate.now().toString(), OrderStatus.PENDING);
-        controller.placeOrder(order1);
-
-        Map<String, Integer> orderedItems2 = new HashMap<>();
-        orderedItems2.put("P1", 5);
-        orderedItems2.put("P2", 3);
-        orderedItems2.put("P3", 4);
-        Order order2 = new Order("ord2", controller.getSupplierById("sup2"), orderedItems2,
-                java.time.LocalDate.now().toString(), OrderStatus.PENDING);
-        controller.placeOrder(order2);
+        System.out.println("✔️ Data loaded from DB successfully.");
     }
+
 }
+
+//
+//    private static void seedTestData() {
+//
+//        List<ContactPerson> contacts1 = List.of(
+//                controller.createContactPerson("David Cohen", "050-1234567", "david@example.com"));
+//        controller.addSupplier("sup1", "Tnuva", "Tel Aviv", "123-456", PaymentMethod.CASH, contacts1);
+//
+//        List<ContactPerson> contacts2 = List.of(
+//                controller.createContactPerson("Sarah Levi", "052-7654321", "sarah@example.com"));
+//        controller.addSupplier("sup2", "Strauss", "Haifa", "654-321", PaymentMethod.CREDIT_CARD, contacts2);
+//
+//        Map<AgreementItem, Double> itemsMap1 = new HashMap<>();
+//        itemsMap1.put(controller.createAgreementItem("P1", "cat100", 5.0f, 10.0f, 10, "milk"), 5.0);
+//        itemsMap1.put(controller.createAgreementItem("P2", "cat101", 3.0f, 5.0f, 5, "bread"), 3.0);
+//        List<DeliveryWeekday> days1 = List.of(DeliveryWeekday.SUNDAY, DeliveryWeekday.WEDNESDAY);
+//        controller.addAgreementToSupplier("sup1", "agr1", true, days1, itemsMap1);
+//
+//        Map<AgreementItem, Double> itemsMap2 = new HashMap<>();
+//        itemsMap2.put(controller.createAgreementItem("P3", "cat200", 8.0f, 12.0f, 7, "cheese"), 8.0);
+//        itemsMap2.put(controller.createAgreementItem("P3", "cat201", 4.0f, 6.0f, 3, "butter"), 4.0);
+//        itemsMap2.put(controller.createAgreementItem("P2", "cat202", 6.0f, 9.0f, 5, "juice"), 6.0);
+//        List<DeliveryWeekday> days2 = List.of(DeliveryWeekday.MONDAY, DeliveryWeekday.THURSDAY);
+//        controller.addAgreementToSupplier("sup2", "agr2", true, days2, itemsMap2);
+//
+//        Map<String, Integer> orderedItems1 = new HashMap<>();
+//        orderedItems1.put("P1", 10);
+//        orderedItems1.put("P2", 6);
+//        Order order1 = new Order("ord1", controller.getSupplierById("sup1"), orderedItems1,
+//                java.time.LocalDate.now().toString(), OrderStatus.PENDING);
+//        controller.placeOrder(order1);
+//
+//        Map<String, Integer> orderedItems2 = new HashMap<>();
+//        orderedItems2.put("P1", 5);
+//        orderedItems2.put("P2", 3);
+//        orderedItems2.put("P3", 4);
+//        Order order2 = new Order("ord2", controller.getSupplierById("sup2"), orderedItems2,
+//                java.time.LocalDate.now().toString(), OrderStatus.PENDING);
+//        controller.placeOrder(order2);
+//    }
+//}
