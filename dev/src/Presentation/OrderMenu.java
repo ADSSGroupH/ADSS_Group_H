@@ -78,7 +78,7 @@ public class OrderMenu {
 
         System.out.println("Start adding Products to the order.");
         do {
-            System.out.print("Item ID: ");
+            System.out.print("product ID: ");
             String itemId = scanner.nextLine();
 
             AgreementItem matchedItem = null;
@@ -93,7 +93,7 @@ public class OrderMenu {
             }
 
             if (matchedItem == null) {
-                System.out.println("Item " + itemId + " is not available from this supplier.");
+                System.out.println("product " + itemId + " is not available from this supplier.");
             } else {
                 System.out.print("Quantity: ");
                 int quantity = Integer.parseInt(scanner.nextLine());
@@ -104,11 +104,11 @@ public class OrderMenu {
                 float itemTotal = price * quantity;
                 total += itemTotal;
                 orderedItems.put(itemId, quantity);
-                System.out.printf("✔️ Item added: %s | Name: %s | Quantity: %d | Base Price per unit: %.2f | Discount: %.2f | Total: %.2f\n",
+                System.out.printf("✔️ product added: %s | Name: %s | Quantity: %d | Base Price per unit: %.2f | Discount: %.2f | Total: %.2f\n",
                         itemId, name, quantity, basePrice, discount, itemTotal);
             }
 
-            System.out.print("Add another item? (y/n): ");
+            System.out.print("Add another product? (y/n): ");
         } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
 
         if (orderedItems.isEmpty()) {
@@ -178,8 +178,8 @@ public class OrderMenu {
 
         while (true) {
             printCurrentOrderItems(items);
-            System.out.println("1. Add/Update item quantity");
-            System.out.println("2. Remove item");
+            System.out.println("1. Add/Update product quantity");
+            System.out.println("2. Remove product");
             System.out.println("0. Done");
             System.out.print("Your choice: ");
 
@@ -188,7 +188,7 @@ public class OrderMenu {
                 case "1" -> handleAddOrUpdateItem(order, items);
                 case "2" -> handleRemoveItem(items);
                 case "0" -> {
-                    System.out.println("Finished updating items.");
+                    System.out.println("Finished updating products.");
                     return;
                 }
                 default -> System.out.println("Invalid choice.");
@@ -198,22 +198,22 @@ public class OrderMenu {
 
     // Print current items and their quantities in the order
     private void printCurrentOrderItems(Map<String, Integer> items) {
-        System.out.println("\nCurrent items:");
-        items.forEach((k, v) -> System.out.println("- Item ID: " + k + ", Quantity: " + v));
+        System.out.println("\nCurrent products:");
+        items.forEach((k, v) -> System.out.println("- product ID: " + k + ", Quantity: " + v));
     }
 
     // Handle adding a new item or updating quantity in an order
     private void handleAddOrUpdateItem(Order order, Map<String, Integer> items) {
-        System.out.print("Enter item ID: ");
+        System.out.print("Enter product ID: ");
         String itemId = scanner.nextLine().trim();
 
         if (itemId.isEmpty()) {
-            System.out.println("Item ID cannot be empty.");
+            System.out.println("product ID cannot be empty.");
             return;
         }
 
         if (!isItemAvailableFromSupplier(order.getSupplier(), itemId)) {
-            System.out.println("This item is not available from the supplier.");
+            System.out.println("This product is not available from the supplier.");
             return;
         }
 
@@ -226,7 +226,7 @@ public class OrderMenu {
                 System.out.println("Quantity cannot be negative.");
             } else {
                 items.put(itemId, quantity);
-                System.out.println("✔️ Item updated.");
+                System.out.println("✔️ product updated.");
             }
         } catch (NumberFormatException e) {
             System.out.println("Invalid quantity. Please enter a valid integer.");
@@ -235,12 +235,12 @@ public class OrderMenu {
 
     // Handle removing an item from an order
     private void handleRemoveItem(Map<String, Integer> items) {
-        System.out.print("Enter item ID to remove: ");
+        System.out.print("Enter product ID to remove: ");
         String itemId = scanner.nextLine();
         if (items.remove(itemId) != null) {
-            System.out.println("Item removed.");
+            System.out.println("product removed.");
         } else {
-            System.out.println("Item not found.");
+            System.out.println("product not found.");
         }
     }
 
@@ -292,9 +292,9 @@ public class OrderMenu {
         System.out.println("Order ID: " + order.getOrderId());
         System.out.println("Order Date: " + order.getOrderDate());
         System.out.println("Status: " + order.getStatus());
-        System.out.println("Items:");
+        System.out.println("products:");
         for (Map.Entry<String, Integer> entry : order.getItems().entrySet()) {
-            System.out.println("  - Item ID: " + entry.getKey() + ", Quantity: " + entry.getValue());
+            System.out.println("  - product ID: " + entry.getKey() + ", Quantity: " + entry.getValue());
         }
         System.out.println("Total Price: " + order.getTotalPrice());
         System.out.println("------------------------\n");
@@ -328,20 +328,20 @@ public class OrderMenu {
     private void createOrderByBestPrice() {
         Map<String, Integer> itemQuantities = new HashMap<>();
 
-        System.out.println("Enter item IDs and quantities to include in the order (type 'done' to finish):");
+        System.out.println("Enter product IDs and quantities to include in the order (type 'done' to finish):");
 
         while (true) {
-            System.out.print("Item ID: ");
+            System.out.print("product ID: ");
             String itemId = scanner.nextLine().trim();
             if (itemId.equalsIgnoreCase("done")) break;
 
             if (itemId.isEmpty()) {
-                System.out.println("Item ID cannot be empty.");
+                System.out.println("product ID cannot be empty.");
                 continue;
             }
 
             if (controller.getItemById(itemId) == null) {
-                System.out.println("⚠️ Item not found in the system.");
+                System.out.println("⚠️ product not found in the system.");
                 continue;
             }
 
@@ -363,7 +363,7 @@ public class OrderMenu {
         }
 
         if (itemQuantities.isEmpty()) {
-            System.out.println("No valid items entered. Order cancelled.");
+            System.out.println("No valid products entered. Order cancelled.");
             return;
         }
 
@@ -384,9 +384,9 @@ public class OrderMenu {
         Map<String, Integer> orderedItems = new HashMap<>();
         float total = 0;
 
-        System.out.println("Start adding items to the periodic order.");
+        System.out.println("Start adding products to the periodic order.");
         do {
-            System.out.print("Item ID: ");
+            System.out.print("product ID: ");
             String itemId = scanner.nextLine();
 
             AgreementItem matchedItem = null;
@@ -401,7 +401,7 @@ public class OrderMenu {
             }
 
             if (matchedItem == null) {
-                System.out.println("Item " + itemId + " is not available from this supplier.");
+                System.out.println("product " + itemId + " is not available from this supplier.");
             } else {
                 System.out.print("Quantity: ");
                 int quantity = Integer.parseInt(scanner.nextLine());
@@ -413,15 +413,15 @@ public class OrderMenu {
                 total += itemTotal;
                 orderedItems.put(itemId, quantity);
 
-                System.out.printf("✔️ Item added: %s | Name: %s | Quantity: %d | Base Price per unit: %.2f | Discount: %.2f | Total: %.2f\n",
+                System.out.printf("✔️ product added: %s | Name: %s | Quantity: %d | Base Price per unit: %.2f | Discount: %.2f | Total: %.2f\n",
                         itemId, name, quantity, basePrice, discount, itemTotal);
             }
 
-            System.out.print("Add another item? (y/n): ");
+            System.out.print("Add another product? (y/n): ");
         } while (scanner.nextLine().trim().equalsIgnoreCase("y"));
 
         if (orderedItems.isEmpty()) {
-            System.out.println("No valid items in order. Periodic order cancelled.");
+            System.out.println("No valid products in order. Periodic order cancelled.");
             return;
         }
 

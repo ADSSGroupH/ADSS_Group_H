@@ -688,10 +688,28 @@ public class SystemController {
     }
 
     public boolean updateOrderStatus(Order order, OrderStatus newStatus) {
-        if (order.getStatus() == OrderStatus.PENDING) {
+        if (order.getStatus() == OrderStatus.PENDING && newStatus == OrderStatus.COLLECTED) {
+            // עדכון מלאי
+            for (Map.Entry<String, Integer> entry : order.getItems().entrySet()) {
+                String productId = entry.getKey();
+                int quantity = entry.getValue();
+
+                Product product = repositories.getProductRepository().getProductById(productId);
+                if (product != null) {
+                    int currentStock = product.getStockQuantity();
+                    product.setStockQuantity(currentStock + quantity);
+                } else {
+                    System.out.println("⚠️ Product with ID " + productId + " not found in inventory.");
+                }
+            }
+
+            order.setStatus(newStatus);
+            return true;
+        } else if (order.getStatus() == OrderStatus.PENDING) {
             order.setStatus(newStatus);
             return true;
         }
+
         return false;
     }
 
@@ -711,6 +729,61 @@ public class SystemController {
             }
         }
         return result;
+    }
+
+    public int promptInt(Scanner scanner) {
+        while (true) {
+            System.out.print("Your choice: ");
+            String line = scanner.nextLine().trim();
+            try {
+                return Integer.parseInt(line);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format, please try again.");
+            }
+        }
+    }
+
+    // View all suppliers that sell a specific item
+    public void viewSuppliersForProducts(Scanner scanner) {
+        System.out.print("Enter Item ID: ");
+        String productsId = scanner.nextLine();
+
+        Map<Supplier, String> suppliers = getSuppliersForItem(productsId);
+
+        if (suppliers.isEmpty()) {
+            System.out.println("No suppliers found for this products.");
+        } else {
+            System.out.println("Suppliers for products " + productsId + ":");
+
+            for (Map.Entry<Supplier, String> entry : suppliers.entrySet()) {
+                Supplier supplier = entry.getKey();
+                String catalogNumber = entry.getValue();
+                float price = -1;
+
+                // Try to find the price from the supplier's agreements
+                for (Agreement agreement : supplier.getAgreements()) {
+                    for (AgreementItem ai : agreement.getItems().keySet()) {
+                        if (ai.getItemId().equals(productsId)) {
+                            price = ai.getPrice(1);
+                            break;
+                        }
+                    }
+                }
+
+                if (price != -1) {
+                    System.out.printf("Supplier id: %s | Name: %s | Catalog Number: %s | Price: %.2f\n",
+                            supplier.getSupplierId(),
+                            supplier.getName(),
+                            catalogNumber,
+                            price);
+                } else {
+                    System.out.printf("Supplier id: %s | Name: %s | Catalog Number: %s | Price: Not found\n",
+                            supplier.getSupplierId(),
+                            supplier.getName(),
+                            catalogNumber);
+                }
+            }
+        }
     }
 
 }

@@ -90,19 +90,19 @@ public class AgreementMenu {
         Map<AgreementItem, Double> items = new HashMap<>();
         int itemCount = 1;
 
-        while (askYesNo("Add item " + itemCount + " to agreement?")) {
+        while (askYesNo("Add product " + itemCount + " to agreement?")) {
             try {
-                System.out.print("Item ID: ");
+                System.out.print("product ID: ");
                 String itemId = scanner.nextLine().trim();
                 if (itemId.isEmpty()) {
-                    System.out.println("Item ID cannot be empty.");
+                    System.out.println("product ID cannot be empty.");
                     continue;
                 }
 
-                System.out.print("Item Name: ");
+                System.out.print("product Name: ");
                 String itemName = scanner.nextLine().trim();
                 if (itemName.isEmpty()) {
-                    System.out.println("Item name cannot be empty.");
+                    System.out.println("product name cannot be empty.");
                     continue;
                 }
 
@@ -191,11 +191,11 @@ public class AgreementMenu {
 
         while (true) {
             System.out.println("\n=== Editing Agreement: " + selected.getAgreementId() + " ===");
-            System.out.println("1. Add new item");
-            System.out.println("2. Remove item");
-            System.out.println("3. View current items");
+            System.out.println("1. Add new product");
+            System.out.println("2. Remove product");
+            System.out.println("3. View current product");
             System.out.println("4. Update delivery days");
-            System.out.println("5. Edit item details");
+            System.out.println("5. Edit product details");
             System.out.println("0. Back");
             System.out.print("Your choice: ");
 
@@ -214,9 +214,9 @@ public class AgreementMenu {
 
     // Add a new item to an existing agreement
     private void addItemToAgreement(Agreement agreement) {
-        System.out.print("Item ID: ");
+        System.out.print("product ID: ");
         String itemId = scanner.nextLine();
-        System.out.print("Item Name: ");
+        System.out.print("product Name: ");
         String itemName = scanner.nextLine();
         controller.addItem(itemId, itemName);
 
@@ -231,14 +231,14 @@ public class AgreementMenu {
 
         AgreementItem ai = controller.createAgreementItem(itemId, catalog, price, discount, quantity, itemName);
         agreement.addItem(ai, price);
-        System.out.println("✔️ Item added.");
+        System.out.println("✔️ product added.");
     }
 
     // Remove an item from an existing agreement
     private void removeItemFromAgreement(Agreement agreement) {
         Set<AgreementItem> items = agreement.getItems().keySet();
         if (items.isEmpty()) {
-            System.out.println("No items to remove.");
+            System.out.println("No products to remove.");
             return;
         }
         List<AgreementItem> itemList = new ArrayList<>(items);
@@ -249,7 +249,7 @@ public class AgreementMenu {
 
         int removeIndex = -1;
         while (true) {
-            System.out.print("Select item to remove: ");
+            System.out.print("Select product to remove: ");
             try {
                 removeIndex = Integer.parseInt(scanner.nextLine()) - 1;
                 if (removeIndex >= 0 && removeIndex < itemList.size()) break;
@@ -268,12 +268,12 @@ public class AgreementMenu {
     private void viewAgreementItems(Agreement agreement) {
         Map<AgreementItem, Double> items = agreement.getItems();
         if (items.isEmpty()) {
-            System.out.println("No items in this agreement.");
+            System.out.println("No products in this agreement.");
         } else {
-            System.out.println("Items in agreement:");
+            System.out.println("products in agreement:");
             int count = 1;
             for (AgreementItem ai : items.keySet()) {
-                System.out.printf("%d. Item ID: %s | Name: %s | Catalog: %s | Price: %.2f | Discount: %.2f%% | Min Qty: %d\n",
+                System.out.printf("%d. product ID: %s | Name: %s | Catalog: %s | Price: %.2f | Discount: %.2f%% | Min Qty: %d\n",
                         count++, ai.getItemId(), ai.getName(), ai.getCatalogNumber(),
                         ai.getPrice(1), ai.getDiscount(), ai.getquantityForDiscount());
             }
@@ -297,12 +297,12 @@ public class AgreementMenu {
     private void editAgreementItem(Agreement agreement) {
         Set<AgreementItem> items = agreement.getItems().keySet();
         if (items.isEmpty()) {
-            System.out.println("No items to edit.");
+            System.out.println("No products to edit.");
             return;
         }
 
         List<AgreementItem> itemList = new ArrayList<>(items);
-        System.out.println("Items in agreement:");
+        System.out.println("products in agreement:");
         for (int i = 0; i < itemList.size(); i++) {
             AgreementItem ai = itemList.get(i);
             System.out.printf("%d. %s\n", i + 1, ai.getName());
@@ -310,7 +310,7 @@ public class AgreementMenu {
 
         int editIndex = -1;
         while (true) {
-            System.out.print("Select item to edit: ");
+            System.out.print("Select product to edit: ");
             try {
                 editIndex = Integer.parseInt(scanner.nextLine().trim()) - 1;
                 if (editIndex >= 0 && editIndex < itemList.size()) break;

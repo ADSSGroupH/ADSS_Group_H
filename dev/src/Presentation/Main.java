@@ -48,15 +48,21 @@ public class Main {
         // Create submenus
         SupplierMenu supplierMenu = new SupplierMenu(scanner, controller);
         AgreementMenu agreementMenu = new AgreementMenu(scanner, controller);
-//        ItemMenu itemMenu = new ItemMenu(scanner, controller);
+        ItemMenu itemMenu = new ItemMenu(scanner, controller);
         OrderMenu orderMenu = new OrderMenu(scanner, controller);
+        ProductMenu productMenu = new ProductMenu(scanner, controller);
+        DiscountMenu discountMenu = new DiscountMenu(scanner, controller);
+        ReportMenu reportMenu = new ReportMenu(scanner, controller);
 
         while (true) {
             System.out.println("\n=== Supermarket Main Menu ===");
             System.out.println("1. Manage Suppliers");
             System.out.println("2. Manage Agreements");
             System.out.println("3. Manage Orders");
-            System.out.println("4. Manage Inventory & Reports");
+            System.out.println("4. Manage Product");
+            System.out.println("5. Manage Item");
+            System.out.println("6. Manage Discount");
+            System.out.println("7. Manage Report");
             System.out.println("0. Exit");
             System.out.print("Your choice: ");
 
@@ -65,7 +71,10 @@ public class Main {
                 case "1" -> supplierMenu.display();
                 case "2" -> agreementMenu.display();
                 case "3" -> orderMenu.display();
-                case "4" -> handleInventoryMenu();
+                case "4" -> productMenu.display();
+                case "5" -> itemMenu.display();
+                case "6" -> discountMenu.display();
+                case "7" -> reportMenu.display();
                 case "0" -> {
                     System.out.println("Goodbye 👋 😎✌️");
                     return;
@@ -75,139 +84,8 @@ public class Main {
         }
     }
 
-    private static void handleInventoryMenu() throws ParseException {
-        int choice;
-        do {
-            System.out.println("\n--- Inventory & Reports ---");
-            System.out.println("1. Manage Products");
-            System.out.println("2. Manage Items");
-            System.out.println("3. Manage Discounts & Promotions");
-            System.out.println("4. Reports");
-            System.out.println("5. Back to Main Menu");
-            System.out.print("Choose an option: ");
-
-            choice = Integer.parseInt(scanner.nextLine());
-
-            switch (choice) {
-                case 1 -> handleProductsMenu();
-                case 2 -> handleItemsMenu();
-                case 3 -> handleDiscountsMenu();
-                case 4 -> handleReportsMenu();
-                case 5 -> {}
-                default -> System.out.println("Invalid option.");
-            }
-        } while (choice != 5);
-    }
-
-    private static void handleProductsMenu() {
-        int choice;
-        do {
-            System.out.println("Manage Products:");
-            System.out.println("1. Add product");
-            System.out.println("2. Remove product");
-            System.out.println("3. Update Min Quantity");
-            System.out.println("4. Show product price by ID");
-            System.out.println("5. Update product price by ID");
-            System.out.println("6. Back to Main Menu");
-            choice = promptInt("Choose an option (1-6): ");
-            switch (choice) {
-                case 1 -> controller.addProduct();
-                case 2 -> controller.removeProduct();
-                case 3 -> controller.updateMinQuantity();
-                case 4 -> controller.showProductPrice();
-                case 5 -> controller.updateProductPrice();
-                case 6 -> {}
-                default -> System.out.println("Invalid choice, please try again.");
-            }
-        } while (choice != 6);
-    }
-
-    private static void handleItemsMenu() throws ParseException {
-        int choice;
-        do {
-            System.out.println("Manage Items:");
-            System.out.println("1. Add item");
-            System.out.println("2. Remove item");
-            System.out.println("3. Show item details");
-            System.out.println("4. Mark item as defective");
-            System.out.println("5. Mark item as expired");
-            System.out.println("6. Back to Main Menu");
-            choice = promptInt("Choose an option (1-6): ");
-            switch (choice) {
-                case 1 -> controller.addItem();
-                case 2 -> controller.removeItem();
-                case 3 -> controller.showItemDetails();
-                case 4 -> controller.markDefective();
-                case 5 -> controller.markExpired();
-                case 6 -> {}
-                default -> System.out.println("Invalid choice, please try again.");
-            }
-        } while (choice != 6);
-    }
-
-    private static void handleDiscountsMenu() {
-        int choice;
-        do {
-            System.out.println("Manage Discounts & Promotions:");
-            System.out.println("1. Add Supplier Discount");
-            System.out.println("2. Remove Supplier Discount");
-            System.out.println("3. Add Promotion");
-            System.out.println("4. Remove Promotion");
-            System.out.println("5. Back to Main Menu");
-            choice = promptInt("Choose an option (1-5): ");
-            switch (choice) {
-                case 1 -> controller.addSupplierDiscount();
-                case 2 -> controller.removeSupplierDiscount();
-                case 3 -> controller.addPromotion();
-                case 4 -> controller.removePromotion();
-                case 5 -> {}
-                default -> System.out.println("Invalid choice, please try again.");
-            }
-        } while (choice != 5);
-    }
-
-    private static void handleReportsMenu() {
-        int choice;
-        do {
-            System.out.println("Reports:");
-            System.out.println("1. List all products in stock");
-            System.out.println("2. Inventory report by category");
-            System.out.println("3. Defective items report");
-            System.out.println("4. Expired items report");
-            System.out.println("5. Back to Main Menu");
-            choice = promptInt("Choose an option (1-5): ");
-            switch (choice) {
-                case 1 -> controller.showProductsInStock();
-                case 2 -> controller.generateCategoryReport();
-                case 3 -> controller.generateDefectiveReport();
-                case 4 -> controller.generateExpiredReport();
-                case 5 -> {}
-                default -> System.out.println("Invalid choice, please try again.");
-            }
-        } while (choice != 5);
-    }
-
-    // --- Prompt Helpers ---
-
-    private static int promptInt(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String line = scanner.nextLine().trim();
-            try {
-                return Integer.parseInt(line);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid number format, please try again.");
-            }
-        }
-    }
 
     private static void seedTestData() {
-//        controller.addItem("item1", "Milk");
-//        controller.addItem("item2", "Bread");
-//        controller.addItem("item3", "Eggs");
-//        controller.addItem("item4", "Cheese");
-//        controller.addItem("item5", "Butter");
-//        controller.addItem("item6", "Juice");
 
         List<ContactPerson> contacts1 = List.of(
                 controller.createContactPerson("David Cohen", "050-1234567", "david@example.com"));

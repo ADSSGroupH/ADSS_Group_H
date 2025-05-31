@@ -22,7 +22,7 @@ public class SupplierMenu {
             System.out.println("2. Add new supplier");
             System.out.println("3. Select supplier to view/edit");
             System.out.println("4. Add agreement");
-            System.out.println("5. View items in supplier agreements");
+            System.out.println("5. View products in supplier agreements");
             System.out.println("0. Back to main menu");
             System.out.print("Your choice: ");
             String choice = scanner.nextLine();
@@ -210,19 +210,19 @@ public class SupplierMenu {
         Map<AgreementItem, Double> items = new HashMap<>();
         int itemCount = 1;
 
-        while (askYesNo("Add item " + itemCount + " to agreement?")) {
+        while (askYesNo("Add product " + itemCount + " to agreement?")) {
             try {
-                System.out.print("Item ID: ");
+                System.out.print("product ID: ");
                 String itemId = scanner.nextLine().trim();
                 if (itemId.isEmpty()) {
-                    System.out.println("Item ID cannot be empty.");
+                    System.out.println("product ID cannot be empty.");
                     continue;
                 }
 
                 System.out.print("Name: ");
                 String name = scanner.nextLine().trim();
                 if (name.isEmpty()) {
-                    System.out.println("Item name cannot be empty.");
+                    System.out.println("Product name cannot be empty.");
                     continue;
                 }
 
@@ -290,19 +290,19 @@ public class SupplierMenu {
             return;
         }
 
-        System.out.println("\nItems supplied by " + supplier.getName() + ":");
+        System.out.println("\nProducts supplied by " + supplier.getName() + ":");
 
         int count = 1;
         for (Agreement agreement : agreements) {
             System.out.println("Agreement ID: " + agreement.getAgreementId());
 
             if (agreement.getItems().isEmpty()) {
-                System.out.println("  No items in this agreement.");
+                System.out.println("  No products in this agreement.");
                 continue;
             }
 
             for (AgreementItem item : agreement.getItems().keySet()) {
-                System.out.printf("  %d. Item ID: %s | Name: %s | Catalog: %s | Price: %.2f | Discount: %.2f%% | Min Qty for Discount: %d\n",
+                System.out.printf("  %d. product ID: %s | Name: %s | Catalog: %s | Price: %.2f | Discount: %.2f%% | Min Qty for Discount: %d\n",
                         count++,
                         item.getItemId(),
                         item.getName(),
