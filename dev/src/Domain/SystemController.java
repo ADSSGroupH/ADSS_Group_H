@@ -54,12 +54,6 @@ public class SystemController {
         repositories.getItemRepository().addItem(new Item("I2", "Bread1", Location.WareHouse, new Date(System.currentTimeMillis() + 172800000), c2, p2));
         repositories.getItemRepository().addItem(new Item("I3", "Shampoo1", Location.Store, new Date(System.currentTimeMillis() + 259200000), c3, p3));
 
-        p1.setStockQuantity(1);
-        p1.setShelfQuantity(1);
-        p2.setStockQuantity(1);
-        p2.setWarehouseQuantity(1);
-        p3.setStockQuantity(1);
-        p3.setShelfQuantity(1);
 
         // Mark an item as defective
         repositories.getItemRepository().markItemDefective("Shampoo1");
@@ -865,15 +859,53 @@ public class SystemController {
 
     public boolean updateOrderStatus(Order order, OrderStatus newStatus) {
         if (order.getStatus() == OrderStatus.PENDING && newStatus == OrderStatus.COLLECTED) {
-            // עדכון מלאי
+            Scanner scanner = new Scanner(System.in);
+            int counter = 1;
+
             for (Map.Entry<String, Integer> entry : order.getItems().entrySet()) {
                 String productId = entry.getKey();
                 int quantity = entry.getValue();
-
                 Product product = repositories.getProductRepository().getProductById(productId);
+
                 if (product != null) {
-                    int currentStock = product.getStockQuantity();
-                    product.setStockQuantity(currentStock + quantity);
+                    System.out.println("🛠 Creating items for product: " + product.getName());
+
+                    System.out.print("Category: ");
+                    String category = scanner.nextLine().trim();
+                    System.out.print("Subcategory: ");
+                    String subcategory = scanner.nextLine().trim();
+                    System.out.print("Size: ");
+                    double size = Double.parseDouble(scanner.nextLine().trim());
+                    System.out.print("Expiration Date (yyyy-MM-dd): ");
+                    Date expirationDate;
+                    try {
+                        expirationDate = new SimpleDateFormat("yyyy-MM-dd").parse(scanner.nextLine().trim());
+                    } catch (ParseException e) {
+                        System.out.println("Invalid date format.");
+                        continue;
+                    }
+
+                    System.out.print("How many items to Store? ");
+                    int toStore = Integer.parseInt(scanner.nextLine().trim());
+                    int toWarehouse = quantity - toStore;
+
+                    for (int i = 0; i < quantity; i++) {
+                        String itemId = UUID.randomUUID().toString();
+                        String itemName = product.getName() + "-" + (counter++);
+                        String classificationId = "CLS-" + UUID.randomUUID().toString().substring(0, 5);
+
+                        Classification cls = new Classification(classificationId, category, subcategory, size);
+                        Location location = (i < toStore) ? Location.Store : Location.WareHouse;
+
+                        Item item = new Item(itemId, itemName, location, expirationDate, cls, product);
+                        repositories.getItemRepository().addItem(item);
+                    }
+
+                    if (product.getStockQuantity() < product.getMinQuantity()) {
+                        Alert alert = new Alert(product, new Date());
+                        alert.printShortageMessage();
+                    }
+
                 } else {
                     System.out.println("⚠️ Product with ID " + productId + " not found in inventory.");
                 }
