@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) throws ParseException {
         System.out.println("Welcome to the Supermarket Management System");
 
+
         // Data load option
         System.out.print("Initialize with sample data? (Y/N): ");
         String ans = scanner.nextLine().trim();
