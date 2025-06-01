@@ -35,38 +35,26 @@ public class SystemController {
     }
 
     public void initializeSampleData() {
-        // Create example products
-        Product p1 = new Product("P1", "Milk", 2.0, 3.5, "Tnuva", new ArrayList<>(), new ArrayList<>(), 5);
-        Product p2 = new Product("P2", "Bread", 1.0, 2.5, "Angel", new ArrayList<>(), new ArrayList<>(), 3);
-        Product p3 = new Product("P3", "Shampoo", 10.0, 15.0, "Head&Shoulders", new ArrayList<>(), new ArrayList<>(), 2);
 
-        repositories.getProductRepository().addProduct(p1);
-        repositories.getProductRepository().addProduct(p2);
-        repositories.getProductRepository().addProduct(p3);
+        Map<AgreementItem, Double> items = new HashMap<>();
+        AgreementItem ai = createAgreementItem("P1", "C1", 8, 20, 20, "Milk");
+        items.put(ai,  8.0);
 
-        // Create example classifications
-        Classification c1 = new Classification("C1", "Dairy", "Milk", 1.0);
-        Classification c2 = new Classification("C2", "Bakery", "Bread", 0.5);
-        Classification c3 = new Classification("C3", "Toiletries", "Hair", 0.3);
+        List<DeliveryWeekday> days = new ArrayList<>();
+        days.add(DeliveryWeekday.SUNDAY);
+        days.add(DeliveryWeekday.TUESDAY);
+        days.add(DeliveryWeekday.THURSDAY);
 
-        // Create example items
-        repositories.getItemRepository().addItem(new Item("I1", "Milk1", Location.Store, new Date(System.currentTimeMillis() + 86400000), c1, p1));
-        repositories.getItemRepository().addItem(new Item("I2", "Bread1", Location.WareHouse, new Date(System.currentTimeMillis() + 172800000), c2, p2));
-        repositories.getItemRepository().addItem(new Item("I3", "Shampoo1", Location.Store, new Date(System.currentTimeMillis() + 259200000), c3, p3));
+        addAgreementToSupplier("SUP1", "A1", true, days, items);
 
+        Map<AgreementItem, Double> items1 = new HashMap<>();
+        AgreementItem ai1 = createAgreementItem("P1", "C2", 6, 20, 20, "Milk");
+        items1.put(ai1,  6.0);
 
-        // Mark an item as defective
-        repositories.getItemRepository().markItemDefective("Shampoo1");
-
-        // Print initial alerts if any
-        for (Product p : repositories.getProductRepository().getAllProducts()) {
-            if (p.getStockQuantity() < p.getMinQuantity()) {
-                new Alert(p, new Date()).printShortageMessage();
-            }
-        }
-
-        showProductsInStock();
+        addAgreementToSupplier("SUP2", "A2", true, days, items1);
     }
+
+
 
     public int parseIntSafe(String s) {
         try {

@@ -21,7 +21,7 @@ public class Main {
         String ans = scanner.nextLine().trim();
         if (ans.equalsIgnoreCase("Y")) {
             loadDataFromDatabase(); // ← טען את הנתונים מה־DB
-//            controller.initializeSampleData(); // ← אם יש פעולות חישוב/השלמה
+            controller.initializeSampleData(); // ← אם יש פעולות חישוב/השלמה
             System.out.println("✔️ Data loaded successfully from database!");
         } else {
             System.out.println("Manual data entry selected.");
