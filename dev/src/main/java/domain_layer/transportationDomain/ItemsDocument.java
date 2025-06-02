@@ -3,6 +3,8 @@ package domain_layer.transportationDomain;
 import java.time.LocalTime;
 import java.util.List;
 
+import dto_folder.ItemsDocumentDTO;
+
 public class ItemsDocument {
     
     private int id;
@@ -15,6 +17,13 @@ public class ItemsDocument {
         this.destination = destination;
         this.items = items;
         this.arrivalTime = arrivalTime;
+    }
+
+    public ItemsDocument(ItemsDocumentDTO itemsDocumentDTO, Site destination, List<Item> items) {
+        this.id = itemsDocumentDTO.getId();
+        this.destination = destination;
+        this.arrivalTime = LocalTime.parse(itemsDocumentDTO.getArrivalTime());
+        this.items = items;
     }
 
     public Site getDestination() {
@@ -54,4 +63,9 @@ public class ItemsDocument {
         }
         return sb.toString();
     }
+
+    public ItemsDocumentDTO toDTO(int transportationId) {
+        return new ItemsDocumentDTO(id, transportationId, destination.getShipmentAreaId(), destination.getName(), arrivalTime.toString());
+    }
+
 }

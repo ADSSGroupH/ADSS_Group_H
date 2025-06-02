@@ -1,5 +1,7 @@
 package domain_layer.transportationDomain;
 
+import dto_folder.ItemDTO;
+
 public class Item {
 	private int id;
     private String name;
@@ -11,6 +13,13 @@ public class Item {
         this.name = name;
         this.weight = weight;
         this.quantity = quantity;
+    }
+
+    public Item(ItemDTO itemDTO) {
+        this.id = itemDTO.getItemId();
+        this.name = itemDTO.getName();
+        this.weight = itemDTO.getWeight();
+        this.quantity = itemDTO.getQuantity();
     }
 
     public int getId() {
@@ -30,5 +39,9 @@ public class Item {
     }
     public void addQuantity(int quantity) {
         this.quantity += quantity;
+    }
+
+    public ItemDTO toDTO(int itemsDocumentId) {
+        return new ItemDTO(itemsDocumentId, id, name, weight, quantity); 
     }
 }

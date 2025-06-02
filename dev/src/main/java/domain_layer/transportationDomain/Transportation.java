@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import dto_folder.TransportationDTO;
+
 public class Transportation {
     private int id;
     private LocalDate date;
@@ -32,6 +34,19 @@ public class Transportation {
         this.shipmentAreasID = shipmentAreasID;
         this.origin = origin;
         this.accident = "No accidents reported";
+    }
+
+    public Transportation(TransportationDTO transportationDTO, Site origin, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID) {
+        this.id = transportationDTO.getId();
+        this.date = LocalDate.parse(transportationDTO.getDate());
+        this.departureTime = LocalTime.parse(transportationDTO.getDepartureTime());
+        this.arrivalTime = LocalTime.parse(transportationDTO.getArrivalTime());
+        this.truckPlateNumber = transportationDTO.getTruckPlateNumber();
+        this.driverName = transportationDTO.getDriverName();
+        this.succeeded = transportationDTO.isSucceeded();
+        this.origin = origin;
+        this.accident = transportationDTO.getAccident();
+        this.itemsDocument = itemsDocument;
     }
     public void setDate(LocalDate newDate) {
         this.date = newDate;
@@ -137,7 +152,10 @@ public class Transportation {
         this.itemsDocument.remove(doc);
     }
 
-
+    public TransportationDTO toDTO() {
+        return new TransportationDTO(id, date.toString(), departureTime.toString(), arrivalTime.toString(),
+                truckPlateNumber, driverName, succeeded, origin.getName(), origin.getShipmentAreaId(), accident);
+    }
 
     
 }

@@ -114,4 +114,12 @@ public class ShipmentAreaRepository {
         }
         return false;   
     }
+
+    public Site getSiteByName(String siteName, int shipmentAreaId) {
+        ShipmentArea shipmentArea = getShipmentArea(shipmentAreaId);
+        if (shipmentArea != null) {
+            return shipmentArea.getSiteByName(siteName);
+        }
+        return null;
+    }
 }
