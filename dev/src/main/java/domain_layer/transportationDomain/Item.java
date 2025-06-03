@@ -44,4 +44,8 @@ public class Item {
     public ItemDTO toDTO(int itemsDocumentId) {
         return new ItemDTO(itemsDocumentId, id, name, weight, quantity); 
     }
+
+    public int getTotalWeight() {
+        return this.quantity * this.weight;
+    }
 }

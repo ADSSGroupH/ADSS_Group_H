@@ -49,7 +49,7 @@ public class TransportationController {
         }
         // Check if the shipment areas exist
         for (int areaID : shipmentAreasID) {
-            if (!shipmentAreaRep.shipmentAreaExists(id)) {
+            if (!shipmentAreaRep.shipmentAreaExists(areaID)) {
                 return "Shipment area with ID " + areaID + " does not exist.";
             }
         }

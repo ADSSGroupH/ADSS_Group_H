@@ -34,7 +34,7 @@ public class DriverRepository {
     public boolean checkAvalableDrivers(LicenseType licenseType) {
         for (Map.Entry<String, Driver> entry : driverMap.entrySet()) {
             Driver driver = entry.getValue();
-            if (!driver.isOccupied() && driver.getLicenseType().equals(licenseType)) {
+            if (driver.getLicenseType().equals(licenseType)) {
                 return true; // Found an available driver with the required license type
             }
         }

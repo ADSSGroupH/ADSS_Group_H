@@ -1,4 +1,4 @@
-package PresentationLayer;
+/*package PresentationLayer;
 
 import java.util.*;
 import java.time.LocalDate;
@@ -6,11 +6,11 @@ import DomainLayer.*;
 import ServiceLayer.*;
 
 public class EmployeeUI {
-    private final Scanner scanner = new Scanner(System.in);
-    private final Employee employee;
-    private final EmployeeService employeeService = new EmployeeService();
-    private final ShiftService shiftService = new ShiftService();
-    private final ShiftSwapRequestService swapService = new ShiftSwapRequestService();
+    protected final Scanner scanner = new Scanner(System.in);
+    protected final Employee employee;
+    protected final EmployeeService employeeService = new EmployeeService();
+    protected final ShiftService shiftService = new ShiftService();
+    protected final ShiftSwapRequestService swapService = new ShiftSwapRequestService();
 
     public EmployeeUI(Employee employee) {
         this.employee = employee;
@@ -227,7 +227,7 @@ public class EmployeeUI {
         }
     }
 
-    private void printEmployeeDetails() {
+    protected void printEmployeeDetails() {
         System.out.println("\n--- Personal Details ---");
         System.out.println("ID: " + employee.getId());
         System.out.println("Name: " + employee.getName());
@@ -260,3 +260,5 @@ public class EmployeeUI {
         }
     }
 }
+
+ */
