@@ -81,4 +81,27 @@ public class JdbcItemsDocumentDAO implements ItemsDocumentDAO {
         }
    }
 
+    @Override
+    public void deleteAllItemsDocumentsByTransportationId(int transportationId) throws SQLException {
+        String sql = "DELETE FROM ItemsDocuments WHERE transportationId = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, transportationId);
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public List<Integer> getAllItemDocumentIdByTransportationId(int transportationId) throws SQLException{
+        String sql = "SELECT id FROM ItemsDocuments WHERE transportationId = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setInt(1, transportationId);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<Integer> itemDocumentIds = new java.util.ArrayList<>();
+                while (rs.next()) {
+                    itemDocumentIds.add(rs.getInt("id"));
+                }
+                return itemDocumentIds;
+            }
+        }
+    }
 }

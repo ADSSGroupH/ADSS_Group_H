@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import dal.transportation_dal.JdbcItemDAO;
 import dal.transportation_dal.JdbcItemsDocumentDAO;
+import dal.transportation_dal.JdbcSiteDAO;
 import dal.transportation_dal.JdbcTransportationDAO;
 import dto_folder.ItemDTO;
 import dto_folder.ItemsDocumentDTO;
@@ -18,12 +19,14 @@ public class TransportationRepository {
     private JdbcTransportationDAO jdbcTransportationDAO;
     private JdbcItemsDocumentDAO jdbcItemsDocumentDAO;
     private JdbcItemDAO jdbcItemDAO;
+    private JdbcSiteDAO jdbcSiteDAO;
 
     public TransportationRepository() {
         this.transportationMap = new HashMap<>();
         this.jdbcTransportationDAO = new JdbcTransportationDAO();
         this.jdbcItemsDocumentDAO = new JdbcItemsDocumentDAO();
         this.jdbcItemDAO = new JdbcItemDAO();
+        this.jdbcSiteDAO = new JdbcSiteDAO();
     }
     public void addTransportation(int id, Transportation transportation) {
         transportationMap.put(id, transportation);
@@ -48,12 +51,11 @@ public class TransportationRepository {
             if (!transportationdto.isPresent()) {
                 return null;
             }
-            ShipmentAreaRepository shipmentAreaRepository = new ShipmentAreaRepository();
-            Site origin = shipmentAreaRepository.getSiteByName(transportationdto.get().getOriginName(), transportationdto.get().getOriginShipmentAreaId());
+            Site origin = new Site(jdbcSiteDAO.findSite(transportationdto.get().getOriginName(),  transportationdto.get().getOriginShipmentAreaId()).get());
             List<ItemsDocumentDTO> itemsDocuments = jdbcItemsDocumentDAO.getAllTransportationItemsDocuments(id);
             List<ItemsDocument> itemsDocuments2 = new ArrayList<>();
             for (ItemsDocumentDTO itemsDocument3 : itemsDocuments) {
-                Site destination = shipmentAreaRepository.getSiteByName(itemsDocument3.getDestinationName(), itemsDocument3.getShipmentAreaId());
+                Site destination = new Site(jdbcSiteDAO.findSite(itemsDocument3.getDestinationName(), itemsDocument3.getShipmentAreaId()).get());
                 List<ItemDTO> itemDTOs = jdbcItemDAO.getAllItemsByItemsDocumentId(itemsDocument3.getId());
                 List<Item> items = new ArrayList<>();
                 for (ItemDTO itemDTO : itemDTOs) {
@@ -71,7 +73,20 @@ public class TransportationRepository {
 }
 
     public void removeTransportation(int id) {
-        transportationMap.remove(id);
+        if (transportationExists(id)) {
+            try {        
+                List<Integer> itemsDocumentIds = jdbcItemsDocumentDAO.getAllItemDocumentIdByTransportationId(id);
+                for (Integer itemsDocumentId : itemsDocumentIds) {
+                    jdbcItemDAO.deleteallItemsByItemsDocumentID(itemsDocumentId);
+                }
+                jdbcItemsDocumentDAO.deleteAllItemsDocumentsByTransportationId(id);
+                jdbcTransportationDAO.deleteTransportation(id);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (transportationMap.containsKey(id))
+            transportationMap.remove(id);
     }
 
     public boolean transportationExists(int id) {

@@ -12,4 +12,6 @@ public interface ItemsDocumentDAO {
     public void deleteItemsDocument(int id) throws SQLException;
     public List<ItemsDocumentDTO> getAllTransportationItemsDocuments(int transportationId) throws SQLException;
     public List<Integer> getAllShipmentAreaIdsByTransportationId(int transportationId) throws SQLException;
+    public void deleteAllItemsDocumentsByTransportationId(int transportationId) throws SQLException;
+    public List<Integer> getAllItemDocumentIdByTransportationId(int transportationId) throws SQLException;
 }
