@@ -71,10 +71,12 @@ public class TransportationController {
         if (!driverRep.driverExists(drivername)) {
             return "Driver with ID " + drivername + " does not exist.";
         }
-        // Check if the driver is available
+        /*// Check if the driver is available
         if (!checkDriverAvailability(drivername, date, departureTime, arrivalTime)) {
             return "Driver with ID " + drivername + " is already occupied.";
         }
+
+         */
         // Check if the driver has a matching license type
         if (!driverRep.getDriver(drivername).getLicenseType().equals(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "Driver with ID " + drivername + " does not have the required license type for truck " + truckPlateNumber + ".";

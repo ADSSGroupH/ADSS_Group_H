@@ -1,8 +1,8 @@
-/*package PresentationLayer;
+package PresentationLayer;
 
 import ServiceLayer.TransportationManagerService;
-import domain_layer.transportationDomain.ItemsDocument;
-import domain_layer.transportationDomain.Site;
+import DomainLayer.transportationDomain.ItemsDocument;
+import DomainLayer.transportationDomain.Site;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,7 +14,7 @@ public class TransportationManagerUI extends EmployeeUI {
     private final Scanner scanner = new Scanner(System.in);
     private final TransportationManagerService service = new TransportationManagerService();
 
-    public TransportationManagerUI(domain_layer.Employee employee) {
+    public TransportationManagerUI(DomainLayer.Employee employee) {
         super(employee);
     }
 
@@ -82,7 +82,7 @@ public class TransportationManagerUI extends EmployeeUI {
     }
 
     private void addTruck() {
-        System.out.println(service.addTruck("123", "Volvo", 3000, 5000, dto_folder.LicenseType.C));
+        System.out.println(service.addTruck("123", "Volvo", 3000, 5000, DTO.LicenseType.C));
     }
 
     private void createShipmentArea() {
@@ -165,4 +165,3 @@ public class TransportationManagerUI extends EmployeeUI {
         System.out.println(service.removeDriver("driver1"));
     }
 }
-*/

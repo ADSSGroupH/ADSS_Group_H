@@ -9,11 +9,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+
+import DomainLayer.transportationDomain.*;
+
 import org.junit.jupiter.api.Test;
 
 import DomainLayer.User;
 import DomainLayer.UserController;
+
 import DomainLayer.transportationDomain.*;
+
 import DTO.LicenseType;
 
 
@@ -88,18 +94,16 @@ public class TransportationTests {
         // Set up data
         Site origin = new Site("Origin", "123 Main St", "111-222-3333", "Alice", 1);
         Site destination = new Site("Dest", "456 Side St", "999-888-7777", "Bob", 1);
-
         tc.addSite(origin.getName(), origin.getAddress(), origin.getPhoneNumber(), origin.getContactPersonName(), origin.getShipmentAreaId());
         tc.addSite(destination.getName(), destination.getAddress(), destination.getPhoneNumber(), destination.getContactPersonName(), destination.getShipmentAreaId());
 
         tc.addTruck("TR1", "Volvo", 1000, 5000, LicenseType.B);
         tc.addDriver("Driver1", LicenseType.B);
 
-        // Create initial items document
+        // Initial document
         List<Item> items = new ArrayList<>();
         items.add(new Item(1, "Box", 10, 2)); // total weight = 20
-        LocalTime arrivalTime = LocalTime.parse("12:00");
-        ItemsDocument doc = new ItemsDocument(2, destination, arrivalTime, items);
+        ItemsDocument doc = new ItemsDocument(2, destination, LocalTime.parse("12:00"), items);
         List<ItemsDocument> docs = new ArrayList<>();
         docs.add(doc);
 
@@ -107,17 +111,18 @@ public class TransportationTests {
         shipmentAreas.add(1);
 
         LocalDate userDate = LocalDate.parse("2025-05-01");
-        LocalTime departuretime = LocalTime.parse("09:00");
-        LocalTime arrivaltime = LocalTime.parse("11:00");
-        // Create the transportation
-        String creationResult = tc.makeTransportation(100, userDate, departuretime, arrivaltime, "TR1", "Driver1", docs, shipmentAreas, origin);
+        LocalTime departureTime = LocalTime.parse("09:00");
+        LocalTime arrivalTime = LocalTime.parse("11:00");
+
+        String creationResult = tc.makeTransportation(100, userDate, departureTime, arrivalTime, "TR1", "Driver1", docs, shipmentAreas, origin);
+        System.out.println(tc.checkAvalableDrivers(LicenseType.B));
+        System.out.println(creationResult);
         assertTrue(creationResult.startsWith("Transportation created"));
 
-        // Add another document
+        // Add extra document
         List<Item> extraItems = new ArrayList<>();
         extraItems.add(new Item(2, "Crate", 5, 3)); // total weight = 15
-        LocalTime arrivalTime1 = LocalTime.parse("14:00");
-        ItemsDocument extraDoc = new ItemsDocument(99, destination, arrivalTime1, extraItems);  // ID = 99
+        ItemsDocument extraDoc = new ItemsDocument(99, destination, LocalTime.parse("14:00"), extraItems);
         String addResult = tc.addItems(100, extraDoc);
         assertEquals("Items added to transportation ID 100", addResult);
 
@@ -125,13 +130,15 @@ public class TransportationTests {
         Transportation t = tc.findTransportationById(100);
         assertEquals(2, t.getItemsDocument().size());
 
-        // Remove the newly added document by ID = 99
+        // Remove the extra document
         String removeResult = tc.removeItems(100, 99);
         assertEquals("Items removed from transportation ID 100", removeResult);
 
-        // Verify it's back to original state
+        // Re-fetch and verify it's back to 1 document
+        t = tc.findTransportationById(100);
         assertEquals(1, t.getItemsDocument().size());
     }
+
 
 
 

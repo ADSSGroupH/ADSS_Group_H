@@ -1,5 +1,6 @@
-package service_layer;
+package ServiceLayer;
 
+import DomainLayer.transportationDomain.*;
 import DTO.LicenseType;
 
 import java.time.LocalDate;
