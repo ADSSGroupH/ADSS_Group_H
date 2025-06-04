@@ -12,4 +12,5 @@ public interface TransportationDAO {
     public void saveTransportation(TransportationDTO transportation) throws SQLException;
     public void deleteTransportation(int id) throws SQLException;
     public List<TransportationDTO> getAllTransportationsByDriverName(String driverName) throws SQLException;
+    public List<TransportationDTO> getAllTransportationsByTruckPlateNumber(String truckPlateNumber) throws SQLException;
 }

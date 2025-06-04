@@ -92,4 +92,23 @@ public class JdbcTransportationDAO implements TransportationDAO {
             }
         }
     }
+
+    @Override
+    public List<TransportationDTO> getAllTransportationsByTruckPlateNumber(String truckPlateNumber) throws SQLException{
+        String sql = "SELECT id, date, departureTime, arrivalTime, truckPlateNumber, driverName, succeeded, originName, originShipmentAreaId, accident FROM transportations WHERE truckPlateNumber = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setString(1, truckPlateNumber);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<TransportationDTO> transportations = new ArrayList<>();
+                while (rs.next()) {
+                    transportations.add(new TransportationDTO(rs.getInt("id"), rs.getString("date"),
+                            rs.getString("departureTime"), rs.getString("arrivalTime"),
+                            rs.getString("truckPlateNumber"), rs.getString("driverName"),
+                            rs.getBoolean("succeeded"), rs.getString("originName"),
+                            rs.getInt("originShipmentAreaId"), rs.getString("accident")));
+                }
+                return transportations;
+            }
+        }
+    }
 }

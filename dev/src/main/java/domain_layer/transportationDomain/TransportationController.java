@@ -61,6 +61,8 @@ public class TransportationController {
         if (!truckRep.truckExists(truckPlateNumber)) {
             return "Truck with plate number " + truckPlateNumber + " does not exist.";
         }
+        if(!checkTruckAvailability(truckPlateNumber, date, departureTime, arrivalTime))
+            return "Truck with plate number " + truckPlateNumber + " is already occupied during the specified time.";
         // Check if there are available drivers with the required license type
         if (!checkAvalableDrivers(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "No available drivers with the required license type for truck " + truckPlateNumber + ".";
@@ -383,6 +385,23 @@ public class TransportationController {
                 }
             }
             
+        }
+        return true;
+    }
+
+    public boolean checkTruckAvailability(String truckPlateNumber, LocalDate date, LocalTime departureTime, LocalTime arrivalTime) {
+        List<Transportation> transportations = transportationRep.getTransportationsByPlateNumber(truckPlateNumber);
+        for (Transportation transportation : transportations) {
+            if (transportation.getDate().equals(date)) {
+                LocalTime tranDeparture = transportation.getDepartureTime();
+                LocalTime tranArrival = transportation.getArrivalTime();
+                
+                // Check if the new transportation overlaps with the existing one
+                if ((departureTime.isBefore(tranArrival) && departureTime.isAfter(tranDeparture)) ||
+                (arrivalTime.isBefore(tranArrival) && arrivalTime.isAfter(tranDeparture))) {
+                    return false; // Truck is not available
+                }
+            }
         }
         return true;
     }

@@ -141,4 +141,30 @@ public class TransportationRepository {
     
 }
 
+public List<Transportation> getTransportationsByPlateNumber(String plateNumber) {
+    List<Transportation> transportations = new ArrayList<>();
+    try {
+        List<TransportationDTO> transportationDTOs = jdbcTransportationDAO.getAllTransportationsByTruckPlateNumber(plateNumber);
+        for (TransportationDTO transportationDTO : transportationDTOs) {
+            Site origin = new Site(jdbcSiteDAO.findSite(transportationDTO.getOriginName(), transportationDTO.getOriginShipmentAreaId()).get());
+            List<ItemsDocumentDTO> itemsDocuments = jdbcItemsDocumentDAO.getAllTransportationItemsDocuments(transportationDTO.getId());
+            List<ItemsDocument> itemsDocuments2 = new ArrayList<>();
+            for (ItemsDocumentDTO itemsDocument3 : itemsDocuments) {
+                Site destination = new Site(jdbcSiteDAO.findSite(itemsDocument3.getDestinationName(), itemsDocument3.getShipmentAreaId()).get());
+                List<ItemDTO> itemDTOs = jdbcItemDAO.getAllItemsByItemsDocumentId(itemsDocument3.getId());
+                List<Item> items = new ArrayList<>();
+                for (ItemDTO itemDTO : itemDTOs) {
+                    Item item = new Item(itemDTO);
+                    items.add(item);
+                }
+                itemsDocuments2.add(new ItemsDocument(itemsDocument3, destination, items));
+            }
+            List<Integer> shipmentAreaIds = jdbcItemsDocumentDAO.getAllShipmentAreaIdsByTransportationId(transportationDTO.getId());
+            transportations.add(new Transportation(transportationDTO, origin, itemsDocuments2, shipmentAreaIds));
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return transportations;
+}
 }
