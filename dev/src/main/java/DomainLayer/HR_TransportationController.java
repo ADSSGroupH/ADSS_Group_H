@@ -1,6 +1,6 @@
 package DomainLayer;
 
-import DTO.Transportation.driverDTO;
+import DTO.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;

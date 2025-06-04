@@ -1,5 +1,6 @@
 package PresentationLayer;
 
+import DomainLayer.HR.HRManager;
 import ServiceLayer.TransportationManagerService;
 import DomainLayer.transportationDomain.ItemsDocument;
 import DomainLayer.transportationDomain.Site;
@@ -14,7 +15,7 @@ public class TransportationManagerUI extends EmployeeUI {
     private final Scanner scanner = new Scanner(System.in);
     private final TransportationManagerService service = new TransportationManagerService();
 
-    public TransportationManagerUI(DomainLayer.Employee employee) {
+    public TransportationManagerUI(HRManager employee) {
         super(employee);
     }
 
