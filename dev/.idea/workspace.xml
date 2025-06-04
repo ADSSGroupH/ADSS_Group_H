@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f87149ee-16cc-4ea0-a961-a30edb3241cd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR_dal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemsDocumentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemsDocumentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcSiteDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcSiteDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ShipmentAreaDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ShipmentAreaDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/SiteDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/SiteDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TransportationDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/database/Database.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/database.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Branch.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/DAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Employee.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/EmployeeContract.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/EmployeeController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/HRManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ManagerController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ManagerController_Status.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/AssignmentRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/BranchRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/ContractsRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/EmployeeRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/RoleRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/ShiftRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/SwapRequestRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Repositories/WeeklyPreferencesRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Role.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Shift.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftAssignment.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftSwapRequest$Status.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftSwapRequest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftSwapRequestController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/ShiftSwapRequest_Status.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/HRDomain/Shift_Status.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/User$Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/User$Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Driver.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Driver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/DriverRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/DriverRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Item.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Item.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ItemsDocument.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ItemsDocument.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ShipmentArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ShipmentArea.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ShipmentAreaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/ShipmentAreaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Site.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Site.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Transportation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Transportation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TransportationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TransportationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TransportationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Truck.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/Truck.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TruckRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/domain_layer/transportationDomain/TruckRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/ItemDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/ItemDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/ItemsDocumentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/ItemsDocumentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/LicenseType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/LicenseType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/ShipmentAreaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/ShipmentAreaDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/SiteDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/SiteDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/TransportationDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/TransportationDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/TruckDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/TruckDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dto_folder/driverDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dto_folder/driverDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/presentation_layer/EmployeeUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/presentation_layer/LoginForm.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/presentation_layer/ManagerUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/presentation_layer/UserInteraction.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service_layer/EmployeeService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service_layer/HRManagerService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service_layer/ShiftService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/service_layer/ShiftSwapRequestService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2y2PIXlFBnZF3h3I8EFRfIHHN5c" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "JUnit.TransportationTests.executor": "Run",
+    "JUnit.TransportationTests.testAddTruck.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "TR__HR",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="JUnit.TransportationTests.testAddTruck">
+    <configuration name="TransportationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="adss-project" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TransportationTests" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TransportationTests.testAddTruck" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="adss-project" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TransportationTests" />
+      <option name="METHOD_NAME" value="testAddTruck" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TransportationTests.testAddTruck" />
+        <item itemvalue="JUnit.TransportationTests" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f87149ee-16cc-4ea0-a961-a30edb3241cd" name="Changes" comment="" />
+      <created>1749029621705</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749029621705</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.ClassNotFoundException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
