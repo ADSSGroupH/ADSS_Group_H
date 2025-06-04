@@ -1,0 +1,23 @@
+package Dal.HR;
+
+
+import DTO.HR.EmployeeDTO;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+public interface EmployeeDAO {
+    Optional<EmployeeDTO> findById(String id) throws SQLException;
+    List<EmployeeDTO> findAll() throws SQLException;
+    List<EmployeeDTO> findActiveEmployees() throws SQLException;
+    List<EmployeeDTO> findByBranch(String branchId) throws SQLException;
+    List<EmployeeDTO> findManagers() throws SQLException;
+    Optional<EmployeeDTO> findByIdAndPassword(String id, String password) throws SQLException;
+    List<EmployeeDTO> findQualified(String branchId, String roleId) throws SQLException;
+    void save(EmployeeDTO employee) throws SQLException;
+    void update(EmployeeDTO employee) throws SQLException;
+    void delete(String id) throws SQLException;
+    boolean exists(String id) throws SQLException;
+    int getEmployeeCount() throws SQLException;
+}
