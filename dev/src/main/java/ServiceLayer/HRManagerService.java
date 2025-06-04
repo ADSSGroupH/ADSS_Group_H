@@ -43,7 +43,7 @@ public class HRManagerService {
         return managerController.deleteEmployee(id);
     }
 
-    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) {
+    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) throws SQLException {
         return managerController.addRoleToEmployee(employeeId, newRole);
     }
 
@@ -97,5 +97,9 @@ public class HRManagerService {
 
     public List<Branch> getAllBranches () {
         return managerController.getAllBranches();
+    }
+
+    public void addDriverLicense(String id, String licenseType) throws SQLException {
+        managerController.addDriverLicense(id, licenseType);
     }
 }
