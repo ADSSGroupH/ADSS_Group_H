@@ -1,0 +1,620 @@
+package PresentationLayer;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+
+import DomainLayer.HR.*;
+import DomainLayer.HR.Enums.ManagerController_Status;
+import DomainLayer.HR.Enums.ShiftSwapRequest_Status;
+import DomainLayer.HR.Enums.Shift_Status;
+import ServiceLayer.*;
+
+
+public class ManagerUI {
+    public HRManager LoggedInManager;
+    private final Scanner scanner = new Scanner(System.in);
+    private final HRManagerService managerService = new HRManagerService();
+    private final ShiftService shiftService = new ShiftService();
+    private final ShiftSwapRequestService swapService = new ShiftSwapRequestService();
+
+    public void display() throws SQLException {
+        while (true) {
+            System.out.println("\nManager Menu:");
+            System.out.println("1. View All Employees in your branch");
+            System.out.println("2. View Weekly Assignment Report");
+            System.out.println("3. View Shift Swap Requests");
+            System.out.println("4. Approve or Reject a Swap Request");
+            System.out.println("5. Add New Employee");
+            System.out.println("6. Delete Employee");
+            System.out.println("7. Create New Shift");
+            System.out.println("8. Delete Shift");
+            System.out.println("9. Update Employee Info");
+            System.out.println("10. Find Shift by ID");
+            System.out.println("11. View All Shifts for This Week");
+            System.out.println("12. Add New Role");
+            System.out.println("13. get all employees qualified for a specific role");
+            System.out.println("14. create shift assignment");
+            System.out.println("15. Find employees by availability");
+            System.out.println("16. Cancel an employee's assignment to a specific shift");
+            System.out.println("17. View a specific shift details");
+            System.out.println("18. View all roles in the system");
+            System.out.println("19. Exit");
+            System.out.print("Choose: ");
+
+            String input = scanner.nextLine();
+            switch (input) {
+                case "1" -> {
+                    List<Employee> employees = managerService.getAllEmployees();
+                    for (Employee e : employees) {
+                        if (Objects.equals(e.getBranchId(), LoggedInManager.getBranchId())) {
+                            System.out.println("ID: " + e.getId());
+                            System.out.println("Name: " + e.getName());
+                            System.out.println("Phone Number: " + e.getPhoneNumber());
+                            System.out.print("Roles: ");
+                            if (e.getRoles() == null || e.getRoles().isEmpty()) {
+                                System.out.println("None");
+                            } else {
+                                System.out.println(
+                                        e.getRoles().stream()
+                                                .map(Role::getName)
+                                                .reduce((a, b) -> a + ", " + b)
+                                                .orElse("None")
+                                );
+                            }
+
+                            if (e.getContract() != null) {
+                                System.out.println("Contract: Start=" + e.getContract().getStartDate()
+                                        + ", Salary=" + e.getContract().getSalary());
+                            } else {
+                                System.out.println("Contract: None");
+                            }
+                            System.out.println("=================================");
+                        }
+                    }
+                }
+
+
+                case "2" -> {
+                    List<String> report = shiftService.MakeWeeklyAssignmentReport();
+                    if (report == null || report.isEmpty()) {
+                        System.out.println("No assignments found.");
+                    } else {
+                        for (String line : report) {
+                            System.out.println(line);
+                        }
+                    }
+                }
+
+                case "3" -> {
+                    List<ShiftSwapRequest> requests = swapService.getAllRequests();
+
+                    if (requests == null || requests.isEmpty()) {
+                        System.out.println("No shift swap requests found.");
+                    } else {
+                        for (ShiftSwapRequest r : requests) {
+                            String requesterName = r.getRequester().getName();
+                            String requesterId = r.getRequester().getId();
+
+                            Shift fromShift = r.getFromShift();
+                            Shift toShift = r.getToShift();
+
+                            // שליפת כל השיבוצים של המשמרת FROM
+                            List<ShiftAssignment> fromAssignments = shiftService.getShiftById(fromShift.getId()).getAssignments();
+
+                            // מציאת התפקיד של המבקש במשמרת FROM
+                            ShiftAssignment fromAssignment = fromAssignments.stream()
+                                    .filter(a -> a.getEmployee().getId().equals(requesterId))
+                                    .findFirst()
+                                    .orElse(null);
+
+                            String roleName = (fromAssignment != null)
+                                    ? fromAssignment.getRole().getName()
+                                    : "Unknown";
+
+                            // שליפת כל השיבוצים של המשמרת TO
+                            List<ShiftAssignment> toAssignments = shiftService.getShiftById(fromShift.getId()).getAssignments();
+
+                            // מציאת מי מחזיק בתפקיד הזה במשמרת TO
+                            ShiftAssignment toAssignment = toAssignments.stream()
+                                    .filter(a -> a.getRole().getName().equalsIgnoreCase(roleName))
+                                    .findFirst()
+                                    .orElse(null);
+
+                            String currentAssignee = (toAssignment != null)
+                                    ? toAssignment.getEmployee().getName() + " (ID: " + toAssignment.getEmployee().getId() + ")"
+                                    : "No one assigned";
+
+                            // הדפסה
+                            System.out.println("Request ID: " + r.getId());
+                            System.out.println("Requested by: " + requesterName + " (ID: " + requesterId + ")");
+                            System.out.println("Request status: " + r.getStatus());
+                            System.out.println("Swap FROM: " + fromShift.getDate() + " | " + fromShift.getType());
+                            System.out.println("Swap TO: " + toShift.getDate() + " | " + toShift.getType());
+                            System.out.println("Role involved: " + roleName);
+                            System.out.println("If approved, will replace: " + currentAssignee);
+                        }
+                    }
+                }
+
+
+                case "4" -> {
+                    System.out.print("Enter request ID to update: ");
+                    String id = scanner.nextLine();
+                    System.out.print("Enter new status (approved/rejected): ");
+                    String statusStr = scanner.nextLine();
+                    ShiftSwapRequest.Status status = ShiftSwapRequest.Status.valueOf(statusStr);
+                    boolean updated = swapService.updateRequestStatus(id, status);
+                    System.out.println(updated ? "Status updated." : "Request not found.");
+
+                    if (updated && status == ShiftSwapRequest.Status.approved) {
+                        ShiftSwapRequest request = swapService.getRequestById(id);
+                        if (request != null) {
+                            ShiftSwapRequest_Status swap_status = swapService.applyApprovedRequest(request);
+                            if (swap_status == ShiftSwapRequest_Status.RequestNotApproved){
+                                System.out.println("Request is not approved. Cannot apply.");
+                            } else if (swap_status == ShiftSwapRequest_Status.RequesterIsntAssignedToOgShift) {
+                                System.out.println("Requester is not assigned to the original shift.");
+                            } else if (swap_status == ShiftSwapRequest_Status.RequesterIsNotQualifiedForNewShift) {
+                                System.out.printf("Cannot approve request: %s is not qualified for the role needed in the new shift.%n", request.getRequester().getName());
+                            } else if (swap_status == ShiftSwapRequest_Status.OtherIsNotQualifiedForRequesterRole) {
+                                System.out.print("Cannot swap: the employee in the requested shift is not qualified for the requester role in the current shift.");
+                            }else {
+                                System.out.println("Shift swap applied successfully.");
+                            }
+                        }
+                    }
+                }
+
+                case "5" -> {
+                    System.out.print("Employee ID: ");
+                    String id = scanner.nextLine();
+
+                    System.out.print("Name: ");
+                    String name = scanner.nextLine();
+
+                    System.out.print("Phone: ");
+                    String phone = scanner.nextLine();
+
+                    // קלט לסניף
+                    Branch branch = null;
+                    System.out.print("Branch ID: ");
+                    String branchId = scanner.nextLine();
+                    for (Branch b : managerService.getAllBranches()) {
+                        if (b.getId().equals(branchId)) {
+                            branch = b;
+                            break;
+                        }
+                    }
+                    if (branch == null) {
+                        System.out.println("Branch with ID '" + branchId + "' was not found. Employee creation aborted.");
+                        break; // יוצא מ-case 5
+                    }
+                    if (!Objects.equals(branch.getId(), LoggedInManager.getBranchId())) { //if the worker's branch is different from the manager branch, the manager can't create this worker.
+                        System.out.println("You can't create a new employee in another branch! Employee creation aborted.");
+                        break; // יוצא מ-case 5
+                    }
+
+                    Set<Role> roles = new HashSet<>();
+                    System.out.print("Add a role? (yes/no): ");
+                    String addRole = scanner.nextLine();
+                    while (addRole.equalsIgnoreCase("yes")) {
+
+                        Role role = null;
+                        System.out.print("Role name: ");
+                        String roleName = scanner.nextLine();
+                        String roleNameLowerCase = roleName.toLowerCase();
+                        for (Role r : managerService.getAllRoles()) {
+                            if (r.getName().equals(roleNameLowerCase)) {
+                                role = r; //found the role, add it to the employee
+                                roles.add(role);
+                            }
+                        }
+                        if (role == null) {
+                            System.out.print("This role doesn't exist. would you like to create it? (yes/no): ");
+                            String answer = scanner.nextLine();
+                            if (answer.equals("yes")) {
+                                System.out.print("Role ID: ");
+                                String roleId = scanner.nextLine();
+                                Role newRole = new Role(roleId, roleName);
+                                roles.add(newRole);
+                                managerService.addRoleToTheSystem(newRole); // מוסיף גם למחסן התפקידים
+                            }
+                        }
+
+                        System.out.print("Add another role? (yes/no): ");
+                        addRole = scanner.nextLine();
+                    }
+
+                    System.out.print("Bank details: ");
+                    String bank = scanner.nextLine();
+
+                    System.out.print("password: ");
+                    String password = scanner.nextLine();
+
+
+                    // יצירת חוזה לעובד החדש
+                    System.out.println("Enter contract details for the new employee:");
+                    LocalDate Date = LocalDate.now(); //will be changed
+                    while (true) {
+                        System.out.print("Start Date (yyyy-MM-dd): ");
+                        String startDate = scanner.nextLine();
+                        try {
+                            Date = LocalDate.parse(startDate);
+                            break;
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date! Please enter again (format: yyyy-MM-dd).");
+                        }
+                    }
+                    System.out.print("Free Days: ");
+                    int freeDays = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Sickness Days: ");
+                    int sicknessDays = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Monthly Work Hours: ");
+                    int hours = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Social Contributions: ");
+                    String social = scanner.nextLine();
+                    System.out.print("Advanced Study Fund: ");
+                    String fund = scanner.nextLine();
+                    System.out.print("Salary: ");
+                    int salary = Integer.parseInt(scanner.nextLine());
+
+                    EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
+                    try {
+                        managerService.addEmployee(id, name, phone, branchId, roles, contract, bank, false, password);
+                    }catch (SQLException e){
+                        System.out.printf("ID number : %s already exists in the system.",id);
+                        break;
+                    }
+
+
+                    System.out.println("A new employee was successfully added along with a new active contract.");
+                }
+
+                case "6" -> {
+                    System.out.print("Enter ID of employee to delete: ");
+                    String id = scanner.nextLine();
+                    ManagerController_Status delete_status = managerService.deleteEmployee(id);
+                    if (delete_status == ManagerController_Status.EmployeeIsArchived){
+                        System.out.println("Employee has been marked as archived.");
+                    }else{
+                        System.out.println("No employee found with the given ID.");
+                    }
+                }
+
+                case "7" -> {
+                    System.out.print("Shift ID: ");
+                    String id = scanner.nextLine();
+                    if (shiftService.getShiftById(id) != null){
+                        System.out.printf("Shift number: %s already exists in the system!", id);
+                        break;
+                    }
+                    LocalDate Date = LocalDate.now(); //will be changed
+                    while (true) {
+                        System.out.print("Date (yyyy-MM-dd): ");
+                        String date = scanner.nextLine();
+                        try {
+                            Date = LocalDate.parse(date);
+                            break;
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date! Please enter again (format: yyyy-MM-dd).");
+                        }
+                    }
+
+                    System.out.print("Start Time: ");
+                    String start = scanner.nextLine();
+
+                    System.out.print("End Time: ");
+                    String end = scanner.nextLine();
+
+                    System.out.print("Type: ");
+                    String type = scanner.nextLine();
+
+                    Employee manager = null; // יתעדכן בהקצאת המשמרת בעתיד
+                    List<Role> roles = new ArrayList<>();
+
+
+                    System.out.print("Which roles do you need in this shift (shift manager is already included)? (separate the names by comma): ");
+                    String neededRoles = scanner.nextLine();
+                    String[] separatedNeededRoles = neededRoles.split(",");
+
+                    for (String roleName : separatedNeededRoles) {
+                        roleName = roleName.trim(); // מנקה רווחים מיותרים
+                        String LowerCaseroleName = roleName.toLowerCase();
+                        boolean roleExists = false;
+
+                        for (Role existedRole : managerService.getAllRoles()) {
+                            if (existedRole.getName().equalsIgnoreCase(LowerCaseroleName)) {
+                                roles.add(existedRole);
+                                roleExists = true;
+                                //System.out.printf("The role: %s already exists in the system.%n", roleName);
+                                break;
+                            }
+                        }
+
+                        if (!roleExists) {
+                            System.out.printf("%s doesn't exist in the system. Would you like to add it? (yes/no)%n", roleName);
+                            String answer = scanner.nextLine().trim();
+                            if (answer.equalsIgnoreCase("yes")) {
+                                System.out.print("What is the role Id? ");
+                                String roleId = scanner.nextLine();
+                                Role newRole = new Role(roleId, roleName);
+                                roles.add(newRole);
+                                managerService.addRoleToTheSystem(newRole);
+                            }
+                        }
+                    }
+
+                    List<ShiftAssignment> assignments = new ArrayList<>();
+                    try { //making sure the shift does not already exists
+                        shiftService.createShift(id, Date, start, end, type, null, roles, assignments);
+                        System.out.printf("Shift number: %s was created successfully", id);
+                    }catch( Exception e){
+                        System.out.printf("Shift number: %s already exists in the system!", id);
+                    }
+                }
+
+
+
+                case "8" -> {
+                    System.out.print("Enter shift ID to delete: ");
+                    String id = scanner.nextLine();
+                    //check if the shift exists in the system first:
+                    Shift shift = shiftService.getShiftById(id);
+                    if (shift == null){
+                        System.out.printf("shift : %s does not exist in the system!",id);
+                        break;
+                    }
+                    boolean result = shiftService.deleteShift(id);
+                    if (!result){
+                        System.out.println("you can't delete a shift if there are employees assigned to it!");
+                    }else{
+                        System.out.printf("Shift : %s was deleted successfully", id);
+                    }
+                }
+
+                case "9" -> {
+                    System.out.print("Enter employee ID: ");
+                    String id = scanner.nextLine();
+                    System.out.print("Field to update (name/phoneNumber/bankDetails/password/roles): ");
+                    String field = scanner.nextLine();
+                    System.out.print("New value: ");
+                    String value = scanner.nextLine();
+                    ManagerController_Status update_status = managerService.updateEmployeeField(id, field, value);
+                    if (update_status == ManagerController_Status.EmployeeNotFound){
+                        System.out.println("Employee not found.");
+                    } else if (update_status == ManagerController_Status.Updated) {
+                        System.out.printf("%s updated successfully.", field);
+                    } else if (update_status == ManagerController_Status.InvalidFormat) {
+                        System.out.println("Invalid field name. Allowed: name, phoneNumber, bankDetails, password, isManager, roles.");
+                    }
+                }
+
+                case "10" -> {
+                    System.out.print("Enter shift ID: ");
+                    String id = scanner.nextLine();
+                    Shift shift = shiftService.getShiftById(id);
+                    System.out.println(shift != null ? "Shift found: " + shift.getType() + ", Date: " + shift.getDate() : "Shift not found.");
+                }
+
+                case "11" -> {
+                    List<Shift> shifts = shiftService.getAllShiftsForThisWeek();
+
+                    if (shifts.isEmpty()) {
+                        System.out.println("No shifts scheduled for this week.");
+                    } else {
+                        System.out.println("Shifts scheduled between Sunday and Saturday this week:");
+                        for (Shift s : shifts) {
+                            System.out.println("- ID: " + s.getId() + ", Date: " + s.getDate() + ", Type: " + s.getType());
+                        }
+                    }
+
+                }
+
+                case "12" -> {
+                    System.out.print("Enter new role ID: ");
+                    String roleId = scanner.nextLine();
+                    System.out.print("Enter new role name: ");
+                    String roleName = scanner.nextLine();
+                    String LowerCaseroleName = roleName.toLowerCase();
+                    Role role = new Role(roleId, LowerCaseroleName);
+                    managerService.addRoleToTheSystem(role);
+                    System.out.println("New role added successfully.");
+                }
+                case "13" -> {
+                    System.out.print("Enter the role name: ");
+                    String RoleName = scanner.nextLine();
+                    List<Employee> result = managerService.getAllEmployeesByRole(RoleName);
+                    if (result != null) {
+                        if (result.isEmpty()) {
+                            System.out.println("There are no employees qualified for this role");
+                        }else {
+                            for (Employee e : result) {
+                                System.out.println("ID: " + e.getId() + ", Name: " + e.getName());
+                            }
+                        }
+                    }else{
+                        System.out.println("This Role Doesn't exist");
+                    }
+                }
+                case "14" -> {
+                    System.out.println("Enter the shift ID: ");
+                    String ShiftId = scanner.nextLine();
+                    Shift targetShift = shiftService.getShiftById(ShiftId);
+                    if (targetShift == null) {
+                        System.out.println("This shift does not exist in the system!");
+                        continue;
+                    }
+
+                    List<Role> sortedRoles = targetShift.getRequiredRoles();
+                    sortedRoles.sort(Comparator.comparing(Role::getId)); // shift manager first
+                    for (Role requiredRole : sortedRoles) {
+                        System.out.println("\n--- Role: " + requiredRole.getName() + " ---");
+                        ShiftAssignment IsFilled = shiftService.CheckIfRoleIsFilled(targetShift,requiredRole);
+                        if (IsFilled != null){
+                            System.out.println("Role \"" + requiredRole.getName() + "\" is already assigned to " + IsFilled.getEmployee().getName());
+                            continue;
+                        }
+
+                        List<List<Employee>> AvailableUnavailableEmps = shiftService.AvailableAndUnavailableEmpForRoleInShift(targetShift,requiredRole);
+                        if (AvailableUnavailableEmps == null){
+                            System.out.printf("There are no qualified for the role : %s\n", requiredRole.getName());
+                            continue;
+                        }
+                        List<Employee> available = AvailableUnavailableEmps.getFirst();
+                        List<Employee> unavailable = AvailableUnavailableEmps.get(1);
+                        List<Employee> allOptions = new ArrayList<>();
+                        allOptions.addAll(unavailable);
+                        allOptions.addAll(available);
+
+                        for (int i = 0; i < allOptions.size(); i++) {
+                            Employee emp = allOptions.get(i);
+                            boolean isAvailable = available.contains(emp);
+                            String status = isAvailable ? "" : " [Not Available]";
+                            System.out.println((i + 1) + ". " + emp.getName() + " (ID: " + emp.getId() + ")" + status);
+                        }
+
+                        if (allOptions.isEmpty()) {
+                            System.out.println("No employees available for this role.");
+                        }
+
+
+                        //choosing an employee to assign to the required role in the target shift
+                        System.out.print("Choose an employee number (from list above, not ID. If you don't want to assign, press 0): ");
+                        int choice;
+                        try {
+                            choice = Integer.parseInt(scanner.nextLine());
+                            if (choice < 0 || choice > allOptions.size()) {
+                                System.out.println("Invalid number.");
+                                continue;
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a number only.");
+                            continue;
+                        }
+                        if (choice == 0) {
+                            continue;
+                        }
+
+
+                        Employee selected = allOptions.get(choice - 1);
+
+                        if (!available.contains(selected)) {
+                            System.out.print("This employee is not available. Do you still want to assign? (yes/no): ");
+                            String confirm = scanner.next();
+                            scanner.nextLine(); // לניקוי שורת הקלט אחרי next()
+                            if (!confirm.equalsIgnoreCase("yes")) {
+                                System.out.println("Skipping assignment for this role.");
+                                continue;
+                            }
+                        }
+
+                        //assign:
+                        try {
+                            shiftService.createShiftAssignment(targetShift, requiredRole, selected);
+                            System.out.println("Assigned " + selected.getName() + " to role: " + requiredRole.getName());
+                        }catch(SQLException e){
+                            System.out.println("This assignment already exists in the system");
+                        }
+
+
+                    }
+                    if (targetShift.getAssignments().size() == targetShift.getRequiredRoles().size()) { //print the message at the end of the loop
+                        System.out.println("\nAll assignments completed for shift " + targetShift.getId());
+                    }
+
+                }
+                case "15" -> {
+                    System.out.print("Enter date (yyyy-MM-dd): ");
+                    String dateStr = scanner.nextLine();
+                    try {
+                        LocalDate date = LocalDate.parse(dateStr);
+                        System.out.print("Enter shift type (e.g., Morning/Evening): ");
+                        String type = scanner.nextLine();
+                        List<Employee> availableEmployees = managerService.getEmployeesByAvailability(date, type);
+                        if (availableEmployees.isEmpty()) {
+                            System.out.println("No available employees for the given date and shift type.");
+                        } else {
+                            System.out.println("Available employees:");
+                            for (Employee e : availableEmployees) {
+                                System.out.println("- " + e.getName());
+                            }
+                        }
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Invalid date format. Please use yyyy-MM-dd.");
+                    }
+
+                }
+                case "16" -> {
+                    System.out.print("Enter the Shift's Id: ");
+                    String shiftId = scanner.nextLine();
+                    System.out.print("Enter the Employee's Id: ");
+                    String employeeId = scanner.nextLine();
+
+                    Shift_Status result = shiftService.DeleteShiftAssignment(shiftId, employeeId);
+
+                    switch (result) {
+                        case SUCCESS:
+                            System.out.println("The shift assignment was successfully cancelled.");
+                            break;
+                        case SHIFT_MANAGER_REMOVED:
+                            System.out.println("Shift manager was removed from the shift!");
+                            break;
+                        case EMPLOYEE_NOT_FOUND:
+                            System.out.println("This employee is not assigned to the given shift.");
+                            break;
+                        case SHIFT_NOT_FOUND:
+                            System.out.println("This given shift does not exist.");
+                            break;
+                    }
+
+                }
+
+                case "17" -> {
+                    System.out.print("Enter shift ID: ");
+                    String shiftId = scanner.nextLine();
+                    Shift shift = shiftService.getShiftById(shiftId);
+                    if (shift == null) {
+                        System.out.println("Shift not found.");
+                        break;
+                    }
+                    System.out.println("\n--- Shift Details ---");
+                    System.out.println("ID: " + shift.getId());
+                    System.out.println("Date: " + shift.getDate());
+                    System.out.println("Type: " + shift.getType());
+                    System.out.println("Start: " + shift.getStartTime() + ", End: " + shift.getEndTime());
+
+                    Set<Role> assignedRoles = new HashSet<>();
+                    List<ShiftAssignment> assignmentOfShift = shift.getAssignments();
+                    if (assignmentOfShift != null) {
+                        for (ShiftAssignment assignment : assignmentOfShift) {
+                            System.out.println("- " + assignment.getRole().getName() + ": " + assignment.getEmployee().getName());
+                            assignedRoles.add(assignment.getRole());
+                        }
+                    }
+
+                    for (Role role : shift.getRequiredRoles()) {
+                        if (!assignedRoles.contains(role)) {
+                            System.out.println("- " + role.getName() + ": (unassigned, employee needed)");
+                        }
+                    }
+                }
+                case "18" -> {
+                    for (Role role : managerService.getAllRoles()){
+                        System.out.println("- " + role.getName());
+                    }
+                }
+
+                case "19" -> {
+                    System.out.println("Logging out...");
+                    new LoginForm().show();
+                }
+
+                default -> {System.out.println("Invalid choice.");}
+            }
+
+        }
+
+    }
+}
