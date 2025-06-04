@@ -1,4 +1,4 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import database.Database;
-import dto_folder.ItemsDocumentDTO;
+import DTO.ItemsDocumentDTO;
 
 public class JdbcItemsDocumentDAO implements ItemsDocumentDAO {
 

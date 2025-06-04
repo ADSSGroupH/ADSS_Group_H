@@ -1,4 +1,4 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import database.Database;
-import dto_folder.ShipmentAreaDTO;
+import DTO.ShipmentAreaDTO;
 
 public class JdbcShipmentAreaDAO implements ShipmentAreaDAO {
 

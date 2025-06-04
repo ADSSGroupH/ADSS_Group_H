@@ -1,10 +1,10 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import dto_folder.SiteDTO;
+import DTO.SiteDTO;
 
 public interface  SiteDAO {
     public Optional<SiteDTO> findSite(String name, int shipmentAreaId) throws SQLException;

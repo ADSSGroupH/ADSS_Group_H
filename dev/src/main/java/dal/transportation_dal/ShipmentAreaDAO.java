@@ -1,9 +1,9 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
-import dto_folder.ShipmentAreaDTO;
+import DTO.ShipmentAreaDTO;
 
 public interface ShipmentAreaDAO {
     public Optional<ShipmentAreaDTO> findById(int id) throws SQLException;

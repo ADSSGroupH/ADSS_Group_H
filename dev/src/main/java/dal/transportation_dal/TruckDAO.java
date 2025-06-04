@@ -1,9 +1,9 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.SQLException;
 import java.util.Optional;
 
-import dto_folder.TruckDTO;
+import DTO.TruckDTO;
 
 public interface TruckDAO {
     public Optional<TruckDTO> findTruckById(String plateNumber) throws SQLException;

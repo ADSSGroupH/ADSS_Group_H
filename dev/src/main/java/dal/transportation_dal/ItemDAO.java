@@ -1,9 +1,9 @@
-package dal.transportation_dal;
+package Dal.transportation_dal;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import dto_folder.ItemDTO;
+import DTO.ItemDTO;
 
 public interface  ItemDAO {
     public List<ItemDTO> findItems(int ItemsDocumentID) throws SQLException;

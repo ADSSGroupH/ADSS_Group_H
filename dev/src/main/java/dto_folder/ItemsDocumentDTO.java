@@ -1,4 +1,4 @@
-package dto_folder;
+package DTO;
 
 public class ItemsDocumentDTO {
     private int id;
