@@ -29,6 +29,7 @@ public final class Database {
                 st.executeUpdate("DROP TABLE IF EXISTS roles");
                 st.executeUpdate("DROP TABLE IF EXISTS branches");
                 st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
+                st.executeUpdate("DROP TABLE IF EXISTS drivers");
 
 
                 //HR Schemas
@@ -43,6 +44,18 @@ public final class Database {
                         FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
                     )
                 """);
+
+                //Create Drivers Table
+                st.executeUpdate("""
+                    CREATE TABLE drivers (
+                        emp_id VARCHAR(50),
+                        emp_name VARCHAR(50),
+                        licenseType VARCHAR(50),
+                        PRIMARY KEY (emp_id)
+                    )
+                """);
+
+
 
                 // Create Branches table
                 st.executeUpdate("""
@@ -203,13 +216,6 @@ public final class Database {
                     );
                 """);
 
-                // Create drivers table
-                st.executeUpdate("""
-                    CREATE TABLE IF NOT EXISTS drivers (
-                        username TEXT PRIMARY KEY,
-                        licenseType TEXT NOT NULL
-                    );
-                """);
 
                 // Create transportations table
                 st.executeUpdate("""
@@ -308,6 +314,14 @@ public final class Database {
                 st.executeUpdate("""
                     INSERT INTO EmployeeRoles (employee_id, role_id) VALUES
                     ('123456789', '0')
+                """);
+
+                // Drivers
+                st.executeUpdate("""
+                    INSERT INTO drivers (employee_id, employee_name, licenseType) VALUES
+                    ('114', 'Dana',"A"),
+                    ('115', 'Eli',"B"),
+                    ('116', 'Snir',"C")
                 """);
 
 
