@@ -1,5 +1,8 @@
 package PresentationLayer;
+<<<<<<< HEAD
 /*package presentation_layer;
+=======
+>>>>>>> 52972888becfac149da20316b226d9cf1f21354e
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import domain_layer.User;
-import domain_layer.UserController;
-import domain_layer.transportationDomain.Driver;
-import domain_layer.transportationDomain.Item;
-import domain_layer.transportationDomain.ItemsDocument;
-import domain_layer.transportationDomain.Site;
-import domain_layer.transportationDomain.Transportation;
-import domain_layer.transportationDomain.TransportationController;
+import DomainLayer.User;
+import DomainLayer.UserController;
+import DomainLayer.transportationDomain.Driver;
+import DomainLayer.transportationDomain.Item;
+import DomainLayer.transportationDomain.ItemsDocument;
+import DomainLayer.transportationDomain.Site;
+import DomainLayer.transportationDomain.Transportation;
+import DomainLayer.transportationDomain.TransportationController;
 
 public class UserInteraction {
     private UserController userController = new UserController();              
@@ -702,4 +705,3 @@ public class UserInteraction {
     }
 }
 
-*/

@@ -1,4 +1,10 @@
 package ServiceLayer;
+<<<<<<< HEAD
+=======
+
+import DomainLayer.transportationDomain.*;
+import DTO.LicenseType;
+>>>>>>> 52972888becfac149da20316b226d9cf1f21354e
 
 import java.time.LocalDate;
 import java.time.LocalTime;

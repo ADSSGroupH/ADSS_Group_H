@@ -1,15 +1,16 @@
 package PresentationLayer;
 
 import ServiceLayer.DriverTransportationService;
-import DomainLayer.Employee;
+import DomainLayer.HR.Employee;
 import java.util.Scanner;
 
 public class DriverUI extends EmployeeUI {
+
     private final Scanner scanner = new Scanner(System.in);
     private final DriverTransportationService driverService = new DriverTransportationService();
 
     public DriverUI(Employee employee) {
-        super(employee);
+        super(employee); // עובר למחלקת EmployeeUI
     }
 
     @Override
@@ -26,8 +27,8 @@ public class DriverUI extends EmployeeUI {
             System.out.println("8. View items in transportation");
             System.out.println("9. Report accident");
             System.out.println("10. Exit");
-            System.out.print("Choose: ");
 
+            System.out.print("Choose: ");
             String input = scanner.nextLine();
 
             switch (input) {
@@ -37,31 +38,36 @@ public class DriverUI extends EmployeeUI {
                 case "4" -> submitSwapRequest();
                 case "5" -> printEmployeeDetails();
                 case "6" -> viewShiftDetailsAsManager();
-                case "7" -> {
-                    System.out.print("Enter transportation ID: ");
-                    int id = Integer.parseInt(scanner.nextLine());
-                    String document = driverService.getTransportationDocument(id);
-                    System.out.println(document);
-                }
-                case "8" -> {
-                    System.out.print("Enter transportation ID: ");
-                    int id = Integer.parseInt(scanner.nextLine());
-                    String items = driverService.getItemsForTransportation(id);
-                    System.out.println(items);
-                }
-                case "9" -> {
-                    System.out.print("Enter transportation ID to report accident: ");
-                    int id = Integer.parseInt(scanner.nextLine());
-                    driverService.reportAccident(id);
-                }
+                case "7" -> viewTransportationDocument();
+                case "8" -> viewItemsInTransportation();
+                case "9" -> reportAccident();
                 case "10" -> {
-                    System.out.println("Logging out...");
+                    System.out.println("Logging out.");
                     new LoginForm().show();
-                    return; // יוצא מהלולאה
+                    return;
                 }
                 default -> System.out.println("Invalid choice.");
             }
         }
     }
+
+    private void viewTransportationDocument() {
+        System.out.print("Enter transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        String document = driverService.getTransportationDocument(id);
+        System.out.println(document);
+    }
+
+    private void viewItemsInTransportation() {
+        System.out.print("Enter transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        String items = driverService.getItemsForTransportation(id);
+        System.out.println(items);
+    }
+
+    private void reportAccident() {
+        System.out.print("Enter transportation ID to report accident: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        driverService.reportAccident(id);
+    }
 }
-*/
