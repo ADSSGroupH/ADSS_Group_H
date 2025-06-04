@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import database.Database;
+import DTO.ItemsDocumentDTO;
 import database.Database;
 
 public class JdbcItemsDocumentDAO implements ItemsDocumentDAO {

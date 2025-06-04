@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import DTO.LicenseType;
 import DTO.TruckDTO;
-import database.Database;
 import database.Database;
 
 public class JdbcTruckDAO implements TruckDAO {

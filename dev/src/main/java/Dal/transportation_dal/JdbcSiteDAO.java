@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import database.Database;
+import DTO.SiteDTO;
 import database.Database;
 
 public class JdbcSiteDAO implements SiteDAO {

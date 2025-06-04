@@ -1,8 +1,4 @@
 package PresentationLayer;
-<<<<<<< HEAD
-/*package presentation_layer;
-=======
->>>>>>> 52972888becfac149da20316b226d9cf1f21354e
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

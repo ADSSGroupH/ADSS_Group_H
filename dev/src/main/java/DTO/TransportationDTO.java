@@ -4,7 +4,6 @@ public class TransportationDTO {
     private int id;
     private String date;
     private String departureTime;
-    private String arrivalTime;
     private String truckPlateNumber;
     private String driverName;
     private boolean succeeded;
@@ -12,13 +11,12 @@ public class TransportationDTO {
     private int originShipmentAreaId;
     private String accident;
 
-    public TransportationDTO(int id, String date, String departureTime, String arrivalTime,
+    public TransportationDTO(int id, String date, String departureTime,
                             String truckPlateNumber, String driverName, boolean succeeded,
                             String originName, int shipmentAreaId, String accident) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
         this.truckPlateNumber = truckPlateNumber;
         this.driverName = driverName;
         this.succeeded = succeeded;
@@ -37,10 +35,6 @@ public class TransportationDTO {
 
     public String getDepartureTime() {
         return departureTime;
-    }
-
-    public String getArrivalTime() {
-        return arrivalTime;
     }
 
     public String getTruckPlateNumber() {

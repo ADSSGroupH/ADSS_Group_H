@@ -1,10 +1,5 @@
 package PresentationLayer;
-<<<<<<< HEAD
-/*package PresentationLayer;
-=======
->>>>>>> 52972888becfac149da20316b226d9cf1f21354e
 
-import DomainLayer.HR.HRManager;
 import ServiceLayer.TransportationManagerService;
 import DomainLayer.transportationDomain.ItemsDocument;
 import DomainLayer.transportationDomain.Site;
@@ -19,7 +14,7 @@ public class TransportationManagerUI extends EmployeeUI {
     private final Scanner scanner = new Scanner(System.in);
     private final TransportationManagerService service = new TransportationManagerService();
 
-    public TransportationManagerUI(HRManager employee) {
+    public TransportationManagerUI(DomainLayer.Employee employee) {
         super(employee);
     }
 
