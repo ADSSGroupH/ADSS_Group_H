@@ -1,6 +1,6 @@
 package DomainLayer;
 
-import DTO.driverDTO;
+import DTO.Transportation.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;
@@ -25,12 +25,12 @@ public class HR_TransportationController {
     private final RoleRepository roleRepository;
     private final AssignmentRepository assignmentRepository;
 
-    public HR_TransportationController(ShiftController shiftController, ShiftRepository shiftRepository, EmployeeRepository employeeRepository, RoleRepository roleRepository, AssignmentRepository assignmentRepository) {
-        this.shiftRepository = shiftRepository;
-        this.roleRepository = roleRepository;
-        this.assignmentRepository = assignmentRepository;
+    public HR_TransportationController() {
+        this.shiftRepository = ShiftRepository.getInstance();
+        this.roleRepository = RoleRepository.getInstance();
+        this.assignmentRepository = AssignmentRepository.getInstance();
         this.shiftController = new ShiftController();
-        this.employeeRepository = employeeRepository;
+        this.employeeRepository = EmployeeRepository.getInstance();
     }
 
     /**
