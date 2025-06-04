@@ -1,9 +1,6 @@
 package DomainLayer.transportationDomain;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import Dal.transportation_dal.JdbcShipmentAreaDAO;
 import Dal.transportation_dal.JdbcSiteDAO;
@@ -122,4 +119,9 @@ public class ShipmentAreaRepository {
         }
         return null;
     }
+
+    public List<ShipmentArea> getAllShipmentAreas() {
+        return new ArrayList<>(shipmentAreaMap.values());
+    }
+
 }

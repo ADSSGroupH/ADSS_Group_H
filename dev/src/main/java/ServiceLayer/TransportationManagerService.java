@@ -1,104 +1,264 @@
+// TransportationManagerService.java
 package ServiceLayer;
 
 import DomainLayer.transportationDomain.*;
 import DTO.LicenseType;
+import DomainLayer.transportationDomain.ItemsDocument;
+import DTO.ItemDTO;
+import DTO.ItemsDocumentDTO;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-
-import DomainLayer.transportationDomain.*;
+import java.util.*;
 
 public class TransportationManagerService {
     private final TransportationController controller = new TransportationController();
 
-    public String addTruck(String plateNumber, String model, int netWeight, int maxWeight, LicenseType licenseType) {
-        return controller.addTruck(plateNumber, model, netWeight, maxWeight, licenseType);
+    public void addTruckUI(Scanner scanner) {
+        System.out.print("Truck ID: ");
+        String id = scanner.nextLine();
+        System.out.print("Model: ");
+        String model = scanner.nextLine();
+        System.out.print("Net weight: ");
+        int net = Integer.parseInt(scanner.nextLine());
+        System.out.print("Max weight: ");
+        int max = Integer.parseInt(scanner.nextLine());
+        System.out.print("License type: ");
+        String license = scanner.nextLine();
+        System.out.println(controller.addTruck(id, model, net, max, LicenseType.valueOf(license)));
     }
 
-    public String createShipmentArea(int id, String name) {
-        return controller.makeShipmentArea(id, name);
+    public void addSiteUI(Scanner scanner) {
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Address: ");
+        String address = scanner.nextLine();
+        System.out.print("Phone: ");
+        String phone = scanner.nextLine();
+        System.out.print("Contact: ");
+        String contact = scanner.nextLine();
+        System.out.print("Shipment Area ID: ");
+        int areaId = Integer.parseInt(scanner.nextLine());
+        System.out.println(controller.addSite(name, address, phone, contact, areaId));
     }
 
-    public String changeShipmentAreaName(int id, String newName) {
-        return controller.changeShipmentArea(id, newName);
+    public void addItemsUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int transportationId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Document ID: ");
+        int docId = Integer.parseInt(scanner.nextLine());
+
+        System.out.print("Destination Site Name: ");
+        String destinationName = scanner.nextLine();
+
+        Site destination = null;
+        for (ShipmentArea area : controller.getAllShipmentAreas()) {
+            for (Site site : area.getSites()) {
+                if (site.getName().equals(destinationName)) {
+                    destination = site;
+                    break;
+                }
+            }
+            if (destination != null) break;
+        }
+
+        if (destination == null) {
+            System.out.println("Destination site not found.");
+            return;
+        }
+
+        System.out.print("Arrival Time (HH:mm): ");
+        LocalTime arrivalTime = LocalTime.parse(scanner.nextLine());
+
+        System.out.print("Item ID: ");
+        int itemId = Integer.parseInt(scanner.nextLine());
+        System.out.print("Item name: ");
+        String itemName = scanner.nextLine();
+        System.out.print("Weight: ");
+        int weight = Integer.parseInt(scanner.nextLine());
+        System.out.print("Quantity: ");
+        int quantity = Integer.parseInt(scanner.nextLine());
+
+        Item item = new Item(itemId, itemName, weight, quantity);
+        List<Item> items = new ArrayList<>();
+        items.add(item);
+
+        ItemsDocument doc = new ItemsDocument(docId, destination, arrivalTime, items);
+        System.out.println(controller.addItems(transportationId, doc));
     }
 
-    public String makeTransportation(int id, LocalDate date, LocalTime departureTime, LocalTime arrivalTime,
-                                     String truckPlate, String driverName, List<ItemsDocument> itemsDocument,
-                                     List<Integer> shipmentAreaIds, Site origin) {
-        return controller.makeTransportation(id, date, departureTime, arrivalTime, truckPlate, driverName, itemsDocument, shipmentAreaIds, origin);
+
+
+    public void removeItemsUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("Document ID to remove: ");
+        int docId = Integer.parseInt(scanner.nextLine());
+        System.out.println(controller.removeItems(id, docId));
     }
 
-    public String changeTransportationDate(int id, LocalDate newDate) {
-        return controller.changeDate(id, newDate);
+    public void createShipmentAreaUI(Scanner scanner) {
+        System.out.print("ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+        System.out.println(controller.makeShipmentArea(id, name));
     }
 
-    public String changeDepartureTime(int id, LocalTime newTime) {
-        return controller.changeDepartureTime(id, newTime);
+    public void removeTruckUI(Scanner scanner) {
+        System.out.print("Truck ID: ");
+        String id = scanner.nextLine();
+        System.out.println(controller.removeTruck(id));
     }
 
-    public String changeTruck(int transportationId, String newPlate) {
-        return controller.changeTruckPlateNumber(transportationId, newPlate);
+    public void displayTransportationDocumentUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.println(controller.displayTransportationDocument(id));
     }
 
-    public String changeDriver(int transportationId, String newDriverName) {
-        return controller.changeDriverName(transportationId, newDriverName);
+    public void displayAllTransportations() {
+        System.out.println(controller.displayAllTransportations());
     }
 
-    public String changeShipmentAreas(int transportationId, List<Integer> newShipmentAreas) {
-        return controller.changeShipmentAreasID(transportationId, newShipmentAreas);
+    public void displayAllTrucks() {
+        System.out.println(controller.displayTrucks());
     }
 
-    public String changeOrigin(int transportationId, Site newOrigin) {
-        return controller.changeOrigin(transportationId, newOrigin);
+    public void displayAllDrivers() {
+        System.out.println(controller.displayDrivers());
     }
 
-    public String changeSuccessStatus(int id, boolean succeeded) {
-        return controller.changeSucceeded(id, succeeded);
+    public void reportSuccessUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.println(controller.reportTransportationSuccess(id));
     }
 
-    public String addItems(int transportationId, ItemsDocument itemsToAdd) {
-        return controller.addItems(transportationId, itemsToAdd);
+    public void changeSuccessStatusUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("Succeeded? (true/false): ");
+        boolean success = Boolean.parseBoolean(scanner.nextLine());
+        System.out.println(controller.changeSucceeded(id, success));
     }
 
-    public String removeItems(int transportationId, int itemsDocumentId) {
-        return controller.removeItems(transportationId, itemsDocumentId);
+    public void changeShipmentAreaNameUI(Scanner scanner) {
+        System.out.print("Shipment Area ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Name: ");
+        String name = scanner.nextLine();
+        System.out.println(controller.changeShipmentArea(id, name));
     }
 
-    public String displayTransportationDocument(int transportationId) {
-        return controller.displayTransportationDocument(transportationId);
+    public void changeTransportationDateUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Date (YYYY-MM-DD): ");
+        LocalDate date = LocalDate.parse(scanner.nextLine());
+        System.out.println(controller.changeDate(id, date));
     }
 
-    public String displayAllTransportations() {
-        return controller.displayAllTransportations();
+    public void changeDepartureTimeUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Departure Time (HH:mm): ");
+        LocalTime time = LocalTime.parse(scanner.nextLine());
+        System.out.println(controller.changeDepartureTime(id, time));
     }
 
-    public String displayAllTrucks() {
-        return controller.displayTrucks();
+    public void changeTruckUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Truck ID: ");
+        String truckId = scanner.nextLine();
+        System.out.println(controller.changeTruckPlateNumber(id, truckId));
     }
 
-    public String displayAllDrivers() {
-        return controller.displayDrivers();
+    public void changeDriverUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Driver ID: ");
+        String driverId = scanner.nextLine();
+        System.out.println(controller.changeDriverName(id, driverId));
     }
 
-    public String reportSuccess(int transportationId) {
-        return controller.reportTransportationSuccess(transportationId);
+    public void changeShipmentAreasUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("Enter shipment area IDs separated by commas: ");
+        String[] areaStrs = scanner.nextLine().split(",");
+        List<Integer> areas = new ArrayList<>();
+        for (String s : areaStrs)
+            areas.add(Integer.parseInt(s.trim()));
+        System.out.println(controller.changeShipmentAreasID(id, areas));
     }
 
-    public String addSite(String name, String address, String phone, String contactPerson, int shipmentAreaId) {
-        return controller.addSite(name, address, phone, contactPerson, shipmentAreaId);
+    public void changeOriginUI(Scanner scanner) {
+        System.out.print("Transportation ID: ");
+        int id = Integer.parseInt(scanner.nextLine());
+        System.out.print("New Origin Site Name: ");
+        String siteName = scanner.nextLine();
+        Site origin = null;
+        for (ShipmentArea area : controller.getAllShipmentAreas()) {
+            for (Site site : area.getSites()) {
+                if (site.getName().equals(siteName)) {
+                    origin = site;
+                    break;
+                }
+            }
+            if (origin != null) break;
+        }
+        if (origin == null) {
+            System.out.println("Origin site not found.");
+            return;
+        }
+        System.out.println(controller.changeOrigin(id, origin));
     }
 
-    public String removeTruck(String plateNumber) {
-        return controller.removeTruck(plateNumber);
-    }
-
-    public Transportation getTransportationById(int id) {
-        return controller.findTransportationById(id);
-    }
-
-    public ShipmentArea getShipmentAreaById(int id) {
-        return controller.findShipmentAreaById(id);
+    public void makeTransportationUI(Scanner scanner) {
+        try {
+            System.out.print("ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            System.out.print("Date (YYYY-MM-DD): ");
+            LocalDate date = LocalDate.parse(scanner.nextLine());
+            System.out.print("Departure (HH:mm): ");
+            LocalTime dep = LocalTime.parse(scanner.nextLine());
+            System.out.print("Arrival (HH:mm): ");
+            LocalTime arr = LocalTime.parse(scanner.nextLine());
+            System.out.print("Truck ID: ");
+            String truck = scanner.nextLine();
+            System.out.print("Driver ID: ");
+            String driver = scanner.nextLine();
+            System.out.print("Origin Site Name: ");
+            String originName = scanner.nextLine();
+            System.out.print("Shipment Area IDs (comma-separated): ");
+            String[] shipmentAreaStrings = scanner.nextLine().split(",");
+            List<Integer> shipmentAreas = new ArrayList<>();
+            for (String s : shipmentAreaStrings) {
+                shipmentAreas.add(Integer.parseInt(s.trim()));
+            }
+            Site origin = null;
+            for (int areaId : shipmentAreas) {
+                ShipmentArea sa = controller.findShipmentAreaById(areaId);
+                if (sa != null) {
+                    for (Site site : sa.getSites()) {
+                        if (site.getName().equals(originName)) {
+                            origin = site;
+                            break;
+                        }
+                    }
+                }
+                if (origin != null) break;
+            }
+            if (origin == null) {
+                System.out.println("Origin site not found in any of the provided shipment areas.");
+                return;
+            }
+            System.out.println(controller.makeTransportation(id, date, dep, arr, truck, driver, new ArrayList<>(), shipmentAreas, origin));
+        } catch (Exception e) {
+            System.out.println("Failed to make transportation: " + e.getMessage());
+        }
     }
 }

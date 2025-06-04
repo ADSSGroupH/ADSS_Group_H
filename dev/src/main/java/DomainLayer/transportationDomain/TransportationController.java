@@ -407,4 +407,9 @@ public class TransportationController {
         }
         return true;
     }
+
+    public List<ShipmentArea> getAllShipmentAreas() {
+        return shipmentAreaRep.getAllShipmentAreas();
+    }
+
 }
