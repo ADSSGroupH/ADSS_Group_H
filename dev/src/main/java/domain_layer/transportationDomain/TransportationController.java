@@ -70,7 +70,7 @@ public class TransportationController {
             return "Driver with ID " + drivername + " does not exist.";
         }
         // Check if the driver is available
-        if (driverRep.getDriver(drivername).isOccupied()) {
+        if (!checkDriverAvailability(drivername, date, departureTime, arrivalTime)) {
             return "Driver with ID " + drivername + " is already occupied.";
         }
         // Check if the driver has a matching license type
@@ -85,7 +85,6 @@ public class TransportationController {
             return "Items weight exceeds the truck's maximum weight.";
         }
 
-        driverRep.getDriver(drivername).setOccupied(true);
         transportationRep.addTransportation(id, t);
         String areasNotification = "";
         if (shipmentAreasID.size() > 1){
@@ -151,11 +150,10 @@ public class TransportationController {
         }
         Driver driver = driverRep.getDriver(newDriverName);
         // Check if the driver is available
-        if (driver.isOccupied()) {
+        if (!checkDriverAvailability(newDriverName, t.getDate(), t.getDepartureTime(), t.getArrivalTime())) {
             return "Driver with name " + newDriverName + " is already occupied.";
         }
         // Set the driver as occupied
-        driver.setOccupied(true);
         if (driver.getLicenseType().equals(truckRep.getTruck(t.getTruckPlateNumber()).getLicenseType())) {
             return "Driver with name " + newDriverName + " does not have the required license type for truck " + t.getTruckPlateNumber() + ".";
         }
@@ -369,5 +367,23 @@ public class TransportationController {
         } else {
             return null;
         }
+    }
+
+    public boolean checkDriverAvailability(String driverName, LocalDate date, LocalTime departureTime, LocalTime arrivalTime) {
+        List<Transportation> transportations = transportationRep.getTransportationsByDriverName(driverName);
+        for (Transportation transportation : transportations) {
+            if (transportation.getDate().equals(date)) {
+                LocalTime tranDeparture = transportation.getDepartureTime();
+                LocalTime tranArrival = transportation.getArrivalTime();
+                
+                // Check if the new transportation overlaps with the existing one
+                if ((departureTime.isBefore(tranArrival) && departureTime.isAfter(tranDeparture)) ||
+                (arrivalTime.isBefore(tranArrival) && arrivalTime.isAfter(tranDeparture))) {
+                    return false; // Driver is not available
+                }
+            }
+            
+        }
+        return true;
     }
 }
