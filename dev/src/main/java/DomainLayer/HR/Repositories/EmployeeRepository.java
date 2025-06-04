@@ -3,6 +3,7 @@ package DomainLayer.HR.Repositories;
 import DTO.HR.EmployeeDTO;
 import DTO.HR.RoleDTO;
 import DTO.HR.ShiftDTO;
+import DTO.Transportation.driverDTO;
 import Dal.HR.JdbcBranchDAO;
 import Dal.HR.JdbcEmployeeDAO;
 import DomainLayer.HR.*;
@@ -43,6 +44,20 @@ public class EmployeeRepository {
         } catch (Exception e) {
             throw new SQLException(e);
         }
+    }
+
+
+    public void addEmployeeToDriverTB(Employee employee) throws SQLException {
+        try {
+            EmployeeDTO empDTO = fromEntity(employee);
+            jdbcEmployeeDAO.saveIfDriver(empDTO);
+        } catch (Exception e) {
+            throw new SQLException(e);
+        }
+    }
+
+    public void addDriverLicense(String id, String licenseType) throws SQLException {
+        jdbcEmployeeDAO.addDriverLicense( id,  licenseType);
     }
 
     public void updateEmployee(Employee employee) {
