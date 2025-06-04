@@ -1,6 +1,7 @@
 package DomainLayer;
 
-import DTO.driverDTO;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;
@@ -10,6 +11,7 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
+import DomainLayer.Transportation.Repositories.DriverRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -24,8 +26,10 @@ public class HR_TransportationController {
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final AssignmentRepository assignmentRepository;
+    private final DriverRepository driverRepository;
 
     public HR_TransportationController() {
+        this.driverRepository = new DriverRepository();
         this.shiftRepository = ShiftRepository.getInstance();
         this.roleRepository = RoleRepository.getInstance();
         this.assignmentRepository = AssignmentRepository.getInstance();
@@ -37,18 +41,28 @@ public class HR_TransportationController {
      * מחזירה רשימת נהגים זמינים למשמרת בתאריך ובשעה הנתונה
      */
     public List<driverDTO> getAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
-        //first get the driver role from the list of roles:
         Role driverRole = roleRepository.getRoleByName("driver");
         Shift targetShift = shiftRepository.findByDateAndTime(date.toString(), startTime.toString());
-        List<Employee> availableDrivers = shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).get(0);
+        List<Employee> availableDrivers = shiftController
+                .AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole)
+                .get(0); // רשימת זמינים
         List<driverDTO> driverDTOList = new ArrayList<>();
 
         for (Employee driver : availableDrivers) {
-            driverDTOList.add(new driverDTO());
+            LicenseType licenseTypeStr = driverRepository.getLicenseByDriverId(driver.getId());
+
+            if (licenseTypeStr != null) {
+                driverDTO dto = new driverDTO(licenseTypeStr);
+                dto.setId(driver.getId());
+                dto.setName(driver.getName());
+                dto.setLicenseType(licenseTypeStr); // לפי enum
+                driverDTOList.add(dto);
+            }
         }
 
         return driverDTOList;
     }
+
 
     /**
      * מחזירה true אם קיים לפחות מחסנאי אחד באחת המשמרות שמתאימות לתאריך, שעת התחלה ורשימת שעות סיום
