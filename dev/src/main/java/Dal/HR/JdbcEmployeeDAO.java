@@ -128,6 +128,45 @@ public class JdbcEmployeeDAO implements EmployeeDAO {
     }
 
     @Override
+    public void saveIfDriver(EmployeeDTO driver) throws SQLException {
+
+        String sql2 = "INSERT INTO drivers (emp_id, emp_name, licenseType) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql2)) {
+            ps.setString(1, driver.getId());
+            ps.setString(2, driver.getName());
+            ps.setString(3, null);
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public void addDriverLicense(String id, String licenseType) throws SQLException {
+        String sql = "UPDATE drivers SET licenseType = ? WHERE emp_id = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setString(1, licenseType); // סוג רישיון חדש
+            ps.setString(2, id);          // מזהה הנהג
+            ps.executeUpdate();
+        }
+    }
+
+
+
+    @Override
+    public String getLicenseByDriverId(String id) throws SQLException {
+        String sql = "SELECT licenseType FROM drivers WHERE emp_id = ?";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("licenseType");
+            }
+        }
+        return null; // אם לא נמצא
+    }
+
+
+
+    @Override
     public void update(EmployeeDTO employee) throws SQLException {
         String sql = "UPDATE employees SET name = ?, phone_number = ?, branch_id = ?, role_ids = ?, salary = ?, contract_id = ?, bank_details = ?, is_archived = ?, archived_at = ?, is_manager = ?, password = ? WHERE id = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
