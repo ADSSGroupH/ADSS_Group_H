@@ -168,6 +168,8 @@ public class ManagerUI {
                 }
 
                 case "5" -> {
+                    String licenseType = null;
+                    boolean isDriver = false;
                     System.out.print("Employee ID: ");
                     String id = scanner.nextLine();
 
@@ -205,6 +207,7 @@ public class ManagerUI {
                         System.out.print("Role name: ");
                         String roleName = scanner.nextLine();
                         String roleNameLowerCase = roleName.toLowerCase();
+
                         for (Role r : managerService.getAllRoles()) {
                             if (r.getName().equals(roleNameLowerCase)) {
                                 role = r; //found the role, add it to the employee
@@ -221,6 +224,12 @@ public class ManagerUI {
                                 roles.add(newRole);
                                 managerService.addRoleToTheSystem(newRole); // מוסיף גם למחסן התפקידים
                             }
+                        }
+                        if (roleNameLowerCase.equals("driver")){
+                            isDriver = true;
+                            System.out.print("This role doesn't exist. would you like to create it? (yes/no): ");
+                            licenseType = scanner.nextLine();
+
                         }
 
                         System.out.print("Add another role? (yes/no): ");
@@ -262,7 +271,11 @@ public class ManagerUI {
 
                     EmployeeContract contract = managerService.createContract(id, Date, freeDays, sicknessDays, hours, social, fund, salary);
                     try {
+                        if (isDriver == true){
+                            managerService.addDriverLicense(id,licenseType);
+                        }
                         managerService.addEmployee(id, name, phone, branchId, roles, contract, bank, false, password);
+
                     }catch (SQLException e){
                         System.out.printf("ID number : %s already exists in the system.",id);
                         break;
@@ -462,8 +475,7 @@ public class ManagerUI {
                             System.out.printf("There are no qualified for the role : %s\n", requiredRole.getName());
                             continue;
                         }
-
-                        List<Employee> available = AvailableUnavailableEmps.get(0);
+                        List<Employee> available = AvailableUnavailableEmps.getFirst();
                         List<Employee> unavailable = AvailableUnavailableEmps.get(1);
                         List<Employee> allOptions = new ArrayList<>();
                         allOptions.addAll(unavailable);
