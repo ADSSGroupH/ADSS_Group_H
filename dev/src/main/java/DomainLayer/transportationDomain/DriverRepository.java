@@ -1,12 +1,18 @@
-package DomainLayer.transportationDomain;
+package DomainLayer.Transportation.Repositories;
 
+import DTO.Transportation.LicenseType;
+import Dal.HR.JdbcEmployeeDAO;
+import DomainLayer.Transportation.Driver;
+import database.Database;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import DTO.LicenseType;;
-
 public class DriverRepository {
-    private Map<String, Driver> driverMap; 
+    private Map<String, Driver> driverMap;
 
     public DriverRepository() {
         this.driverMap = new HashMap<>();
@@ -40,4 +46,11 @@ public class DriverRepository {
         }
         return false;
     }
+
+    public LicenseType getLicenseByDriverId(String id) throws SQLException {
+        JdbcEmployeeDAO empDAO = new JdbcEmployeeDAO();
+        String LicenseAsString = empDAO.getLicenseByDriverId(id);
+        return LicenseType.valueOf(LicenseAsString);
+    }
+
 }
