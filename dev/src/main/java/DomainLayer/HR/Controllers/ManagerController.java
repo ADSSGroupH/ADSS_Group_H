@@ -33,6 +33,11 @@ public class ManagerController {
         branch.UpdateEmployees(newEmployee);
     }
 
+    public void addDriverLicense (String id, String licenseType) throws SQLException {
+        employeeRepository.addDriverLicense(id,  licenseType);
+    }
+
+
     public ManagerController_Status deleteEmployee(String id) {
         Employee emp = employeeRepository.getEmployeeById(id);
         if (emp != null) {
@@ -44,8 +49,13 @@ public class ManagerController {
         return ManagerController_Status.EmployeeNotFound;
     }
 
-    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) {
+    public ManagerController_Status addRoleToEmployee(String employeeId, Role newRole) throws SQLException {
+
         Employee emp = employeeRepository.getEmployeeById(employeeId);
+//        if (newRole.getName().equalsIgnoreCase("driver")){ //no usages so far so no change
+//            employeeRepository.addEmployeeToDriverTB(emp);
+//            //
+//        }
         if (emp != null) {
             Set<Role> curr_roles = emp.getRoles();
             curr_roles.add(newRole);
