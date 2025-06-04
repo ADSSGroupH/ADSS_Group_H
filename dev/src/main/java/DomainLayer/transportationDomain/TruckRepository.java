@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import Dal.transportation_dal.JdbcTruckDAO;
-import DTO.TruckDTO;
+import Dal.transportation_dal.JdbcTruckDAO;
 
 public class TruckRepository {
      private Map<String, Truck> truckMap;

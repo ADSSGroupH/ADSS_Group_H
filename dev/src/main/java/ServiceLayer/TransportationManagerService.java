@@ -1,11 +1,10 @@
-package service_layer;
-
-import DTO.LicenseType;
+package ServiceLayer;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import DTO.LicenseType;
 import DomainLayer.transportationDomain.*;
 
 public class TransportationManagerService {
