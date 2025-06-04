@@ -48,10 +48,10 @@ public final class Database {
                 //Create Drivers Table
                 st.executeUpdate("""
                     CREATE TABLE drivers (
-                        emp_id VARCHAR(50),
-                        emp_name VARCHAR(50),
+                        employee_id VARCHAR(50),
+                        employee_name VARCHAR(50),
                         licenseType VARCHAR(50),
-                        PRIMARY KEY (emp_id)
+                        PRIMARY KEY (employee_id)
                     )
                 """);
 
