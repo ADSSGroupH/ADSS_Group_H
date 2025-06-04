@@ -2,6 +2,7 @@ package Dal.HR;
 
 
 import DTO.HR.EmployeeDTO;
+import DTO.Transportation.driverDTO;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +17,14 @@ public interface EmployeeDAO {
     Optional<EmployeeDTO> findByIdAndPassword(String id, String password) throws SQLException;
     List<EmployeeDTO> findQualified(String branchId, String roleId) throws SQLException;
     void save(EmployeeDTO employee) throws SQLException;
+
+    void saveIfDriver(EmployeeDTO driver) throws SQLException;
+
+    void addDriverLicense(String id, String licenseType) throws SQLException;
+
+    String getLicenseByDriverId(String id) throws SQLException;
+
+
     void update(EmployeeDTO employee) throws SQLException;
     void delete(String id) throws SQLException;
     boolean exists(String id) throws SQLException;
