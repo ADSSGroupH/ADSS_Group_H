@@ -2,10 +2,11 @@ package DomainLayer.transportationDomain;
 
 import java.util.*;
 
-import Dal.transportation_dal.JdbcShipmentAreaDAO;
-import Dal.transportation_dal.JdbcSiteDAO;
 import DTO.ShipmentAreaDTO;
 import DTO.SiteDTO;
+import Dal.transportation_dal.JdbcShipmentAreaDAO;
+import Dal.transportation_dal.JdbcSiteDAO;
+
 
 public class ShipmentAreaRepository {
     private Map<Integer, ShipmentArea> shipmentAreaMap;

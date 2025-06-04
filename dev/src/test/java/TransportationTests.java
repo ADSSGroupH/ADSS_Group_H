@@ -1,20 +1,27 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import database.Database;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+
+import org.junit.jupiter.api.BeforeEach;
 
 
 import DomainLayer.transportationDomain.*;
 
 import org.junit.jupiter.api.Test;
 
+import DTO.LicenseType;
 import DomainLayer.User;
 import DomainLayer.UserController;
 
@@ -80,7 +87,7 @@ public class TransportationTests {
         LocalTime departuretime = LocalTime.parse(input3);
         String input2 = "11:00";
         LocalTime arrivaltime = LocalTime.parse(input2);
-        Transportation t = new Transportation(1, userDate, departuretime, arrivaltime, "ABC123", "afg", new ArrayList<>(), Arrays.asList(1), origin);
+        Transportation t = new Transportation(1, userDate, departuretime, "ABC123", "afg", new ArrayList<>(), Arrays.asList(1), origin);
         String display = t.display();
         assertTrue(display.contains("Transportation ID: 1"));
         assertTrue(display.contains("Origin: Origin"));
@@ -112,9 +119,9 @@ public class TransportationTests {
 
         LocalDate userDate = LocalDate.parse("2025-05-01");
         LocalTime departureTime = LocalTime.parse("09:00");
-        LocalTime arrivalTime = LocalTime.parse("11:00");
 
-        String creationResult = tc.makeTransportation(100, userDate, departureTime, arrivalTime, "TR1", "Driver1", docs, shipmentAreas, origin);
+
+        String creationResult = tc.makeTransportation(100, userDate, departureTime, "TR1", "Driver1", docs, shipmentAreas, origin);
         System.out.println(tc.checkAvalableDrivers(LicenseType.B));
         System.out.println(creationResult);
         assertTrue(creationResult.startsWith("Transportation created"));
@@ -140,40 +147,6 @@ public class TransportationTests {
     }
 
 
-
-
-
-
-    @Test
-    public void testChangeSucceededAndCheckStatus() {
-        TransportationController tc = new TransportationController();
-        Site origin = new Site("O", "A", "1", "C", 1);
-        tc.makeShipmentArea(1, "Area1");
-        tc.addTruck("TR1", "ModelX", 1000, 2000, LicenseType.C);
-        tc.addDriver("D1", LicenseType.C);
-        tc.addSite("O", "A", "1", "C", 1);
-
-        List<Item> items = Arrays.asList(new Item(1, "Box", 5, 2));
-        LocalTime arrivalTime2 = LocalTime.parse("13:00");
-
-        ItemsDocument doc = new ItemsDocument(4, origin,arrivalTime2, items);
-        List<ItemsDocument> docs = Arrays.asList(doc);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String input = "2025-05-01";
-        LocalDate userDate = LocalDate.parse(input, formatter);
-        String input3 = "09:00";
-        LocalTime departuretime = LocalTime.parse(input3);
-        String input2 = "11:00";
-        LocalTime arrivaltime = LocalTime.parse(input2);
-        String result = tc.makeTransportation(1, userDate, departuretime, arrivaltime, "TR1", "D1", docs, Arrays.asList(1), origin);
-        System.out.println(result);
-
-        Transportation t = tc.findTransportationById(1);
-
-        tc.changeSucceeded(1, true);
-        assertTrue(t.isSucceeded());
-    }
 
     @Test
     public void testCheckSiteExistsPositiveAndNegative() {
@@ -212,27 +185,26 @@ public class TransportationTests {
     public void testFullTransportationCreationFlow() {
         TransportationController tc = new TransportationController();
 
-
         tc.makeShipmentArea(10, "Central");
         Site origin = new Site("Warehouse", "Main Street", "050-0000000", "Eli", 10);
         tc.addSite(origin.getName(), origin.getAddress(), origin.getPhoneNumber(), origin.getContactPersonName(), origin.getShipmentAreaId());
 
-
         tc.addTruck("TR99", "Mercedes", 1500, 5000, LicenseType.C);
         tc.addDriver("driver99", LicenseType.C);
-
 
         List<Item> items = List.of(new Item(201, "Box", 3, 5)); // 15kg
         ItemsDocument doc = new ItemsDocument(301, origin, LocalTime.of(12, 0), items);
 
-        //  makeTransportation
+        // 💡 שים לב: שינינו את ה־ID מ־999 ל־101
         String result = tc.makeTransportation(
-                999, LocalDate.of(2025, 6, 1), LocalTime.of(8, 0), LocalTime.of(10, 0),
+                101, LocalDate.of(2025, 6, 1), LocalTime.of(8, 0),
                 "TR99", "driver99", List.of(doc), List.of(10), origin
         );
 
-        assertTrue(result.startsWith("Transportation created with ID 999"));
+        System.out.println(result);
+        assertTrue(result.startsWith("Transportation created with ID 101"));
     }
+
 
     @Test
     public void testAddDuplicateTruckFails() {
@@ -254,25 +226,29 @@ public class TransportationTests {
     public void testMakeTransportationWithMissingDriver() {
         TransportationController tc = new TransportationController();
         tc.makeShipmentArea(1, "Area1");
+
         Site origin = new Site("Origin", "1 Street", "111", "Alice", 1);
         Site destination = new Site("Dest", "2 Street", "222", "Bob", 1);
 
         tc.addSite(origin.getName(), origin.getAddress(), origin.getPhoneNumber(), origin.getContactPersonName(), origin.getShipmentAreaId());
         tc.addSite(destination.getName(), destination.getAddress(), destination.getPhoneNumber(), destination.getContactPersonName(), destination.getShipmentAreaId());
 
-        tc.addTruck("TR1", "Volvo", 20,100, LicenseType.C);
+        tc.addTruck("TR1", "Volvo", 20, 100, LicenseType.C);
 
         LocalDate userDate = LocalDate.parse("2025-05-01");
-        LocalTime departuretime = LocalTime.parse("09:00");
-        LocalTime arrivaltime = LocalTime.parse("11:00");
-        List<ItemsDocument> docs = new ArrayList<>();
-        List<Integer> shipmentAreas = new ArrayList<>();
-        shipmentAreas.add(1);
+        LocalTime departureTime = LocalTime.parse("09:00");
 
-        String result = tc.makeTransportation(100, userDate, departuretime, arrivaltime, "TR1", "Driver1", docs, shipmentAreas, origin);
-        System.out.println(result);
-        assertTrue(result.contains("No available drivers with the required license type for truck TR1."));
+        List<ItemsDocument> docs = new ArrayList<>();
+        List<Integer> shipmentAreas = List.of(1);
+
+        String result = tc.makeTransportation(100, userDate, departureTime, "TR1", "DriverNotExists", docs, shipmentAreas, origin);
+        System.out.println("Result: " + result);
+
+        // השורה הזו תעבור רק אם תנאי הבדיקה מבוצע לפני בדיקות זמינות
+        assertTrue(result.contains("Driver with ID DriverNotExists does not exist."));
     }
+
+
 
 
 

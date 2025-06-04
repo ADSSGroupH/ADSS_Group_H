@@ -10,6 +10,10 @@ import DTO.ItemsDocumentDTO;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.List;
+
+import DTO.LicenseType;
+import DomainLayer.transportationDomain.*;
 
 public class TransportationManagerService {
     private final TransportationController controller = new TransportationController();
@@ -225,8 +229,6 @@ public class TransportationManagerService {
             LocalDate date = LocalDate.parse(scanner.nextLine());
             System.out.print("Departure (HH:mm): ");
             LocalTime dep = LocalTime.parse(scanner.nextLine());
-            System.out.print("Arrival (HH:mm): ");
-            LocalTime arr = LocalTime.parse(scanner.nextLine());
             System.out.print("Truck ID: ");
             String truck = scanner.nextLine();
             System.out.print("Driver ID: ");
@@ -256,9 +258,10 @@ public class TransportationManagerService {
                 System.out.println("Origin site not found in any of the provided shipment areas.");
                 return;
             }
-            System.out.println(controller.makeTransportation(id, date, dep, arr, truck, driver, new ArrayList<>(), shipmentAreas, origin));
+            System.out.println(controller.makeTransportation(id, date, dep, truck, driver, new ArrayList<>(), shipmentAreas, origin));
         } catch (Exception e) {
             System.out.println("Failed to make transportation: " + e.getMessage());
         }
     }
+
 }

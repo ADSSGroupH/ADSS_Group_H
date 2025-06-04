@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.LicenseType;
+import DomainLayer.HR_TransportationController;
 
 
 public class TransportationController {
@@ -14,12 +15,14 @@ public class TransportationController {
     private ShipmentAreaRepository shipmentAreaRep;
     private DriverRepository driverRep;
     private TruckRepository truckRep;
+    private HR_TransportationController hrTransportationController;
 
     public TransportationController() {
         transportationRep = new TransportationRepository();
         shipmentAreaRep = new ShipmentAreaRepository();
         driverRep = new DriverRepository();
         truckRep = new TruckRepository();
+        hrTransportationController = new HR_TransportationController();
     }
 
     public String makeShipmentArea(int id, String name){
@@ -42,60 +45,79 @@ public class TransportationController {
         }
     }
 
-    public String makeTransportation(int id, LocalDate date, LocalTime departureTime,LocalTime arrivalTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
+    public String makeTransportation(int id, LocalDate date, LocalTime departureTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
         // Check if the transportation already exists
         if (transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " already exists.";
         }
+
+        // Check if the driver exists ← מוקדם!
+        if (!driverRep.driverExists(drivername)) {
+            return "Driver with ID " + drivername + " does not exist.";
+        }
+
+        // Check if the truck exists ← גם מוקדם כי נשתמש בו בהמשך
+        if (!truckRep.truckExists(truckPlateNumber)) {
+            return "Truck with plate number " + truckPlateNumber + " does not exist.";
+        }
+
+        List<LocalTime> arrivalTime = new ArrayList<>();
+        for (ItemsDocument itemsDocument1 : itemsDocument) {
+            arrivalTime.add(itemsDocument1.getArrivalTime());
+        }
+
+        // בדיקת זמינות עובדים במחסן אחרי ווידוא נהג ומשאית
+        try {
+            if (!hrTransportationController.isWarehouseWorkerAvailable(date, departureTime, arrivalTime)) {
+                return "There are no available warehouse workers for the specified time.";
+            }
+        } catch (Exception e) {
+            return "Error checking warehouse worker availability: " + e.getMessage();
+        }
+
         // Check if the shipment areas exist
         for (int areaID : shipmentAreasID) {
             if (!shipmentAreaRep.shipmentAreaExists(areaID)) {
                 return "Shipment area with ID " + areaID + " does not exist.";
             }
         }
+
         // Check if the site exists
         if (!shipmentAreaRep.checkSiteExists(origin.getName(), shipmentAreasID)) {
             return "Site with name " + origin.getName() + " doesn't exist in the shipment areas.";
         }
-        // Check if the truck exists
-        if (!truckRep.truckExists(truckPlateNumber)) {
-            return "Truck with plate number " + truckPlateNumber + " does not exist.";
-        }
-        if(!checkTruckAvailability(truckPlateNumber, date, departureTime, arrivalTime))
+
+        if (!checkTruckAvailability(truckPlateNumber, date, departureTime, arrivalTime))
             return "Truck with plate number " + truckPlateNumber + " is already occupied during the specified time.";
-        // Check if there are available drivers with the required license type
+
         if (!checkAvalableDrivers(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "No available drivers with the required license type for truck " + truckPlateNumber + ".";
         }
-        // Check if the driver exists
-        if (!driverRep.driverExists(drivername)) {
-            return "Driver with ID " + drivername + " does not exist.";
-        }
-        /*// Check if the driver is available
+
         if (!checkDriverAvailability(drivername, date, departureTime, arrivalTime)) {
             return "Driver with ID " + drivername + " is already occupied.";
         }
 
-         */
-        // Check if the driver has a matching license type
         if (!driverRep.getDriver(drivername).getLicenseType().equals(truckRep.getTruck(truckPlateNumber).getLicenseType())) {
             return "Driver with ID " + drivername + " does not have the required license type for truck " + truckPlateNumber + ".";
         }
 
-        Transportation t = new Transportation(id, date, departureTime, arrivalTime, truckPlateNumber, drivername, itemsDocument, shipmentAreasID, origin);
+        Transportation t = new Transportation(id, date, departureTime, truckPlateNumber, drivername, itemsDocument, shipmentAreasID, origin);
 
-        // Check if the items weight is less than the truck's max weight
         if (calculateItemsWeight(itemsDocument) > truckRep.getTruck(truckPlateNumber).getMaxWeight()) {
             return "Items weight exceeds the truck's maximum weight.";
         }
 
         transportationRep.addTransportation(id, t);
+
         String areasNotification = "";
         if (shipmentAreasID.size() > 1){
             areasNotification += "\n The transportation needs to go through more than one shipment area";
         }
+
         return "Transportation created with ID " + id + ", Date: " + date + ", Departure Time: " + departureTime + ", Truck Plate Number: " + truckPlateNumber + ", Driver name: " + drivername + areasNotification;
     }
+
 
 
     public void deleteTransportation(int id){
@@ -153,8 +175,13 @@ public class TransportationController {
             return "Transportation with ID " + id + " not found.";
         }
         Driver driver = driverRep.getDriver(newDriverName);
+        List<ItemsDocument> itemsDocument = t.getItemsDocument();
+        List<LocalTime> arrivalTime = new ArrayList<>();
+        for (ItemsDocument itemsDocument1 : itemsDocument) {
+            arrivalTime.add(itemsDocument1.getArrivalTime());
+        }
         // Check if the driver is available
-        if (!checkDriverAvailability(newDriverName, t.getDate(), t.getDepartureTime(), t.getArrivalTime())) {
+        if (!checkDriverAvailability(newDriverName, t.getDate(), t.getDepartureTime(), arrivalTime)) {
             return "Driver with name " + newDriverName + " is already occupied.";
         }
         // Set the driver as occupied
@@ -373,17 +400,17 @@ public class TransportationController {
         }
     }
 
-    public boolean checkDriverAvailability(String driverName, LocalDate date, LocalTime departureTime, LocalTime arrivalTime) {
+    public boolean checkDriverAvailability(String driverName, LocalDate date, LocalTime departureTime, List<LocalTime> arrivalTime) {
         List<Transportation> transportations = transportationRep.getTransportationsByDriverName(driverName);
         for (Transportation transportation : transportations) {
             if (transportation.getDate().equals(date)) {
                 LocalTime tranDeparture = transportation.getDepartureTime();
-                LocalTime tranArrival = transportation.getArrivalTime();
-                
-                // Check if the new transportation overlaps with the existing one
-                if ((departureTime.isBefore(tranArrival) && departureTime.isAfter(tranDeparture)) ||
-                (arrivalTime.isBefore(tranArrival) && arrivalTime.isAfter(tranDeparture))) {
-                    return false; // Driver is not available
+                for (LocalTime arrival : arrivalTime) {
+                    // Check if the new transportation overlaps with the existing one
+                    if ((departureTime.isBefore(arrival) && departureTime.isAfter(tranDeparture)) ||
+                    (arrival.isBefore(arrival) && arrival.isAfter(tranDeparture))) {
+                        return false; // Driver is not available
+                    }
                 }
             }
             
@@ -391,17 +418,17 @@ public class TransportationController {
         return true;
     }
 
-    public boolean checkTruckAvailability(String truckPlateNumber, LocalDate date, LocalTime departureTime, LocalTime arrivalTime) {
+    public boolean checkTruckAvailability(String truckPlateNumber, LocalDate date, LocalTime departureTime, List<LocalTime> arrivalTime) {
         List<Transportation> transportations = transportationRep.getTransportationsByPlateNumber(truckPlateNumber);
         for (Transportation transportation : transportations) {
             if (transportation.getDate().equals(date)) {
                 LocalTime tranDeparture = transportation.getDepartureTime();
-                LocalTime tranArrival = transportation.getArrivalTime();
-                
-                // Check if the new transportation overlaps with the existing one
-                if ((departureTime.isBefore(tranArrival) && departureTime.isAfter(tranDeparture)) ||
-                (arrivalTime.isBefore(tranArrival) && arrivalTime.isAfter(tranDeparture))) {
-                    return false; // Truck is not available
+                for (LocalTime arrival : arrivalTime) {
+                    // Check if the new transportation overlaps with the existing one
+                    if ((departureTime.isBefore(arrival) && departureTime.isAfter(tranDeparture)) ||
+                    (arrival.isBefore(arrival) && arrival.isAfter(tranDeparture))) {
+                        return false; // Driver is not available
+                    }
                 }
             }
         }
@@ -411,5 +438,6 @@ public class TransportationController {
     public List<ShipmentArea> getAllShipmentAreas() {
         return shipmentAreaRep.getAllShipmentAreas();
     }
+
 
 }

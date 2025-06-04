@@ -10,7 +10,6 @@ public class Transportation {
     private int id;
     private LocalDate date;
     private LocalTime departureTime;
-    private LocalTime arrivalTime;
     private String truckPlateNumber;
     private String driverName;
     private boolean succeeded;
@@ -20,13 +19,12 @@ public class Transportation {
     private String accident;
 
     public Transportation(int id, LocalDate date, LocalTime departureTime,
-                          LocalTime arrivalTime, String truckPlateNumber, String driverName,
+                        String truckPlateNumber, String driverName,
                           List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID,
                           Site origin) {
         this.id = id;
         this.date = date;
         this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
         this.truckPlateNumber = truckPlateNumber;
         this.driverName = driverName;
         this.succeeded = false;
@@ -40,7 +38,6 @@ public class Transportation {
         this.id = transportationDTO.getId();
         this.date = LocalDate.parse(transportationDTO.getDate());
         this.departureTime = LocalTime.parse(transportationDTO.getDepartureTime());
-        this.arrivalTime = LocalTime.parse(transportationDTO.getArrivalTime());
         this.truckPlateNumber = transportationDTO.getTruckPlateNumber();
         this.driverName = transportationDTO.getDriverName();
         this.succeeded = transportationDTO.isSucceeded();
@@ -79,9 +76,6 @@ public class Transportation {
     public void setOrigin(Site newOrigin) {
         this.origin = newOrigin;
     }
-    public void setArrivalTime(LocalTime newArrivalTime) {
-        this.arrivalTime = newArrivalTime;
-    }
 
     public int getId() {
         return id;
@@ -116,9 +110,7 @@ public class Transportation {
     public String getAccident() {
         return accident;
     }
-    public LocalTime getArrivalTime() {
-        return arrivalTime;
-    }
+
     public void setAccident(String accident) {
         this.accident = accident;
     }
@@ -153,7 +145,7 @@ public class Transportation {
     }
 
     public TransportationDTO toDTO() {
-        return new TransportationDTO(id, date.toString(), departureTime.toString(), arrivalTime.toString(),
+        return new TransportationDTO(id, date.toString(), departureTime.toString(),
                 truckPlateNumber, driverName, succeeded, origin.getName(), origin.getShipmentAreaId(), accident);
     }
 

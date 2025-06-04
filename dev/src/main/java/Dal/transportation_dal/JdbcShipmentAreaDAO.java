@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import database.Database;
 import DTO.ShipmentAreaDTO;
+import database.Database;
 
 public class JdbcShipmentAreaDAO implements ShipmentAreaDAO {
 

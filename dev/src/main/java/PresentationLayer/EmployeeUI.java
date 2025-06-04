@@ -1,12 +1,22 @@
 package PresentationLayer;
 
 import java.sql.SQLException;
-import java.util.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
 
-import DomainLayer.HR.*;
-import DomainLayer.HR.Controllers.ShiftSwapRequestController;
-import ServiceLayer.*;
+import DomainLayer.HR.Employee;
+import DomainLayer.HR.EmployeeContract;
+import DomainLayer.HR.Role;
+import DomainLayer.HR.Shift;
+import DomainLayer.HR.ShiftAssignment;
+import DomainLayer.HR.ShiftSwapRequest;
+import ServiceLayer.EmployeeService;
+import ServiceLayer.ShiftService;
+import ServiceLayer.ShiftSwapRequestService;
 
 public class EmployeeUI {
     private final Scanner scanner = new Scanner(System.in);
