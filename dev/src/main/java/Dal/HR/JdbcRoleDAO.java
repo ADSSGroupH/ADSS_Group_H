@@ -109,7 +109,7 @@ public class JdbcRoleDAO implements RoleDAO {
     @Override
     public void delete(String id) throws SQLException {
         String sql = """
-            UPDATE roles SET is_archived = true, archived_at = CURRENT_TIMESTAMP 
+            UPDATE roles SET is_archived = true
             WHERE id = ?
         """;
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)){
