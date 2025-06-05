@@ -1,10 +1,9 @@
-package DomainLayer.Transportation.Repositories;
+package DomainLayer.transportationDomain;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DTO.LicenseType;
+import DTO.driverDTO;
 import Dal.HR.JdbcEmployeeDAO;
 import DomainLayer.HR_TransportationController;
-import DomainLayer.Transportation.Driver;
 import database.Database;
 
 import java.sql.PreparedStatement;

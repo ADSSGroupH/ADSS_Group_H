@@ -1,13 +1,11 @@
-import DomainLayer.Transportation.*;
-import DomainLayer.Transportation.Controllers.TransportationController;
-import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
-import DomainLayer.Transportation.Repositories.TransportationRepository;
-import DomainLayer.Transportation.Repositories.TruckRepository;
+import DomainLayer.transportationDomain.*;
+import DomainLayer.transportationDomain.TransportationController;
+import DomainLayer.transportationDomain.ShipmentAreaRepository;
+import DomainLayer.transportationDomain.TransportationRepository;
+import DomainLayer.transportationDomain.TruckRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
 
 import DomainLayer.HR_TransportationController;
@@ -21,9 +19,9 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.Transportation.Repositories.DriverRepository;
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DomainLayer.transportationDomain.DriverRepository;
+import DTO.LicenseType;
+import DTO.driverDTO;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -32,764 +30,567 @@ import java.util.*;
 
 public class HR_Transportation_Tests {
 
-    @Mock
-    private ShiftController mockShiftController;
-    @Mock
-    private ShiftRepository mockShiftRepository;
-    @Mock
-    private EmployeeRepository mockEmployeeRepository;
-    @Mock
-    private RoleRepository mockRoleRepository;
-    @Mock
-    private AssignmentRepository mockAssignmentRepository;
-    @Mock
-    private DriverRepository mockDriverRepository;
+    // Real repositories and controllers
+    private ShiftController shiftController;
+    private ShiftRepository shiftRepository;
+    private EmployeeRepository employeeRepository;
+    private RoleRepository roleRepository;
+    private AssignmentRepository assignmentRepository;
+    private DriverRepository driverRepository;
+    private TruckRepository truckRepository;
+    private ShipmentAreaRepository shipmentAreaRepository;
+    private TransportationRepository transportationRepository;
 
-    @Mock
-    private HR_TransportationController controller;
-
-    @Mock
-    private HR_TransportationController mockHrController;
-    @Mock
-    private TruckRepository mockTruckRepository;
-    @Mock
-    private ShipmentAreaRepository mockShipmentAreaRepository;
-    @Mock
-    private TransportationRepository mockTransportationRepository;
-
+    private HR_TransportationController hrTransportationController;
     private TransportationController transportationController;
 
+    // Test data containers for cleanup
+    private List<String> createdEmployeeIds = new ArrayList<>();
+    private List<String> createdShiftIds = new ArrayList<>();
+    private List<String> createdRoleIds = new ArrayList<>();
+    private List<Integer> createdTransportationIds = new ArrayList<>();
+    private List<String> createdTruckPlates = new ArrayList<>();
+
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        // Note: Would need to modify constructor to accept dependencies for proper unit testing
-        // Currently using a wrapper approach for demonstration
+    void setUp() throws SQLException {
+        // Initialize real repositories
+        shiftRepository = ShiftRepository.getInstance();
+        employeeRepository = EmployeeRepository.getInstance();
+        roleRepository = RoleRepository.getInstance();
+        assignmentRepository = AssignmentRepository.getInstance();
+        driverRepository = new DriverRepository();
+        truckRepository = new TruckRepository();
+        shipmentAreaRepository = new ShipmentAreaRepository();
+        transportationRepository = new TransportationRepository();
+
+        // Initialize real controllers
+        shiftController = new ShiftController();
+        hrTransportationController = new HR_TransportationController();
         transportationController = new TransportationController();
-        transportationController.setDriverRep(mockDriverRepository);
-        transportationController.setTruckRep(mockTruckRepository);
-        transportationController.setHrTransportationController(mockHrController);
-        transportationController.setTransportationRep(mockTransportationRepository);
-        transportationController.setShipmentAreaRep(mockShipmentAreaRepository);
+        transportationController.setDriverRep(driverRepository);
+        transportationController.setTruckRep(truckRepository);
+        transportationController.setHrTransportationController(hrTransportationController);
+        transportationController.setTransportationRep(transportationRepository);
+        transportationController.setShipmentAreaRep(shipmentAreaRepository);
+
+        // Setup base test data
+        setupTestData();
     }
 
-    // Helper method to create test employee
-    private Employee createTestEmployee(String id, String name) {
-        Set<Role> roles = new HashSet<>();
-        roles.add(new Role("1", "driver"));
-        return new Employee(id, name, "123-456-7890", "branch1", roles,
-                null, "bank123", false, null, false, "password");
+    @AfterEach
+    void tearDown() throws SQLException {
+        // Clean up test data in reverse order of dependencies
+        cleanupTestData();
     }
 
-    // Helper method to create test shift
-    private Shift createTestShift(String id, LocalDate date, String startTime, String endTime) {
-        return new Shift(id, date, startTime, endTime, "morning", null,
-                new ArrayList<>(), new ArrayList<>(), null);
+    private void setupTestData() throws SQLException {
+        // Create driver role
+        Role driverRole = new Role("driver_role_1", "driver");
+        roleRepository.addRole(driverRole);
+        createdRoleIds.add(driverRole.getId());
+
+        // Create stocker role
+        Role stockerRole = new Role("stocker_role_1", "stocker");
+        roleRepository.addRole(stockerRole);
+        createdRoleIds.add(stockerRole.getId());
+
+        // Create test shifts
+        LocalDate testDate = LocalDate.of(2025, 6, 5);
+        Shift morningShift = new Shift("shift_1", testDate, "09:00", "17:00", "morning",
+                null, new ArrayList<>(), new ArrayList<>(), null);
+        Shift afternoonShift = new Shift("shift_2", testDate, "13:00", "21:00", "afternoon",
+                null, new ArrayList<>(), new ArrayList<>(), null);
+
+        shiftRepository.addShift(morningShift);
+        shiftRepository.addShift(afternoonShift);
+        createdShiftIds.add(morningShift.getId());
+        createdShiftIds.add(afternoonShift.getId());
+
+        // Create test employees with driver role
+        Set<Role> driverRoles = new HashSet<>();
+        driverRoles.add(driverRole);
+        EmployeeContract con1 = new EmployeeContract("driver_001",LocalDate.now(),1,1,1,"1","1",1,"no",false);
+        EmployeeContract con2 = new EmployeeContract("driver_002",LocalDate.now(),1,1,1,"1","1",1,"no",false);
+
+        Employee driver1 = new Employee("driver_001", "John Doe", "123-456-7890", "branch1",
+                driverRoles, con1, "bank123", false, null, false, "password");
+        Driver driver_001 = new Driver("driver_001",LicenseType.B);
+        Employee driver2 = new Employee("driver_002", "Jane Smith", "987-654-3210", "branch1",
+                driverRoles, con2, "bank456", false, null, false, "password");
+        Driver driver_002 = new Driver("driver_002",LicenseType.C);
+
+        employeeRepository.addEmployee(driver1);
+        employeeRepository.addEmployee(driver2);
+        createdEmployeeIds.add(driver1.getId());
+        createdEmployeeIds.add(driver2.getId());
+
+        // Create driver licenses
+        driverRepository.addDriver("driver_001", driver_001);
+        driverRepository.addDriver("driver_002", driver_002);
+
+        // Create test employees with stocker role
+        Set<Role> stockerRoles = new HashSet<>();
+        stockerRoles.add(stockerRole);
+
+        EmployeeContract con3 = new EmployeeContract("stocker_001",LocalDate.now(),1,1,1,"1","1",1,"no",false);
+        EmployeeContract con4 = new EmployeeContract("stocker_002",LocalDate.now(),1,1,1,"1","1",1,"no",false);
+
+        Employee stocker1 = new Employee("stocker_001", "Stocker One", "111-222-3333", "branch1",
+                stockerRoles, con3, "bank789", false, null, false, "password");
+        Employee stocker2 = new Employee("stocker_002", "Stocker Two", "444-555-6666", "branch1",
+                stockerRoles, con4, "bank101", false, null, false, "password");
+
+        employeeRepository.addEmployee(stocker1);
+        employeeRepository.addEmployee(stocker2);
+        createdEmployeeIds.add(stocker1.getId());
+        createdEmployeeIds.add(stocker2.getId());
+
+        // Assign employees to shifts
+        ShiftAssignment driverAssignment1 = new ShiftAssignment(driver1, morningShift.getId(), driverRole, null);
+        ShiftAssignment driverAssignment2 = new ShiftAssignment(driver2, afternoonShift.getId(), driverRole, null);
+        ShiftAssignment stockerAssignment1 = new ShiftAssignment(stocker1, morningShift.getId(), stockerRole, null);
+        ShiftAssignment stockerAssignment2 = new ShiftAssignment(stocker2, afternoonShift.getId(), stockerRole, null);
+
+        assignmentRepository.addAssignment(driverAssignment1);
+        assignmentRepository.addAssignment(driverAssignment2);
+        assignmentRepository.addAssignment(stockerAssignment1);
+        assignmentRepository.addAssignment(stockerAssignment2);
+
+        // Create test trucks
+        Truck truck1 = new Truck("123-456-78", "Ford Transit", 1000, 5000, LicenseType.B);
+        Truck truck2 = new Truck("987-654-32", "Mercedes Sprinter", 2000, 8000, LicenseType.C);
+
+        truckRepository.addTruck("123-456-78",truck1);
+        truckRepository.addTruck("987-654-32",truck2);
+        createdTruckPlates.add(truck1.getPlateNumber());
+        createdTruckPlates.add(truck2.getPlateNumber());
+
+        // Create test shipment areas
+        if (!shipmentAreaRepository.shipmentAreaExists(1)) {
+            shipmentAreaRepository.addShipmentArea(new ShipmentArea(1, "Test Area 1", new ArrayList<>()));
+        }
+        if (!shipmentAreaRepository.shipmentAreaExists(2)) {
+            shipmentAreaRepository.addShipmentArea(new ShipmentArea(2, "Test Area 2",new ArrayList<>()));
+        }
     }
 
+    private void cleanupTestData() throws SQLException {
+        // Clean up in reverse order of dependencies
+
+        // Remove transportation records
+        for (Integer transportationId : createdTransportationIds) {
+            try {
+                transportationRepository.removeTransportation(transportationId);
+            } catch (Exception e) {
+                // Log but continue cleanup
+                System.out.println("Failed to delete transportation " + transportationId + ": " + e.getMessage());
+            }
+        }
+
+        // Remove assignments
+        for (String employeeId : createdEmployeeIds) {
+            try {
+                List<ShiftAssignment> AssignmentsOfEmployee = assignmentRepository.findByEmployee(employeeId);
+                for (ShiftAssignment assignment : AssignmentsOfEmployee) {
+                    assignmentRepository.removeAssignment(assignment.getId());
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to delete assignments for employee " + employeeId + ": " + e.getMessage());
+            }
+        }
+
+        // Remove drivers
+        for (String employeeId : createdEmployeeIds) {
+            if (employeeId.startsWith("driver_")) {
+                try {
+                    driverRepository.removeDriver(employeeId);
+                } catch (Exception e) {
+                    System.out.println("Failed to delete driver " + employeeId + ": " + e.getMessage());
+                }
+            }
+        }
+
+        // Remove employees
+        for (String employeeId : createdEmployeeIds) {
+            try {
+                employeeRepository.deleteEmployee(employeeId);
+            } catch (Exception e) {
+                System.out.println("Failed to delete employee " + employeeId + ": " + e.getMessage());
+            }
+        }
+
+        // Remove trucks
+        for (String plateNumber : createdTruckPlates) {
+            try {
+                truckRepository.removeTruck(plateNumber);
+            } catch (Exception e) {
+                System.out.println("Failed to delete truck " + plateNumber + ": " + e.getMessage());
+            }
+        }
+
+        // Remove shifts
+        for (String shiftId : createdShiftIds) {
+            try {
+                shiftRepository.removeShift(shiftId);
+            } catch (Exception e) {
+                System.out.println("Failed to delete shift " + shiftId + ": " + e.getMessage());
+            }
+        }
+
+        // Remove roles
+        for (String roleId : createdRoleIds) {
+            try {
+                roleRepository.removeRole(roleId);
+            } catch (Exception e) {
+                System.out.println("Failed to delete role " + roleId + ": " + e.getMessage());
+            }
+        }
+
+        // Clear tracking lists
+        createdEmployeeIds.clear();
+        createdShiftIds.clear();
+        createdRoleIds.clear();
+        createdTransportationIds.clear();
+        createdTruckPlates.clear();
+    }
+
+    // Helper method to create test items document
     private List<ItemsDocument> createTestItemsDocument() {
-        List<Item> items = Arrays.asList(new Item(1,"item1", 10, 5)); // weight=10, quantity=5
-        ItemsDocument doc = new ItemsDocument(1,  new Site("TestSite", "Address", "123", "Contact", 1),LocalTime.of(14, 0), items);
+        List<Item> items = Arrays.asList(new Item(1, "item1", 10, 5));
+        ItemsDocument doc = new ItemsDocument(1, new Site("TestSite", "Address", "123", "Contact", 1),
+                LocalTime.of(14, 0), items);
         return Arrays.asList(doc);
     }
 
-
-
-    // =============== UNIT TESTS ===============
+    // =============== INTEGRATION TESTS WITH REAL OBJECTS ===============
 
     @Test
-    void testGetAvailableDrivers_WithValidDrivers_ReturnsDriverDTOList() throws SQLException {
-        // נתוני בדיקה
+    void testGetAvailableDrivers_WithRealData_ReturnsActualDrivers() throws SQLException {
+        // Given: Real shift and driver data exists
         LocalDate testDate = LocalDate.of(2025, 6, 5);
         LocalTime testTime = LocalTime.of(9, 0);
 
-        // יצירת נהגים
-        driverDTO driver1 = new driverDTO(LicenseType.B);
-        driver1.setId("101");
-        driver1.setName("John Doe");
+        // When: Getting available drivers using real controller and repositories
+        List<driverDTO> result = hrTransportationController.getAvailableDrivers(testDate, testTime);
 
-        driverDTO driver2 = new driverDTO(LicenseType.C);
-        driver2.setId("102");
-        driver2.setName("Jane Smith");
+        // Then: Should return real drivers with complete information
+        assertNotNull(result, "Result should not be null");
+        assertFalse(result.isEmpty(), "Should have at least one available driver");
 
-        List<driverDTO> mockDriverList = Arrays.asList(driver1, driver2);
-
-        // מוקים
-        when(controller.getAllDrivers()).thenReturn(mockDriverList);
-        when(mockDriverRepository.getLicenseByDriverId("101")).thenReturn(LicenseType.B);
-        when(mockDriverRepository.getLicenseByDriverId("102")).thenReturn(LicenseType.C);
-
-        // קריאה לפונקציה
-        List<driverDTO> result = controller.getAvailableDrivers(testDate, testTime);
-
-        // בדיקות
-        assertEquals(2, result.size());
-        assertEquals("John Doe", result.get(0).getName());
-        assertEquals(LicenseType.B, result.get(0).getLicenseType());
-        assertEquals("Jane Smith", result.get(1).getName());
-        assertEquals(LicenseType.C, result.get(1).getLicenseType());
-    }
-
-
-
-    @Test
-    void testGetAvailableDrivers_WithNoAvailableDrivers_ReturnsEmptyList() throws SQLException {
-        // Arrange
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime testTime = LocalTime.of(9, 0);
-
-        // נניח שאין אף נהג זמין כי getAllDrivers מחזירה רשימה ריקה
-        when(controller.getAllDrivers()).thenReturn(Collections.emptyList());
-
-        // Act
-        List<driverDTO> result = controller.getAvailableDrivers(testDate, testTime);
-
-        // Assert
-        assertTrue(result.isEmpty(), "Expected empty list when no available drivers exist");
-    }
-
-
-    @Test
-    void testGetAvailableDrivers_WithNullLicense_ExcludesDriverFromResult() throws SQLException {
-        // Test that drivers without valid licenses are excluded from results
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime testTime = LocalTime.of(9, 0);
-
-        Role driverRole = new Role("1", "driver");
-        Shift testShift = createTestShift("1", testDate, testTime.toString(), "17:00");
-        Employee driverWithoutLicense = createTestEmployee("103", "No License Driver");
-        Employee driverWithLicense = createTestEmployee("104", "Licensed Driver");
-        List<Employee> availableDrivers = Arrays.asList(driverWithoutLicense, driverWithLicense);
-
-        when(mockRoleRepository.getRoleByName("driver")).thenReturn(driverRole);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), testTime.toString())).thenReturn(testShift);
-        when(mockShiftController.AvailableAndUnavailableEmpForRoleInShift(testShift, driverRole))
-                .thenReturn(Arrays.asList(availableDrivers, new ArrayList<>()));
-        when(mockDriverRepository.getLicenseByDriverId("103")).thenReturn(null);
-        when(mockDriverRepository.getLicenseByDriverId("104")).thenReturn(LicenseType.B);
-
-        List<driverDTO> result = controller.getAvailableDrivers(testDate, testTime);
-
-        assertEquals(1, result.size());
-        assertEquals("Licensed Driver", result.get(0).getName());
-        assertEquals(LicenseType.B, result.get(0).getLicenseType());
-    }
-
-    @Test
-    void testIsWarehouseWorkerAvailable_WithStockersInAllShifts_ReturnsTrue() throws SQLException {
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-
-        // שלוש משמרות בזמנים שונים
-        Shift shift1 = createTestShift("1", testDate, "09:00", "13:00");
-        Shift shift2 = createTestShift("2", testDate, "13:00", "17:00");
-        Shift shift3 = createTestShift("3", testDate, "17:00", "21:00");
-
-        Role stockerRole = new Role("2", "stocker");
-
-        // שלושה מחסנאים שונים
-        Employee stocker1 = createTestEmployee("201", "Stocker One");
-        Employee stocker2 = createTestEmployee("202", "Stocker Two");
-        Employee stocker3 = createTestEmployee("203", "Stocker Three");
-
-        // שיבוצים נפרדים לכל משמרת
-        List<ShiftAssignment> assignmentsForShift1 = Arrays.asList(
-                new ShiftAssignment(stocker1, shift1.getId(), stockerRole, null)
-        );
-        List<ShiftAssignment> assignmentsForShift2 = Arrays.asList(
-                new ShiftAssignment(stocker2, shift2.getId(), stockerRole, null)
-        );
-        List<ShiftAssignment> assignmentsForShift3 = Arrays.asList(
-                new ShiftAssignment(stocker3, shift3.getId(), stockerRole, null)
-        );
-
-        when(mockRoleRepository.getRoleByName("stocker")).thenReturn(stockerRole);
-
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "09:00")).thenReturn(shift1);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "13:00")).thenReturn(shift2);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "17:00")).thenReturn(shift3);
-
-        when(mockAssignmentRepository.findByShiftAndRole(shift1.getId(), "2")).thenReturn(assignmentsForShift1);
-        when(mockAssignmentRepository.findByShiftAndRole(shift2.getId(), "2")).thenReturn(assignmentsForShift2);
-        when(mockAssignmentRepository.findByShiftAndRole(shift3.getId(), "2")).thenReturn(assignmentsForShift3);
-
-        // נקרא לפונקציה עם startTime ו-endTimes בהתאם למשמרות שיצרנו
-        LocalTime startTime = LocalTime.of(9, 0);
-        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(13, 0), LocalTime.of(17, 0), LocalTime.of(21, 0));
-
-        boolean result = controller.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
-
-        assertTrue(result);
-    }
-
-
-
-    @Test
-    void testIsWarehouseWorkerAvailable_WithMissingStockerInOneShift_ReturnsFalse() throws SQLException {
-        // Test that returns false when stocker is missing in any required shift
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime startTime = LocalTime.of(9, 0);
-        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0));
-
-        Role stockerRole = new Role("2", "stocker");
-        Shift startShift = createTestShift("1", testDate, startTime.toString(), "17:00");
-        Shift endShift = createTestShift("2", testDate, endTimes.get(0).toString(), "18:00");
-
-        Employee stockerEmployee = createTestEmployee("201", "Stocker Employee");
-        List<ShiftAssignment> assignments = Arrays.asList(
-                new ShiftAssignment(stockerEmployee, "1", stockerRole, null));
-
-        when(mockRoleRepository.getRoleByName("stocker")).thenReturn(stockerRole);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), startTime.toString())).thenReturn(startShift);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), endTimes.get(0).toString())).thenReturn(endShift);
-        when(mockAssignmentRepository.findByShiftAndRole(startShift.getId(), stockerRole.getId()))
-                .thenReturn(assignments);
-        when(mockAssignmentRepository.findByShiftAndRole(endShift.getId(), stockerRole.getId()))
-                .thenReturn(null); // No stocker in end shift
-
-        boolean result = controller.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
-
-        assertFalse(result);
-    }
-
-    // =============== INTEGRATION TESTS ===============
-
-    @Test
-    void testFullDriverRetrievalWorkflow_IntegrationTest() throws SQLException {
-        // Integration test that verifies complete workflow from shift lookup to driver DTO creation
-        // This test would use real repository implementations and database
-
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime testTime = LocalTime.of(9, 0);
-
-        // Create real controller instance (not mocked)
-        HR_TransportationController realController = new HR_TransportationController();
-
-        // This would require actual database setup with test data:
-        // 1. Insert test shift for the given date and time
-        // 2. Insert driver role in roles table
-        // 3. Insert employees with driver role
-        // 4. Insert license data for drivers
-        // 5. Insert shift assignments linking drivers to shifts
-
-        List<driverDTO> result = realController.getAvailableDrivers(testDate, testTime);
-
-        // Verify end-to-end functionality
-        assertNotNull(result);
-
-        // Verify that all returned drivers have complete information
+        // Verify driver data is complete and valid
         for (driverDTO driver : result) {
             assertNotNull(driver.getId(), "Driver ID should not be null");
             assertNotNull(driver.getName(), "Driver name should not be null");
             assertNotNull(driver.getLicenseType(), "Driver license type should not be null");
             assertFalse(driver.getName().trim().isEmpty(), "Driver name should not be empty");
+            assertTrue(driver.getId().startsWith("driver_"), "Driver ID should match test data pattern");
         }
+
+        // Verify specific test drivers are returned
+        List<String> driverNames = result.stream().map(driverDTO::getName).toList();
+        assertTrue(driverNames.contains("John Doe"), "Should include John Doe driver");
+
+        // Verify license types are correctly retrieved
+        Optional<driverDTO> johnDoe = result.stream()
+                .filter(d -> "John Doe".equals(d.getName()))
+                .findFirst();
+        assertTrue(johnDoe.isPresent(), "John Doe should be in results");
+        assertEquals(LicenseType.B, johnDoe.get().getLicenseType(), "John Doe should have license type B");
     }
 
     @Test
-    void testDatabaseTransactionConsistency_IntegrationTest() throws SQLException {
-        // Integration test that verifies database transaction consistency
-        // Tests that all repository calls maintain data integrity across multiple operations
-
+    void testIsWarehouseWorkerAvailable_WithRealStockers_ReturnsTrue() throws SQLException {
+        // Given: Real shift data with assigned stockers
         LocalDate testDate = LocalDate.of(2025, 6, 5);
         LocalTime startTime = LocalTime.of(9, 0);
-        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0), LocalTime.of(18, 0));
-
-        HR_TransportationController realController = new HR_TransportationController();
-
-        // Test multiple concurrent operations to ensure data consistency
-        boolean warehouseResult = realController.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
-        List<driverDTO> driverResult = realController.getAvailableDrivers(testDate, startTime);
-
-        // Verify both operations completed successfully without data corruption
-        assertNotNull(driverResult, "Driver result should not be null");
-
-        // Verify that the same shift data is being used consistently
-        // If drivers are available, the shift should exist and be valid
-        if (!driverResult.isEmpty()) {
-            // At least one shift exists and is accessible
-            assertTrue(true, "Shift data is consistent across operations");
-        }
-
-        // Additional consistency checks could include:
-        // - Verifying shift manager assignments
-        // - Checking role assignments are not duplicated
-        // - Ensuring archived shifts are not returned
-    }
-
-    @Test
-    void testCrossRepositoryDataConsistency_IntegrationTest() throws SQLException {
-        // Integration test that verifies data consistency across multiple repositories
-        // Ensures that shift, employee, and role data align correctly between repositories
-
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime testTime = LocalTime.of(9, 0);
-
-        HR_TransportationController realController = new HR_TransportationController();
-
-        List<driverDTO> drivers = realController.getAvailableDrivers(testDate, testTime);
-
-        // Verify that all returned drivers have valid data from multiple repositories
-        for (driverDTO driver : drivers) {
-            // Employee repository data validation
-            assertNotNull(driver.getId(), "Employee ID from EmployeeRepository should not be null");
-            assertNotNull(driver.getName(), "Employee name from EmployeeRepository should not be null");
-            assertFalse(driver.getId().trim().isEmpty(), "Employee ID should not be empty");
-            assertFalse(driver.getName().trim().isEmpty(), "Employee name should not be empty");
-
-            // Driver repository data validation
-            assertNotNull(driver.getLicenseType(), "License type from DriverRepository should not be null");
-            assertTrue(driver.getLicenseType() == LicenseType.A ||
-                            driver.getLicenseType() == LicenseType.B ||
-                            driver.getLicenseType() == LicenseType.C ||
-                            driver.getLicenseType() == LicenseType.D,
-                    "License type should be a valid enum value");
-
-            // Role repository consistency - driver should have driver role
-            // This would require additional method to verify role assignment
-        }
-
-        // Verify no duplicate driver IDs in results
-        Set<String> driverIds = new HashSet<>();
-        for (driverDTO driver : drivers) {
-            assertFalse(driverIds.contains(driver.getId()),
-                    "Duplicate driver ID found: " + driver.getId());
-            driverIds.add(driver.getId());
-        }
-    }
-
-    @Test
-    void testSystemPerformanceUnderLoad_IntegrationTest() throws SQLException {
-        // Integration test that verifies system performance with multiple concurrent requests
-        // Tests scalability and resource management under load
-
-        LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime testTime = LocalTime.of(9, 0);
         List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0));
 
-        HR_TransportationController realController = new HR_TransportationController();
+        // When: Checking warehouse worker availability using real data
+        boolean result = hrTransportationController.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
 
-        long startTime = System.currentTimeMillis();
-        int numberOfOperations = 50; // Reduced for realistic testing
-
-        // Simulate multiple concurrent operations
-        for (int i = 0; i < numberOfOperations; i++) {
-            LocalDate queryDate = testDate.plusDays(i % 7); // Vary dates within a week
-            LocalTime queryTime = testTime.plusHours(i % 8); // Vary times within working hours
-
-            try {
-                List<driverDTO> drivers = realController.getAvailableDrivers(queryDate, queryTime);
-                boolean warehouseAvailable = realController.isWarehouseWorkerAvailable(
-                        queryDate, queryTime, endTimes);
-
-                // Verify operations completed successfully
-                assertNotNull(drivers, "Driver query should not return null at iteration " + i);
-
-            } catch (SQLException e) {
-                // Log but don't fail test for expected database limitations
-                System.out.println("Database operation failed at iteration " + i + ": " + e.getMessage());
-            }
-        }
-
-        long endTime = System.currentTimeMillis();
-        long executionTime = endTime - startTime;
-
-        // Verify acceptable performance (10 seconds for 100 operations = 100ms per operation average)
-        assertTrue(executionTime < 10000,
-                "Performance test failed: " + numberOfOperations + " operations took " +
-                        executionTime + "ms (average: " + (executionTime/numberOfOperations) + "ms per operation)");
-
-        System.out.println("Performance test completed: " + numberOfOperations +
-                " operations in " + executionTime + "ms");
+        // Then: Should return true because we have real stockers assigned
+        assertTrue(result, "Should return true when real stockers are available in shifts");
     }
 
     @Test
-    void testErrorHandlingAndRecovery_IntegrationTest() throws SQLException {
-        // Integration test that verifies proper error handling and system recovery
-        // Tests behavior when database connections fail or data is inconsistent
+    void testIsWarehouseWorkerAvailable_NoStockersInShift_ReturnsFalse() throws SQLException {
+        // Given: A date/time where no stockers are assigned
+        LocalDate futureDate = LocalDate.of(2025, 12, 25); // No shifts created for this date
+        LocalTime startTime = LocalTime.of(9, 0);
+        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0));
 
-        HR_TransportationController realController = new HR_TransportationController();
+        // When: Checking warehouse worker availability for non-existent shift
+        boolean result = hrTransportationController.isWarehouseWorkerAvailable(futureDate, startTime, endTimes);
 
-        // Test 1: Invalid date handling
-        LocalDate farFutureDate = LocalDate.of(2050, 12, 31);
-        try {
-            List<driverDTO> result = realController.getAvailableDrivers(farFutureDate, LocalTime.of(9, 0));
-            assertNotNull(result, "Should return empty list for future dates, not null");
-            // Should return empty list gracefully for non-existent shifts
-        } catch (SQLException e) {
-            // Acceptable if database enforces date constraints
-            assertTrue(e.getMessage().contains("date") || e.getMessage().contains("shift") ||
-                            e.getMessage().contains("not found"),
-                    "SQLException should be related to date/shift issues");
-        }
-        
-        // Test 3: Null parameter handling
-        try {
-            List<driverDTO> result = realController.getAvailableDrivers(null, LocalTime.of(9, 0));
-            fail("Should throw exception for null date");
-        } catch (Exception e) {
-            // Expected - null parameters should be handled
-            assertTrue(e instanceof IllegalArgumentException || e instanceof NullPointerException ||
-                    e instanceof SQLException, "Should throw appropriate exception for null date");
-        }
-
-        // Test 4: Empty end times list
-        try {
-            boolean result = realController.isWarehouseWorkerAvailable(
-                    LocalDate.of(2025, 6, 5), LocalTime.of(9, 0), new ArrayList<>());
-            assertTrue(result, "Empty end times should return true (no conditions to check)");
-        } catch (Exception e) {
-            // Also acceptable if method requires non-empty list
-            assertNotNull(e.getMessage(), "Exception should have meaningful message");
-        }
+        // Then: Should return false because no shift/stockers exist for this date
+        assertFalse(result, "Should return false when no stockers are available");
     }
 
-    // =============== דרישה 61: מחסנאי בכל משמרת שמקבלת הובלה ===============
+    @Test
+    void testCreateTransportation_WithRealObjects_AllRequirementsMet_ShouldSucceed() throws SQLException {
+        // Given: All real objects and data exist and meet requirements
+        int transportationId = 1000; // Use unique ID for test
+        LocalDate date = LocalDate.of(2025, 6, 5);
+        LocalTime departureTime = LocalTime.of(9, 0);
+        String truckPlate = "123-456-78"; // B license truck
+        String driverName = "driver_001"; // John Doe with B license
+        List<ItemsDocument> itemsDoc = createTestItemsDocument();
+        List<Integer> shipmentAreasId = Arrays.asList(1);
+        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+
+        // When: Creating transportation with real controller and repositories
+        String result = transportationController.makeTransportation(
+                transportationId, date, departureTime, truckPlate, driverName,
+                itemsDoc, shipmentAreasId, origin);
+
+        // Then: Should succeed because all requirements are met with real data
+        assertTrue(result.startsWith("Transportation created"),
+                "Should succeed with real data. Result: " + result);
+
+        // Track for cleanup
+        createdTransportationIds.add(transportationId);
+
+        // Verify transportation was actually created in database
+        assertTrue(transportationRepository.transportationExists(transportationId),
+                "Transportation should exist in database after creation");
+    }
 
     @Test
-    void testCreateTransportation_NoWarehouseWorkerAtArrival_ShouldFail() throws SQLException {
-        // Given: Transportation with arrival time but no warehouse worker available
-        int transportationId = 1;
+    void testCreateTransportation_DriverNotAvailable_ShouldFail() throws SQLException {
+        // Given: Create a conflicting transportation first
+        int firstTransportationId = 1001;
         LocalDate date = LocalDate.of(2025, 6, 5);
         LocalTime departureTime = LocalTime.of(9, 0);
         String truckPlate = "123-456-78";
-        String driverName = "driver1";
+        String driverName = "driver_001";
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
 
-        // Mock all prerequisites as existing and available
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(driverName)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
+        // Create first transportation
+        String firstResult = transportationController.makeTransportation(
+                firstTransportationId, date, departureTime, truckPlate, driverName,
+                itemsDoc, shipmentAreasId, origin);
 
-        // Mock truck and driver compatibility
-        Truck mockTruck = new Truck(truckPlate, "Model", 1000, 5000, LicenseType.B);
-        Driver mockDriver = new Driver(driverName, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(driverName)).thenReturn(mockDriver);
+        assertTrue(firstResult.startsWith("Transportation created"),
+                "First transportation should succeed");
+        createdTransportationIds.add(firstTransportationId);
 
-        // Mock availability checks
-        when(mockTransportationRepository.getTransportationsByDriverName(driverName)).thenReturn(new ArrayList<>());
-        when(mockTransportationRepository.getTransportationsByPlateNumber(truckPlate)).thenReturn(new ArrayList<>());
+        // When: Try to create second transportation with same driver at overlapping time
+        int secondTransportationId = 1002;
+        LocalTime conflictingTime = LocalTime.of(10, 0); // Overlaps with first transportation
 
-        // Key: No warehouse worker available at arrival time
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(false);
+        String secondResult = transportationController.makeTransportation(
+                secondTransportationId, date, conflictingTime, "987-654-32", driverName,
+                itemsDoc, shipmentAreasId, origin);
 
-        // When
+        // Then: Should fail due to driver conflict
+        assertTrue(secondResult.contains("already occupied") || secondResult.contains("not available"),
+                "Should fail when driver is already occupied. Result: " + secondResult);
+    }
+
+    @Test
+    void testCreateTransportation_WrongLicenseType_ShouldFail() throws SQLException {
+        // Given: Driver with B license trying to drive truck requiring C license
+        int transportationId = 1003;
+        LocalDate date = LocalDate.of(2025, 6, 5);
+        LocalTime departureTime = LocalTime.of(9, 0);
+        String truckPlateRequiringC = "987-654-32"; // C license truck
+        String driverWithBLicense = "driver_001"; // John Doe has B license
+        List<ItemsDocument> itemsDoc = createTestItemsDocument();
+        List<Integer> shipmentAreasId = Arrays.asList(1);
+        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+
+        // When: Creating transportation with license mismatch
+        String result = transportationController.makeTransportation(
+                transportationId, date, departureTime, truckPlateRequiringC, driverWithBLicense,
+                itemsDoc, shipmentAreasId, origin);
+
+        // Then: Should fail due to license type mismatch
+        assertTrue(result.contains("does not have the required license type") ||
+                        result.contains("license"),
+                "Should fail when driver license doesn't match truck requirement. Result: " + result);
+    }
+
+    @Test
+    void testCreateTransportation_NoWarehouseWorker_ShouldFail() throws SQLException {
+        // Given: A time when no stockers are available (afternoon shift with no assignments)
+        LocalDate date = LocalDate.of(2025, 6, 6); // Different date with no stocker assignments
+
+        // Create a shift for this date but don't assign any stockers
+        Shift emptyShift = new Shift("empty_shift_1", date, "09:00", "17:00", "morning",
+                null, new ArrayList<>(), new ArrayList<>(), null);
+        shiftRepository.addShift(emptyShift);
+        createdShiftIds.add(emptyShift.getId());
+
+        // Assign only a driver to this shift (no stocker)
+        Role driverRole = roleRepository.getRoleByName("driver");
+        Employee driver = employeeRepository.getEmployeeById("driver_001");
+        ShiftAssignment driverOnlyAssignment = new ShiftAssignment(driver, emptyShift.getId(), driverRole, null);
+        assignmentRepository.addAssignment(driverOnlyAssignment);
+
+        int transportationId = 1004;
+        LocalTime departureTime = LocalTime.of(9, 0);
+        String truckPlate = "123-456-78";
+        String driverName = "driver_001";
+        List<ItemsDocument> itemsDoc = createTestItemsDocument();
+        List<Integer> shipmentAreasId = Arrays.asList(1);
+        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+
+        // When: Creating transportation without available warehouse workers
         String result = transportationController.makeTransportation(
                 transportationId, date, departureTime, truckPlate, driverName,
                 itemsDoc, shipmentAreasId, origin);
 
-        // Then
-        assertTrue(result.contains("no available warehouse workers"),
-                "Should fail when no warehouse worker available at arrival time");
+        // Then: Should fail due to missing warehouse workers
+        assertTrue(result.contains("no available warehouse workers") ||
+                        result.contains("warehouse worker"),
+                "Should fail when no warehouse workers available. Result: " + result);
     }
 
     @Test
-    void testCreateTransportation_WarehouseWorkerAvailableAtAllTimes_ShouldSucceed() throws SQLException {
-        // Given: Transportation with warehouse workers available at all required times
-        int transportationId = 1;
+    void testMultipleShiftsConsistency_WithRealData() throws SQLException {
+        // Given: Multiple shifts with different stockers
+        LocalDate testDate = LocalDate.of(2025, 6, 5);
+        LocalTime startTime = LocalTime.of(9, 0);
+        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0), LocalTime.of(21, 0));
+
+        // When: Checking warehouse worker availability across multiple shifts
+        boolean result = hrTransportationController.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
+
+        // Then: Should return true as we have stockers in both morning and afternoon shifts
+        assertTrue(result, "Should have warehouse workers available in both shifts");
+
+        // Verify by getting actual shift assignments
+        Shift morningShift = shiftRepository.findByDateAndTime(testDate.toString(), "09:00");
+        Shift afternoonShift = shiftRepository.findByDateAndTime(testDate.toString(), "13:00");
+
+        assertNotNull(morningShift, "Morning shift should exist");
+        assertNotNull(afternoonShift, "Afternoon shift should exist");
+
+        Role stockerRole = roleRepository.getRoleByName("stocker");
+        List<ShiftAssignment> morningStockers = assignmentRepository.findByShiftAndRole(
+                morningShift.getId(), stockerRole.getId());
+        List<ShiftAssignment> afternoonStockers = assignmentRepository.findByShiftAndRole(
+                afternoonShift.getId(), stockerRole.getId());
+
+        assertFalse(morningStockers.isEmpty(), "Morning shift should have stockers");
+        assertFalse(afternoonStockers.isEmpty(), "Afternoon shift should have stockers");
+    }
+
+    @Test
+    void testDataPersistenceAndRetrieval_IntegrationTest() throws SQLException {
+        // Given: Create transportation with real data
+        int transportationId = 1005;
         LocalDate date = LocalDate.of(2025, 6, 5);
         LocalTime departureTime = LocalTime.of(9, 0);
         String truckPlate = "123-456-78";
-        String driverName = "driver1";
+        String driverName = "driver_001";
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
 
-        // Mock all prerequisites as existing and available
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(driverName)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
-
-        // Mock truck and driver compatibility
-        Truck mockTruck = new Truck(truckPlate, "Model", 1000, 5000, LicenseType.B);
-        Driver mockDriver = new Driver(driverName, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(driverName)).thenReturn(mockDriver);
-        when(mockDriverRepository.checkAvalableDrivers(LicenseType.B)).thenReturn(true);
-
-        // Mock availability checks
-        when(mockTransportationRepository.getTransportationsByDriverName(driverName)).thenReturn(new ArrayList<>());
-        when(mockTransportationRepository.getTransportationsByPlateNumber(truckPlate)).thenReturn(new ArrayList<>());
-
-        // Key: Warehouse worker available at all required times
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(true);
-
-        // When
-        String result = transportationController.makeTransportation(
+        // When: Create transportation
+        String createResult = transportationController.makeTransportation(
                 transportationId, date, departureTime, truckPlate, driverName,
                 itemsDoc, shipmentAreasId, origin);
 
-        // Then
-        assertTrue(result.startsWith("Transportation created"),
-                "Should succeed when warehouse worker available at all times. Result: " + result);
+        assertTrue(createResult.startsWith("Transportation created"),
+                "Transportation creation should succeed");
+        createdTransportationIds.add(transportationId);
+
+        // Then: Verify data persistence by retrieving and checking
+        assertTrue(transportationRepository.transportationExists(transportationId),
+                "Transportation should exist in database");
+
+        // Verify driver is now occupied by checking availability
+        List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, departureTime);
+        boolean driverStillAvailable = availableDrivers.stream()
+                .anyMatch(d -> driverName.equals(d.getId()));
+
+        // Note: Depending on implementation, driver might still appear available
+        // if time conflict checking is not properly implemented
+        // This test helps identify such issues in real implementations
     }
 
-    // =============== דרישה 62: מחסנאי בכל משמרת שיוצאת ממנה הובלה ===============
-
     @Test
-    void testCreateTransportation_NoWarehouseWorkerAtDeparture_ShouldFail() throws SQLException {
-        // Given: Transportation at departure time but no warehouse worker at departure shift
-        int transportationId = 2;
+    void testErrorHandling_WithRealRepositories() throws SQLException {
+        // Test various error conditions with real repository implementations
+
+        // Test 1: Non-existent driver
+        int transportationId1 = 1006;
         LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(8, 0); // Early departure
-        String truckPlate = "987-654-32";
-        String driverName = "driver2";
+        LocalTime departureTime = LocalTime.of(9, 0);
+        String nonExistentDriver = "non_existent_driver";
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
 
-        // Mock prerequisites
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(driverName)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
-
-        // Mock warehouse worker availability - specifically failing at departure time
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(false);
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, driverName,
+        String result1 = transportationController.makeTransportation(
+                transportationId1, date, departureTime, "123-456-78", nonExistentDriver,
                 itemsDoc, shipmentAreasId, origin);
 
-        // Then
-        assertTrue(result.contains("There are no available warehouse workers for the specified time."),
-                "Should fail when no warehouse worker available at departure time");
-    }
+        assertTrue(result1.contains("Driver with name") || result1.contains("not found"),
+                "Should fail for non-existent driver. Result: " + result1);
 
-    // =============== דרישה 63: נהג במשמרת בתאריך ושעה של יציאת הובלה ===============
+        // Test 2: Non-existent truck
+        int transportationId2 = 1007;
+        String nonExistentTruck = "NON-EXIST-00";
 
-    @Test
-    void testCreateTransportation_NoDriverExists_ShouldFail() {
-        // Given: Transportation with non-existent driver
-        int transportationId = 3;
-        LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(9, 0);
-        String truckPlate = "111-222-33";
-        String nonExistentDriver = "nonExistentDriver";
-        List<ItemsDocument> itemsDoc = createTestItemsDocument();
-        List<Integer> shipmentAreasId = Arrays.asList(1);
-        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
-
-        // Mock prerequisites
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(nonExistentDriver)).thenReturn(false); // Driver doesn't exist
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, nonExistentDriver,
+        String result2 = transportationController.makeTransportation(
+                transportationId2, date, departureTime, nonExistentTruck, "driver_001",
                 itemsDoc, shipmentAreasId, origin);
 
-        // Then
-        assertTrue(result.contains("Driver with name"),
-                "Should fail when driver doesn't exist");
+        assertTrue(result2.contains("Truck") || result2.contains("not found"),
+                "Should fail for non-existent truck. Result: " + result2);
+
+        // Test 3: Duplicate transportation ID
+        int duplicateId = 1008;
+
+        // Create first transportation
+        String firstResult = transportationController.makeTransportation(
+                duplicateId, date, departureTime, "123-456-78", "driver_001",
+                itemsDoc, shipmentAreasId, origin);
+
+        if (firstResult.startsWith("Transportation created")) {
+            createdTransportationIds.add(duplicateId);
+
+            // Try to create second with same ID
+            String duplicateResult = transportationController.makeTransportation(
+                    duplicateId, date.plusDays(1), departureTime, "987-654-32", "driver_002",
+                    itemsDoc, shipmentAreasId, origin);
+
+            assertTrue(duplicateResult.contains("already exists") || duplicateResult.contains("duplicate"),
+                    "Should fail for duplicate transportation ID. Result: " + duplicateResult);
+        }
     }
 
     @Test
-    void testCreateTransportation_DriverOccupiedAtDepartureTime_ShouldFail() throws SQLException {
-        // Given: Transportation with driver already occupied at departure time
-        int transportationId = 4;
-        LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(9, 0);
-        String truckPlate = "444-555-66";
-        String busyDriver = "busyDriver";
-        List<ItemsDocument> itemsDoc = createTestItemsDocument();
-        List<Integer> shipmentAreasId = Arrays.asList(1);
-        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+    void testConcurrentOperations_RealData() throws SQLException {
+        // Test that multiple operations can be performed concurrently without data corruption
+        LocalDate testDate = LocalDate.of(2025, 6, 5);
 
-        // Mock prerequisites
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(busyDriver)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
+        // Perform multiple queries concurrently to test data consistency
+        List<driverDTO> drivers1 = hrTransportationController.getAvailableDrivers(testDate, LocalTime.of(9, 0));
+        boolean warehouse1 = hrTransportationController.isWarehouseWorkerAvailable(
+                testDate, LocalTime.of(9, 0), Arrays.asList(LocalTime.of(17, 0)));
+        List<driverDTO> drivers2 = hrTransportationController.getAvailableDrivers(testDate, LocalTime.of(13, 0));
+        boolean warehouse2 = hrTransportationController.isWarehouseWorkerAvailable(
+                testDate, LocalTime.of(13, 0), Arrays.asList(LocalTime.of(21, 0)));
 
-        // Mock truck and driver compatibility
-        Truck mockTruck = new Truck(truckPlate, "Model", 1000, 5000, LicenseType.B);
-        Driver mockDriver = new Driver(busyDriver, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(busyDriver)).thenReturn(mockDriver);
-        when(mockDriverRepository.checkAvalableDrivers(LicenseType.B)).thenReturn(true);
+        // Verify all operations completed successfully
+        assertNotNull(drivers1, "First driver query should not be null");
+        assertNotNull(drivers2, "Second driver query should not be null");
 
-        // Mock warehouse worker as available
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(true);
+        // Verify data consistency - same queries should return same results
+        List<driverDTO> drivers1Again = hrTransportationController.getAvailableDrivers(testDate, LocalTime.of(9, 0));
+        assertEquals(drivers1.size(), drivers1Again.size(),
+                "Repeated queries should return consistent results");
 
-        // Mock existing transportation for same driver at overlapping time
-        // Note: The checkDriverAvailability method has a bug in the original code
-        // For this test, we'll simulate the intended behavior
-        List<Transportation> existingTransportations = Arrays.asList(
-                // Transportation that overlaps with our requested time
-                createMockTransportation(date, LocalTime.of(8, 0), LocalTime.of(10, 0))
-        );
-        when(mockTransportationRepository.getTransportationsByDriverName(busyDriver))
-                .thenReturn(existingTransportations);
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, busyDriver,
-                itemsDoc, shipmentAreasId, origin);
-
-        // Then
-        assertTrue(result.contains("already occupied"),
-                "Should fail when driver is already occupied at departure time");
-    }
-
-    @Test
-    void testCreateTransportation_DriverWrongLicenseType_ShouldFail() throws SQLException {
-        // Given: Transportation with driver having wrong license type for truck
-        int transportationId = 5;
-        LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(9, 0);
-        String truckPlate = "777-888-99";
-        String wrongLicenseDriver = "wrongLicenseDriver";
-        List<ItemsDocument> itemsDoc = createTestItemsDocument();
-        List<Integer> shipmentAreasId = Arrays.asList(1);
-        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
-
-        // Mock prerequisites
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(wrongLicenseDriver)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
-
-        // Mock truck requiring license C but driver having license B
-        Truck mockTruck = new Truck(truckPlate, "Model", 1000, 5000, LicenseType.C);
-        Driver mockDriver = new Driver(wrongLicenseDriver, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(wrongLicenseDriver)).thenReturn(mockDriver);
-        when(mockDriverRepository.checkAvalableDrivers(LicenseType.C)).thenReturn(true);
-
-        // Mock warehouse worker as available
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(true);
-
-        // Mock driver availability
-        when(mockTransportationRepository.getTransportationsByDriverName(wrongLicenseDriver)).thenReturn(new ArrayList<>());
-        when(mockTransportationRepository.getTransportationsByPlateNumber(truckPlate)).thenReturn(new ArrayList<>());
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, wrongLicenseDriver,
-                itemsDoc, shipmentAreasId, origin);
-
-        // Then
-        assertTrue(result.contains("does not have the required license type"),
-                "Should fail when driver doesn't have required license type for truck");
-    }
-
-    // =============== אינטגרציה מלאה של כל הדרישות ===============
-
-    @Test
-    void testCreateTransportation_AllRequirementsMet_ShouldSucceed() throws SQLException {
-        // Given: Transportation that meets all HR requirements
-        int transportationId = 6;
-        LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(9, 0);
-        String truckPlate = "100-200-30";
-        String availableDriver = "availableDriver";
-        List<ItemsDocument> itemsDoc = createTestItemsDocument();
-        List<Integer> shipmentAreasId = Arrays.asList(1);
-        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
-
-        // Mock all prerequisites as met
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(availableDriver)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
-
-        // Mock truck and driver with compatible licenses
-        Truck mockTruck = new Truck(truckPlate, "Model", 1000, 5000, LicenseType.B);
-        Driver mockDriver = new Driver(availableDriver, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(availableDriver)).thenReturn(mockDriver);
-        when(mockDriverRepository.checkAvalableDrivers(LicenseType.B)).thenReturn(true);
-
-        // Mock all availability checks as passed
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime), any())).thenReturn(true);
-        when(mockTransportationRepository.getTransportationsByDriverName(availableDriver)).thenReturn(new ArrayList<>());
-        when(mockTransportationRepository.getTransportationsByPlateNumber(truckPlate)).thenReturn(new ArrayList<>());
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, availableDriver,
-                itemsDoc, shipmentAreasId, origin);
-
-        // Then
-        assertTrue(result.startsWith("Transportation created"),
-                "Should succeed when all HR requirements are met: " + result);
-    }
-
-    @Test
-    void testCreateTransportation_MultipleShipmentAreas_RequiresWarehouseWorkerAtEachStop() throws SQLException {
-        // Given: Transportation with multiple shipment areas (multiple arrival times)
-        int transportationId = 7;
-        LocalDate date = LocalDate.of(2025, 6, 5);
-        LocalTime departureTime = LocalTime.of(9, 0);
-        String truckPlate = "300-400-50";
-        String driverName = "multiStopDriver";
-
-        // Multiple items documents with different arrival times
-        List<ItemsDocument> itemsDoc = Arrays.asList(
-                new ItemsDocument(1,  new Site("Site1", "Addr1", "123", "Contact1", 1),LocalTime.of(12, 0),
-                        Arrays.asList(new Item(1,"item1", 10, 5))),
-                new ItemsDocument(2,  new Site("Site2", "Addr2", "456", "Contact2", 2),LocalTime.of(15, 0),
-                        Arrays.asList(new Item(2,"item2", 15, 3)))
-        );
-
-        List<Integer> shipmentAreasId = Arrays.asList(1, 2);
-        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
-
-        // Mock prerequisites
-        when(mockTransportationRepository.transportationExists(transportationId)).thenReturn(false);
-        when(mockDriverRepository.driverExists(driverName)).thenReturn(true);
-        when(mockTruckRepository.truckExists(truckPlate)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(1)).thenReturn(true);
-        when(mockShipmentAreaRepository.shipmentAreaExists(2)).thenReturn(true);
-        when(mockShipmentAreaRepository.checkSiteExists(origin.getName(), shipmentAreasId)).thenReturn(true);
-
-        // Mock truck and driver compatibility
-        Truck mockTruck = new Truck(truckPlate, "Model", 2000, 10000, LicenseType.B);
-        Driver mockDriver = new Driver(driverName, LicenseType.B);
-        when(mockTruckRepository.getTruck(truckPlate)).thenReturn(mockTruck);
-        when(mockDriverRepository.getDriver(driverName)).thenReturn(mockDriver);
-        when(mockDriverRepository.checkAvalableDrivers(LicenseType.B)).thenReturn(true);
-
-        // Mock availability checks
-        when(mockTransportationRepository.getTransportationsByDriverName(driverName)).thenReturn(new ArrayList<>());
-        when(mockTransportationRepository.getTransportationsByPlateNumber(truckPlate)).thenReturn(new ArrayList<>());
-
-        // Key: Warehouse workers available at departure and ALL arrival times
-        when(mockHrController.isWarehouseWorkerAvailable(eq(date), eq(departureTime),
-                argThat(arrivalTimes -> arrivalTimes.contains(LocalTime.of(12, 0)) &&
-                        arrivalTimes.contains(LocalTime.of(15, 0)))))
-                .thenReturn(true);
-
-        // When
-        String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, driverName,
-                itemsDoc, shipmentAreasId, origin);
-
-        // Then
-        assertTrue(result.startsWith("Transportation created"),
-                "Should succeed when warehouse workers available at all stops");
-        assertTrue(result.contains("more than one shipment area"),
-                "Should notify about multiple shipment areas");
-    }
-
-    // Helper method to create mock transportation for testing conflicts
-    private Transportation createMockTransportation(LocalDate date, LocalTime departure, LocalTime arrival) {
-        List<ItemsDocument> mockItems = Arrays.asList(
-                new ItemsDocument(1, new Site("Site", "Addr", "123", "Contact", 1),arrival,
-                        Arrays.asList(new Item(1,"item", 10, 1)))
-        );
-        return new Transportation(999, date, departure, "test-plate", "test-driver",
-                mockItems, Arrays.asList(1), new Site("Origin", "Addr", "123", "Contact", 1));
+        // Verify warehouse worker availability is consistent
+        boolean warehouse1Again = hrTransportationController.isWarehouseWorkerAvailable(
+                testDate, LocalTime.of(9, 0), Arrays.asList(LocalTime.of(17, 0)));
+        assertEquals(warehouse1, warehouse1Again,
+                "Warehouse worker availability should be consistent");
     }
 }

@@ -6,14 +6,29 @@
   <component name="ChangeListManager">
     <list default="true" id="f87149ee-16cc-4ea0-a961-a30edb3241cd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Dal/HR/EmployeeDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Dal/HR/EmployeeDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/HR/Repositories/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/HR/Repositories/EmployeeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/HR_TransportationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/HR_TransportationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/DriverRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/DriverRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/HR_Transportation_Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/HR_Transportation_Tests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/database/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/database/Database.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,26 +50,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Downloaded.Files.Path.Enabled": "false",
-    "JUnit.TransportationTests.executor": "Run",
-    "JUnit.TransportationTests.testAddTruck.executor": "Run",
-    "JUnit.TransportationTests.testItemAddAndReduceQuantity.executor": "Run",
-    "JUnit.TransportationTests.testItemsDocumentDisplayIncludesItems.executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "TR__HR",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;JUnit.TransportationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TransportationTests.testAddTruck.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TransportationTests.testItemAddAndReduceQuantity.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.TransportationTests.testItemsDocumentDisplayIncludesItems.executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;TR__HR&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="JUnit.TransportationTests">
     <configuration name="TransportationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="adss-project" />
