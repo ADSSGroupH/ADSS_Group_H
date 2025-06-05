@@ -44,8 +44,10 @@ public class HR_TransportationController {
     public List<driverDTO> getAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
         Role driverRole = roleRepository.getRoleByName("driver");
         Shift targetShift = shiftRepository.findByDateAndTime(date.toString(), startTime.toString());
-        List<Employee> availableDrivers = shiftController
-                .AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).get(0); // רשימת זמינים
+        if (targetShift == null) { //shift does not exist!
+            return new ArrayList<>();
+        }
+        List<Employee> availableDrivers = shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).getFirst(); // רשימת זמינים
         List<driverDTO> driverDTOList = new ArrayList<>();
 
         if (availableDrivers == null || availableDrivers.isEmpty()){
