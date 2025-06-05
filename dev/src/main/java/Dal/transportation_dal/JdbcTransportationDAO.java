@@ -20,7 +20,7 @@ public class JdbcTransportationDAO implements TransportationDAO {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next()
-                        ? Optional.of(new TransportationDTO(rs.getInt(id), rs.getString("date"),
+                        ? Optional.of(new TransportationDTO(rs.getInt("id"), rs.getString("date"),
                                 rs.getString("departureTime"),
                                 rs.getString("truckPlateNumber"), rs.getString("driverName"),
                                 rs.getBoolean("succeeded"), rs.getString("originName"),
@@ -49,7 +49,7 @@ public class JdbcTransportationDAO implements TransportationDAO {
 
     @Override
     public void saveTransportation(TransportationDTO transportation) throws SQLException {
-        String sql = "INSERT INTO transportations (id, date, departureTime, truckPlateNumber, driverName, succeeded, originName, originShipmentAreaId, accident) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO transportations (id, date, departureTime, truckPlateNumber, driverName, succeeded, originName, originShipmentAreaId, accident) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setInt(1, transportation.getId());
             ps.setString(2, transportation.getDate());

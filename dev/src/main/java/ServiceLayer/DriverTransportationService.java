@@ -16,9 +16,9 @@ public class DriverTransportationService {
         return controller.displayItemsList(t);
     }
 
-    public boolean reportAccident(int transportationId) {
+    public String reportAccident(int transportationId, String accident) {
         // בעתיד תוכל להוסיף דיווח אמיתי
-        System.out.println("Accident reported for transportation ID: " + transportationId);
-        return true;
+        controller.reportAccident(transportationId, accident);
+        return "Accident reported for transportation ID: " + transportationId;
     }
 }

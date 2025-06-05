@@ -269,6 +269,8 @@ public class DriverUI {
     private void reportAccident() {
         System.out.print("Enter transportation ID to report accident: ");
         int id = Integer.parseInt(scanner.nextLine());
-        driverService.reportAccident(id);
+        System.out.println("enter the accident");
+        String accident = scanner.nextLine();
+        driverService.reportAccident(id, accident);
     }
 }

@@ -74,22 +74,34 @@ public class TransportationManagerService {
 
         System.out.print("Arrival Time (HH:mm): ");
         LocalTime arrivalTime = LocalTime.parse(scanner.nextLine());
-
-        System.out.print("Item ID: ");
-        int itemId = Integer.parseInt(scanner.nextLine());
-        System.out.print("Item name: ");
-        String itemName = scanner.nextLine();
-        System.out.print("Weight: ");
-        int weight = Integer.parseInt(scanner.nextLine());
-        System.out.print("Quantity: ");
-        int quantity = Integer.parseInt(scanner.nextLine());
-
-        Item item = new Item(itemId, itemName, weight, quantity);
+        boolean done = false;
         List<Item> items = new ArrayList<>();
-        items.add(item);
 
+        while (!done) {
+            System.out.print("Item ID: ");
+
+            int itemId = Integer.parseInt(scanner.nextLine());
+            System.out.print("Item name: ");
+            String itemName = scanner.nextLine();
+            System.out.print("Weight: ");
+            int weight = Integer.parseInt(scanner.nextLine());
+            System.out.print("Quantity: ");
+            int quantity = Integer.parseInt(scanner.nextLine());
+
+            Item item = new Item(itemId, itemName, weight, quantity);
+            items.add(item);
+
+            System.out.print("Done? (yes/no): ");
+            scanner.nextLine();
+            String doneInput = scanner.nextLine();
+
+            if (doneInput.equals("yes")) {
+                done = true;
+            }
+        }
         ItemsDocument doc = new ItemsDocument(docId, destination, arrivalTime, items);
         System.out.println(controller.addItems(transportationId, doc));
+
     }
 
 
@@ -229,9 +241,9 @@ public class TransportationManagerService {
             LocalDate date = LocalDate.parse(scanner.nextLine());
             System.out.print("Departure (HH:mm): ");
             LocalTime dep = LocalTime.parse(scanner.nextLine());
-            System.out.print("Truck ID: ");
+            System.out.print("Truck plate number: ");
             String truck = scanner.nextLine();
-            System.out.print("Driver ID: ");
+            System.out.print("Driver name: ");
             String driver = scanner.nextLine();
             System.out.print("Origin Site Name: ");
             String originName = scanner.nextLine();
@@ -258,10 +270,71 @@ public class TransportationManagerService {
                 System.out.println("Origin site not found in any of the provided shipment areas.");
                 return;
             }
-            System.out.println(controller.makeTransportation(id, date, dep, truck, driver, new ArrayList<>(), shipmentAreas, origin));
+
+            List<ItemsDocument>itemsDocumentList = new ArrayList<>();
+            boolean done = false;
+            while (!done) {
+                System.out.print("Enter ItemsDocument ID: ");
+                int itemsDocumentId = scanner.nextInt();
+                scanner.nextLine();
+
+                System.out.print("Enter destination site name: ");
+                String siteName = scanner.nextLine();
+
+
+                System.out.print("Enter destination site shipment area ID: ");
+                int areaId = scanner.nextInt();
+                scanner.nextLine();
+
+                Site destination = controller.findShipmentAreaById(areaId).getSiteByName(siteName);
+                if (destination == null) {
+                    System.out.println("Site not found.");
+                    return;
+                }
+                System.out.print("Enter arrival time (HH:mm): ");
+                String arrival = scanner.nextLine();
+
+                LocalTime arrivalTime = LocalTime.parse(arrival);
+                boolean done1 = false;
+                List<Item> items = new ArrayList<>();
+
+                while (!done1) {
+                    System.out.print("Item ID: ");
+
+                    int itemId = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Item name: ");
+                    String itemName = scanner.nextLine();
+                    System.out.print("Weight: ");
+                    int weight = Integer.parseInt(scanner.nextLine());
+                    System.out.print("Quantity: ");
+                    int quantity = Integer.parseInt(scanner.nextLine());
+
+                    Item item = new Item(itemId, itemName, weight, quantity);
+                    items.add(item);
+
+                    System.out.print("Done with this item document? (yes/no): ");
+                    String doneInput = scanner.nextLine();
+
+                    if (doneInput.equals("yes")) {
+                        done1 = true;
+
+                    }
+
+                }
+                System.out.print("Done with all items document? (yes/no): ");
+                String doneInput = scanner.nextLine();
+
+                if (doneInput.equals("yes")) {
+                    done = true;
+                }
+                ItemsDocument itemsDocument = new ItemsDocument(itemsDocumentId, destination, arrivalTime, items);
+                itemsDocumentList.add(itemsDocument);
+            }
+            System.out.println(controller.makeTransportation(id, date, dep, truck, driver, itemsDocumentList, shipmentAreas, origin));
         } catch (Exception e) {
             System.out.println("Failed to make transportation: " + e.getMessage());
         }
+
     }
 
 }

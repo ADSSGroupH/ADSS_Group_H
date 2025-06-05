@@ -300,7 +300,9 @@ public class TransportationController {
         if (t == null) {
             return "Transportation with ID " + transportationID + " not found.";
         }
+        transportationRep.removeTransportation(transportationID);
         t.setAccident(accident);
+        transportationRep.addTransportation(transportationID, t);
         return "Accident reported";
     }
 

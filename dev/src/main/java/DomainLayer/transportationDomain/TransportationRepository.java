@@ -51,6 +51,7 @@ public class TransportationRepository {
             if (!transportationdto.isPresent()) {
                 return null;
             }
+
             Site origin = new Site(jdbcSiteDAO.findSite(transportationdto.get().getOriginName(),  transportationdto.get().getOriginShipmentAreaId()).get());
             List<ItemsDocumentDTO> itemsDocuments = jdbcItemsDocumentDAO.getAllTransportationItemsDocuments(id);
             List<ItemsDocument> itemsDocuments2 = new ArrayList<>();
