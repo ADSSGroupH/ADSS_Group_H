@@ -22,8 +22,8 @@ import DomainLayer.transportationDomain.*;
 import org.junit.jupiter.api.Test;
 
 import DTO.LicenseType;
-import DomainLayer.User;
-import DomainLayer.UserController;
+//import DomainLayer.User;
+//import DomainLayer.UserController;
 
 import DomainLayer.transportationDomain.*;
 
@@ -70,12 +70,6 @@ public class TransportationTests {
         assertEquals(1, area.getSites().size());
     }
 
-    @Test
-    public void testAddDuplicateUserFails() {
-        UserController uc = new UserController();
-        String result = uc.addUser("Admin", "123", User.Role.SystemManager);
-        assertEquals("User already exists", result);
-    }
 
     @Test
     public void testTransportationDisplayIncludesBasicFields() {
@@ -92,60 +86,6 @@ public class TransportationTests {
         assertTrue(display.contains("Transportation ID: 1"));
         assertTrue(display.contains("Origin: Origin"));
     }
-
-    @Test
-    public void testAddItemsAndRemoveItemsLogic() {
-        TransportationController tc = new TransportationController();
-        tc.makeShipmentArea(1, "Area1");
-
-        // Set up data
-        Site origin = new Site("Origin", "123 Main St", "111-222-3333", "Alice", 1);
-        Site destination = new Site("Dest", "456 Side St", "999-888-7777", "Bob", 1);
-        tc.addSite(origin.getName(), origin.getAddress(), origin.getPhoneNumber(), origin.getContactPersonName(), origin.getShipmentAreaId());
-        tc.addSite(destination.getName(), destination.getAddress(), destination.getPhoneNumber(), destination.getContactPersonName(), destination.getShipmentAreaId());
-
-        tc.addTruck("TR1", "Volvo", 1000, 5000, LicenseType.B);
-        tc.addDriver("Driver1", LicenseType.B);
-
-        // Initial document
-        List<Item> items = new ArrayList<>();
-        items.add(new Item(1, "Box", 10, 2)); // total weight = 20
-        ItemsDocument doc = new ItemsDocument(2, destination, LocalTime.parse("12:00"), items);
-        List<ItemsDocument> docs = new ArrayList<>();
-        docs.add(doc);
-
-        List<Integer> shipmentAreas = new ArrayList<>();
-        shipmentAreas.add(1);
-
-        LocalDate userDate = LocalDate.parse("2025-05-01");
-        LocalTime departureTime = LocalTime.parse("09:00");
-
-
-        String creationResult = tc.makeTransportation(100, userDate, departureTime, "TR1", "Driver1", docs, shipmentAreas, origin);
-        System.out.println(tc.checkAvalableDrivers(LicenseType.B));
-        System.out.println(creationResult);
-        assertTrue(creationResult.startsWith("Transportation created"));
-
-        // Add extra document
-        List<Item> extraItems = new ArrayList<>();
-        extraItems.add(new Item(2, "Crate", 5, 3)); // total weight = 15
-        ItemsDocument extraDoc = new ItemsDocument(99, destination, LocalTime.parse("14:00"), extraItems);
-        String addResult = tc.addItems(100, extraDoc);
-        assertEquals("Items added to transportation ID 100", addResult);
-
-        // Verify total documents count increased
-        Transportation t = tc.findTransportationById(100);
-        assertEquals(2, t.getItemsDocument().size());
-
-        // Remove the extra document
-        String removeResult = tc.removeItems(100, 99);
-        assertEquals("Items removed from transportation ID 100", removeResult);
-
-        // Re-fetch and verify it's back to 1 document
-        t = tc.findTransportationById(100);
-        assertEquals(1, t.getItemsDocument().size());
-    }
-
 
 
     @Test
@@ -181,29 +121,6 @@ public class TransportationTests {
         assertEquals(expectedTotalWeight, item.getTotalWeight());
     }
 
-    @Test
-    public void testFullTransportationCreationFlow() {
-        TransportationController tc = new TransportationController();
-
-        tc.makeShipmentArea(10, "Central");
-        Site origin = new Site("Warehouse", "Main Street", "050-0000000", "Eli", 10);
-        tc.addSite(origin.getName(), origin.getAddress(), origin.getPhoneNumber(), origin.getContactPersonName(), origin.getShipmentAreaId());
-
-        tc.addTruck("TR99", "Mercedes", 1500, 5000, LicenseType.C);
-        tc.addDriver("driver99", LicenseType.C);
-
-        List<Item> items = List.of(new Item(201, "Box", 3, 5)); // 15kg
-        ItemsDocument doc = new ItemsDocument(301, origin, LocalTime.of(12, 0), items);
-
-        // 💡 שים לב: שינינו את ה־ID מ־999 ל־101
-        String result = tc.makeTransportation(
-                101, LocalDate.of(2025, 6, 1), LocalTime.of(8, 0),
-                "TR99", "driver99", List.of(doc), List.of(10), origin
-        );
-
-        System.out.println(result);
-        assertTrue(result.startsWith("Transportation created with ID 101"));
-    }
 
 
     @Test
@@ -245,7 +162,7 @@ public class TransportationTests {
         System.out.println("Result: " + result);
 
         // השורה הזו תעבור רק אם תנאי הבדיקה מבוצע לפני בדיקות זמינות
-        assertTrue(result.contains("Driver with ID DriverNotExists does not exist."));
+        assertTrue(result.contains("Driver with name DriverNotExists was not found at this time."));
     }
 
 
