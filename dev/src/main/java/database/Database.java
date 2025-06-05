@@ -338,13 +338,6 @@ public final class Database {
                     ('123456789', '0')
                 """);
 
-                // Drivers
-                st.executeUpdate("""
-                    INSERT OR IGNORE INTO drivers (employee_id, employee_name, licenseType) VALUES
-                    ('114', 'Dana',"A"),
-                    ('115', 'Eli',"B"),
-                    ('116', 'Snir',"C")
-                """);
 
 
 
@@ -482,6 +475,14 @@ public final class Database {
                    (4444, 'Ikea', 111, '12:00', 1234),
                    (5555, 'Mango', 222, '13:00', 4444)
                 """);
+
+                // Drivers
+                st.executeUpdate("""
+                        INSERT OR IGNORE INTO drivers (employee_id, employee_name, licenseType) VALUES
+                        ('114', 'Dana',"A"),
+                        ('115', 'Eli',"B"),
+                        ('116', 'Snir',"C")
+                    """);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
