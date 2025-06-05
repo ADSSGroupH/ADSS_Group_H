@@ -2,8 +2,6 @@ package DomainLayer.transportationDomain;
 
 
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.Map;
 import DTO.LicenseType;
 import DTO.driverDTO;
 import Dal.HR.JdbcEmployeeDAO;
-import DomainLayer.HR_TransportationController;
 
 
 public class DriverRepository {
@@ -39,8 +36,11 @@ public class DriverRepository {
     public boolean driverExists(String id) {
         return driverMap.containsKey(id);
     }
-    public String displayDrivers(){
-
+    public String displayDrivers(List<driverDTO> drivers) {
+        driverMap.clear();
+        for (driverDTO driver : drivers) {
+            driverMap.put(driver.getName(), new Driver(driver.getName(), driver.getLicenseType()));
+        }
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Driver> entry : driverMap.entrySet()) {
             Driver driver = entry.getValue();

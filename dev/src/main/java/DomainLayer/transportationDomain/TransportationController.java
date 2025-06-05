@@ -379,7 +379,12 @@ public class TransportationController {
     }
 
     public String displayDrivers(){
-        return driverRep.displayDrivers();
+        try {
+            List<driverDTO> drivers = hrTransportationController.getAllDrivers();
+            return driverRep.displayDrivers(drivers);
+        } catch (Exception e) {
+            return "Error loading drivers: " + e.getMessage();
+        }
     }
 
     public boolean checkAvalableDrivers(LicenseType licenseType) {
