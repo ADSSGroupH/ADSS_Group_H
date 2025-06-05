@@ -11,7 +11,6 @@ public final class Database {
     private static final String DB_URL = "jdbc:sqlite:hr_management.db";
     private static Connection conn;
     private static final Logger log = Logger.getLogger(Database.class.getName());
-    private static final boolean RESET_DB_ON_START = false; // שנה ל-true אם אתה רוצה לאפס את הדאטה
 
     static {
         try {
@@ -21,36 +20,23 @@ public final class Database {
             try (Statement st = conn.createStatement()) {
 
                 // Drop existing tables if they exist
-                /*st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
-                st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
+                st.executeUpdate("DROP TABLE IF EXISTS items_documents_items");
+                st.executeUpdate("DROP TABLE IF EXISTS ItemsDocuments");
+                st.executeUpdate("DROP TABLE IF EXISTS items");
+                st.executeUpdate("DROP TABLE IF EXISTS transportations");
+                st.executeUpdate("DROP TABLE IF EXISTS trucks");
+                st.executeUpdate("DROP TABLE IF EXISTS sites");
+                st.executeUpdate("DROP TABLE IF EXISTS shipmentAreas");
+                st.executeUpdate("DROP TABLE IF EXISTS drivers");
+                st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
                 st.executeUpdate("DROP TABLE IF EXISTS shift_assignments");
                 st.executeUpdate("DROP TABLE IF EXISTS shifts");
+                st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
                 st.executeUpdate("DROP TABLE IF EXISTS employee_contracts");
                 st.executeUpdate("DROP TABLE IF EXISTS employees");
+                st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
                 st.executeUpdate("DROP TABLE IF EXISTS roles");
                 st.executeUpdate("DROP TABLE IF EXISTS branches");
-                st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
-                st.executeUpdate("DROP TABLE IF EXISTS drivers");
-                */
-                if (RESET_DB_ON_START) {
-                    st.executeUpdate("DROP TABLE IF EXISTS items_documents_items");
-                    st.executeUpdate("DROP TABLE IF EXISTS ItemsDocuments");
-                    st.executeUpdate("DROP TABLE IF EXISTS items");
-                    st.executeUpdate("DROP TABLE IF EXISTS transportations");
-                    st.executeUpdate("DROP TABLE IF EXISTS trucks");
-                    st.executeUpdate("DROP TABLE IF EXISTS sites");
-                    st.executeUpdate("DROP TABLE IF EXISTS shipmentAreas");
-                    st.executeUpdate("DROP TABLE IF EXISTS drivers");
-                    st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
-                    st.executeUpdate("DROP TABLE IF EXISTS shift_assignments");
-                    st.executeUpdate("DROP TABLE IF EXISTS shifts");
-                    st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
-                    st.executeUpdate("DROP TABLE IF EXISTS employee_contracts");
-                    st.executeUpdate("DROP TABLE IF EXISTS employees");
-                    st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
-                    st.executeUpdate("DROP TABLE IF EXISTS roles");
-                    st.executeUpdate("DROP TABLE IF EXISTS branches");
-                }
 
 
                 //HR Schemas
@@ -376,7 +362,7 @@ public final class Database {
                     ('116', 'Snir', '050-0000006', '1', '2,4', 7600, '116-2025-06-01', '303', 0, NULL, 0, 'pass6'),
                     ('117', 'David', '050-0000007', '1', '1', 9000, '117-2025-06-01', '303', 0, NULL, 0, 'pass7'),
                     ('118', 'Ben', '050-0000008', '1', '5', 7700, '118-2025-06-01', '505', 0, NULL, 0, 'pass8'),
-                    ('119', 'Tal', '050-0000009', '1', '6', 9500, '100', '909', 0, NULL, 0, 'pass9')
+                    ('119', 'Tal', '0500000009', '1', '6', 9500, '119-2025-06-01', '909', 0, NULL, 0, 'pass9')
                 """);
 
             // Employee Contracts
@@ -480,8 +466,8 @@ public final class Database {
                    (5555, 'Mango', 222, '13:00', 4444)
                 """);
 
-                // Drivers
-                st.executeUpdate("""
+            // Drivers
+            st.executeUpdate("""
                         INSERT OR IGNORE INTO drivers (employee_id, employee_name, licenseType) VALUES
                         ('114', 'Dana',"A"),
                         ('115', 'Eli',"B"),
