@@ -1,8 +1,10 @@
 package PresentationLayer;
 
+import DTO.Transportation.LicenseType;
 import DomainLayer.HR.Employee;
 import ServiceLayer.TransportationManagerService;
 
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class TransportationManagerUI {
@@ -15,7 +17,7 @@ public class TransportationManagerUI {
         this.service = new TransportationManagerService();
     }
 
-    public void display() {
+    public void display() throws SQLException {
         while (true) {
             System.out.println("\nTransportation Manager Menu:");
             System.out.println("1. Add truck");
