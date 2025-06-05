@@ -64,7 +64,6 @@ public class HR_TransportationController {
                 driverDTOList.add(dto);
             }
         }
-
         return driverDTOList;
     }
 
@@ -91,5 +90,25 @@ public class HR_TransportationController {
             return false;
         }
         return true;
+    }
+
+    public List<driverDTO> getAllDrivers() throws SQLException {
+        Role driverRole = roleRepository.getRoleByName("driver");
+        List<Employee> allEmployees = employeeRepository.getAllEmployees();
+        List<driverDTO> driverList = new ArrayList<>();
+
+        for (Employee employee : allEmployees) {
+            if (employee.getRoles().contains(driverRole)) {
+                LicenseType licenseType = driverRepository.getLicenseByDriverId(employee.getId());
+                if (licenseType != null) {
+                    driverDTO dto = new driverDTO(licenseType);
+                    dto.setId(employee.getId());
+                    dto.setName(employee.getName());
+                    dto.setLicenseType(licenseType);
+                    driverList.add(dto);
+                }
+            }
+        }
+        return driverList;
     }
 }
