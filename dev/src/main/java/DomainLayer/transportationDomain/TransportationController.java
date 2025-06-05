@@ -1,20 +1,21 @@
-package DomainLayer.transportationDomain;
+package DomainLayer.Transportation.Controllers;
 
-import DTO.LicenseType;
-import DTO.driverDTO;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
 import DomainLayer.HR_TransportationController;
-import DomainLayer.transportationDomain.ShipmentArea;
-import DomainLayer.transportationDomain.Driver;
-import DomainLayer.transportationDomain.Transportation;
-import DomainLayer.transportationDomain.ItemsDocument;
-import DomainLayer.transportationDomain.Site;
-import DomainLayer.transportationDomain.Truck;
-import DomainLayer.transportationDomain.Item;
-import DomainLayer.transportationDomain.DriverRepository;
-import DomainLayer.transportationDomain.ShipmentAreaRepository;
-import DomainLayer.transportationDomain.TransportationRepository;
-import DomainLayer.transportationDomain.TruckRepository;
+import DomainLayer.Transportation.ShipmentArea;
+import DomainLayer.Transportation.Driver;
+import DomainLayer.Transportation.Transportation;
+import DomainLayer.Transportation.ItemsDocument;
+import DomainLayer.Transportation.Site;
+import DomainLayer.Transportation.Truck;
+import DomainLayer.Transportation.Item;
+import DomainLayer.Transportation.Repositories.DriverRepository;
+import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
+import DomainLayer.Transportation.Repositories.TransportationRepository;
+import DomainLayer.Transportation.Repositories.TruckRepository;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class TransportationController {
         }
     }
 
-    public String makeTransportation(int id, LocalDate date, LocalTime departureTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin){
+    public String makeTransportation(int id, LocalDate date, LocalTime departureTime, String truckPlateNumber, String drivername, List<ItemsDocument> itemsDocument, List<Integer> shipmentAreasID, Site origin) throws SQLException {
         // Check if the transportation already exists
         if (transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " already exists.";
@@ -218,7 +219,7 @@ public class TransportationController {
     }
 
 
-    public String changeDriverName(int id, String newDriverName) {
+    public String changeDriverName(int id, String newDriverName) throws SQLException {
         Transportation t = transportationRep.getTransportation(id);
         if (t == null) {
             return "Transportation with ID " + id + " not found.";
@@ -319,7 +320,7 @@ public class TransportationController {
         return "Accident reported";
     }
 
-    public String addDriver(String name, LicenseType licenseType) {
+    public String addDriver(String name, LicenseType licenseType) throws SQLException {
         Driver driver = new Driver(name, licenseType);
         // Check if the driver already exists
         if (driverRep.driverExists(name)) {
@@ -394,7 +395,7 @@ public class TransportationController {
     public String displayDrivers(){
         try {
             List<driverDTO> drivers = hrTransportationController.getAllDrivers();
-            return driverRep.displayDrivers(drivers);
+            return driverRep.displayDrivers();
         } catch (Exception e) {
             return "Error loading drivers: " + e.getMessage();
         }
@@ -453,7 +454,7 @@ public class TransportationController {
             return "Truck with plate number " + plateNumber + " not found.";
         }
     }
-    public String removeDriver(String username) {
+    public String removeDriver(String username) throws SQLException {
         if (driverRep.driverExists(username)) {
             driverRep.removeDriver(username);
             return "Driver with username " + username + " removed.";
