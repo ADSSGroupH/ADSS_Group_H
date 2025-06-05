@@ -84,7 +84,9 @@ public class DriverRepository {
 
     // המרה מ־Driver ל־driverDTO
     public driverDTO fromEntity(String id, Driver driver) {
-        return new driverDTO(driver.getLicenseType()); // ID נשמר רק בשאילתה
+        driverDTO dto = new driverDTO(driver.getLicenseType()); // ID נשמר רק בשאילתה
+        dto.setId(id);
+        return dto;
     }
 
     // המרה מ־driverDTO ל־Driver
