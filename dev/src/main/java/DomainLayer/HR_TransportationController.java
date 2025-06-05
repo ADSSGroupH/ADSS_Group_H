@@ -1,13 +1,7 @@
 package DomainLayer;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import DTO.LicenseType;
-import DTO.driverDTO;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;
@@ -17,9 +11,13 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.transportationDomain.DriverRepository;
+import DomainLayer.Transportation.Repositories.DriverRepository;
 
-
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HR_TransportationController {
 
@@ -46,10 +44,12 @@ public class HR_TransportationController {
         Role driverRole = roleRepository.getRoleByName("driver");
         Shift targetShift = shiftRepository.findByDateAndTime(date.toString(), startTime.toString());
         List<Employee> availableDrivers = shiftController
-                .AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole)
-                .get(0); // רשימת זמינים
+                .AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).get(0); // רשימת זמינים
         List<driverDTO> driverDTOList = new ArrayList<>();
 
+        if (availableDrivers == null || availableDrivers.isEmpty()){
+            return driverDTOList;
+        }
         for (Employee driver : availableDrivers) {
             LicenseType licenseTypeStr = driverRepository.getLicenseByDriverId(driver.getId());
 
