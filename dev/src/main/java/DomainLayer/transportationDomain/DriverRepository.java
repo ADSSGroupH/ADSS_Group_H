@@ -68,8 +68,11 @@ public class DriverRepository {
 
     public LicenseType getLicenseByDriverId(String id) throws SQLException {
         JdbcEmployeeDAO empDAO = new JdbcEmployeeDAO();
-        String LicenseAsString = empDAO.getLicenseByDriverId(id);
-        return LicenseType.valueOf(LicenseAsString);
+        String licenseAsString = empDAO.getLicenseByDriverId(id);
+        if (licenseAsString == null) {
+            throw new IllegalArgumentException("License not found for driver ID: " + id);
+        }
+        return LicenseType.valueOf(licenseAsString);
     }
 
     public void loadAvailableDrivers(List<driverDTO> availableDrivers) {
