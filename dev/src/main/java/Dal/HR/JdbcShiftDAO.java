@@ -224,10 +224,11 @@ public class JdbcShiftDAO implements ShiftDAO {
 
     @Override
     public ShiftDTO findByDateAndTime(String date, String startTime) throws SQLException {
-        String sql = "SELECT * FROM shifts WHERE date = ? AND start_time = ?";
-        try (PreparedStatement ps = Database.getConnection().prepareStatement((sql))) {
+        String sql = "SELECT * FROM shifts WHERE date = ? AND ? >= start_time AND ? < end_time";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, date);
             ps.setString(2, startTime);
+            ps.setString(3, startTime);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapResultSetToShiftDTO(rs);
@@ -236,6 +237,7 @@ public class JdbcShiftDAO implements ShiftDAO {
         }
         return null; // אם לא נמצא שום רשומה
     }
+
 
 
 
