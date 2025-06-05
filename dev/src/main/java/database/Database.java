@@ -356,17 +356,18 @@ public final class Database {
 
             // Roles
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO roles (id, name, is_archived) VALUES
+                    INSERT INTO roles (id, name, is_archived) VALUES
                     ('1', 'shift manager', false),
                     ('2', 'cashier', false),
                     ('3', 'stocker', false),
                     ('4', 'driver', false),
-                    ('5', 'butcher', false)
+                    ('5', 'butcher', false),
+                    ('6', 'transportation manager', false)
                 """);
 
             // Employees
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                    INSERT INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
                     ('111', 'Hila', '050-0000001', '1', '2', 8000, '111-2025-06-01', '123', 0, NULL, 0, 'pass1'),
                     ('112', 'Yarden', '050-0000002', '1', '2', 7800, '112-2025-06-01', '456', 0, NULL, 0, 'pass2'),
                     ('113', 'Charlie', '050-0000003', '1', '3', 7500, '113-2025-06-01', '789', 0, NULL, 0, 'pass3'),
@@ -374,12 +375,13 @@ public final class Database {
                     ('115', 'Eli', '050-0000005', '1', '3,4', 7900, '115-2025-06-01', '202', 0, NULL, 0, 'pass5'),
                     ('116', 'Snir', '050-0000006', '1', '2,4', 7600, '116-2025-06-01', '303', 0, NULL, 0, 'pass6'),
                     ('117', 'David', '050-0000007', '1', '1', 9000, '117-2025-06-01', '303', 0, NULL, 0, 'pass7'),
-                    ('118', 'Ben', '050-0000008', '1', '5', 7700, '118-2025-06-01', '505', 0, NULL, 0, 'pass8')
+                    ('118', 'Ben', '050-0000008', '1', '5', 7700, '118-2025-06-01', '505', 0, NULL, 0, 'pass8'),
+                    ('119', 'Tal Transportation', '050-0000009', '1', '6', 9500, '100', '909', 0, NULL, 0, 'pass9')
                 """);
 
             // Employee Contracts
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                    INSERT INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
                     ('111-2025-06-01', '111', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 8000, NULL, 0),
                     ('112-2025-06-01', '112', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 7800, NULL, 0),
                     ('113-2025-06-01', '113', '2025-06-01', 10, 4, 160, 'Basic', 'None', 7500, NULL, 0),
@@ -387,12 +389,13 @@ public final class Database {
                     ('115-2025-06-01', '115', '2025-06-01', 10, 3, 160, 'Standard', 'Standard', 7900, NULL, 0),
                     ('116-2025-06-01', '116', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 7600, NULL, 0),
                     ('117-2025-06-01', '117', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 9000, NULL, 0),
-                    ('118-2025-06-01', '118', '2025-06-01', 10, 3, 160, 'Standard', 'Standard', 7700, NULL, 0)
+                    ('118-2025-06-01', '118', '2025-06-01', 10, 3, 160, 'Standard', 'Standard', 7700, NULL, 0),
+                    ('119-2025-06-01', '119', '2025-06-01', 12, 5, 160, 'Standard', 'Standard', 9500, NULL, 0)
                 """);
 
             // Shifts
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
+                    INSERT INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
                     ('morn_0', '2025-06-01', '08:00', '14:00', 'Morning', '2,3,5', '111morn_02,113morn_03,118morn_05,117morn_01', '117', NULL, 0),
                     ('eve_0', '2025-06-01', '14:00', '21:00', 'Evening', '4', '114eve_04,117eve_01', '117', NULL, 0),
                     ('morn_1', '2025-06-02', '08:00', '14:00', 'Morning', '2,3,5', '112morn_12,115morn_13,118morn_15,117morn_11', '117', NULL, 0),
@@ -403,7 +406,7 @@ public final class Database {
 
             // Shift Assignments
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
+                    INSERT INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
                     ('111morn_02', '111', 'morn_0', '2', NULL, 0),
                     ('113morn_03', '113', 'morn_0', '3', NULL, 0),
                     ('118morn_05', '118', 'morn_0', '5', NULL, 0),
@@ -420,7 +423,7 @@ public final class Database {
 
             // Sample Weekly Preferences
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
+                    INSERT INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
                     ('111', 'morn_0,morn_2,morn_4', '2025-06-01', '2025-06-01', '2025-06-01', 'SUBMITTED', 'Prefer mornings', '111'),
                     ('112', 'morn_1,morn_3,morn_5', '2025-06-01', '2025-06-01', '2025-06-01', 'DRAFT', NULL, '112'),
                     ('114', 'eve_0,eve_2,eve_4', '2025-06-01', '2025-06-01', '2025-06-01', 'APPROVED', 'Evening driver', '114')
@@ -428,7 +431,7 @@ public final class Database {
 
             // Employee Roles
             st.executeUpdate("""
-                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
+                    INSERT INTO EmployeeRoles (employee_id, role_id) VALUES
                     ('111', '2'),
                     ('112', '2'),
                     ('113', '3'),
@@ -438,7 +441,8 @@ public final class Database {
                     ('116', '2'),
                     ('116', '4'),
                     ('117', '1'),
-                    ('118', '5')
+                    ('118', '5'),
+                    ('119', '6')
                 """);
             st.executeUpdate("""
                    INSERT OR IGNORE INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
