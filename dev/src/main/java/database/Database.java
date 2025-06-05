@@ -223,7 +223,6 @@ public final class Database {
                         id INTEGER PRIMARY KEY,
                         date TEXT NOT NULL,
                         departureTime TEXT NOT NULL,
-                        arrivalTime TEXT NOT NULL,
                         truckPlateNumber TEXT NOT NULL,
                         driverName TEXT NOT NULL,
                         originName TEXT NOT NULL,
@@ -326,6 +325,7 @@ public final class Database {
 
 
 
+
             }
 
         } catch (Exception e) {
@@ -423,6 +423,41 @@ public final class Database {
                     ('116', '4'),
                     ('117', '1'),
                     ('118', '5')
+                """);
+            st.executeUpdate("""
+                   INSERT INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
+                   ('11111111', 'Audi', 350, 800, 'C'),
+                   ('12345678', 'Mercedes', 200, 920, 'A')
+                """);
+            st.executeUpdate("""
+                   INSERT INTO shipmentAreas (id, name) VALUES
+                    (123, 'Negev'),
+                    (111, 'Galil'),
+                    (222, 'Center')
+                """);
+            st.executeUpdate("""
+                   INSERT INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId) VALUES
+                   ('Ikea', 'Beer sheva', '086312589', 'Ido', 111),
+                   ('Nike', 'Tel aviv', '081111111', 'Tal', 123),
+                   ('Mango', 'Sderot', '032222222', 'Jordi', 222),
+                   ('Zara', 'Beer sheva', '031234567', 'Hila', 111)
+                """);
+            st.executeUpdate("""
+                   INSERT INTO transportations (id, date, departureTime, truckPlateNumber, driverName, originName, originShipmentAreaId, succeeded, accident) VALUES
+                   (1234, '2025-06-01', '10:00', '11111111', 'Dana', 'Ikea', 111, 1, 'No accidents reported'),
+                   (4444, '2025-06-01', '11:00', '12345678', 'Eli', 'Mango', 222, 0, 'No accidents reported')
+                """);
+            st.executeUpdate("""
+                   INSERT INTO items (itemsDocumentId, itemId, name, quantity, weight) VALUES
+                   (4444, 1, 'milk', 2, 1),
+                   (4444, 2, 'bread', 3, 2),
+                   (5555, 3, 'coffee', 1, 1),
+                   (5555, 4, 'water', 1, 4)
+                """);
+            st.executeUpdate("""
+                   INSERT INTO ItemsDocuments (id, destinationName, shipmentAreaId, arrivalTime, transportationId) VALUES
+                   (4444, 'Ikea', 111, 12:00', 1234),
+                   (5555, 'Mango', 222, 13:00', 4444)
                 """);
         } catch (SQLException e) {
             throw new RuntimeException(e);

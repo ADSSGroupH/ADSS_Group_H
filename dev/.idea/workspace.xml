@@ -5,66 +5,107 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f87149ee-16cc-4ea0-a961-a30edb3241cd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/BranchDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/EmployeeContractDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/EmployeeDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/RoleDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/ShiftAssignmentDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/ShiftDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/ShiftSwapRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/HR/WeeklyPreferencesDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/ItemDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/ItemsDocumentDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/LicenseType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/ShipmentAreaDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/SiteDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/TransportationDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/TruckDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/DTO/driverDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/ShipmentAreaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/ShipmentAreaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TruckRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TruckRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/PresentationLayer/DriverUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/PresentationLayer/DriverUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/PresentationLayer/EmployeeUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/PresentationLayer/EmployeeUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/PresentationLayer/TransportationManagerUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/PresentationLayer/TransportationManagerUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/PresentationLayer/UserInteraction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/PresentationLayer/UserInteraction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ServiceLayer/DriverTransportationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ServiceLayer/DriverTransportationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ServiceLayer/TransportationManagerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ServiceLayer/TransportationManagerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcItemDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcItemDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcItemsDocumentDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcItemsDocumentDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcShipmentAreaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcShipmentAreaDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcSiteDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcSiteDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcTransportationDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcTransportationDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcTruckDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dal/transportation_dal/JdbcTruckDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/BranchDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/EmployeeContractDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/EmployeeDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/RoleDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/ShiftAssignmentDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/ShiftDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/ShiftSwapRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/HR/WeeklyPreferencesDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/ItemDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/ItemsDocumentDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/LicenseType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/ShipmentAreaDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/SiteDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/TransportationDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/TruckDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dto_folder/driverDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/TransportationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/TransportationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/database/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/database/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/BranchDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/BranchDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/EmployeeContractDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/EmployeeContractDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/EmployeeDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/EmployeeDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/RoleDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/RoleDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftAssignmentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftAssignmentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftSwapRequestDTO$Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftSwapRequestDTO$Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftSwapRequestDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/ShiftSwapRequestDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/HR/WeeklyPreferencesDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/HR/WeeklyPreferencesDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/ItemDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/ItemDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/ItemsDocumentDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/ItemsDocumentDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/LicenseType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/LicenseType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/ShipmentAreaDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/ShipmentAreaDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/SiteDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/SiteDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/TransportationDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/TransportationDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/TruckDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/TruckDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DTO/driverDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DTO/driverDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Branch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftSwapRequestController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftSwapRequestController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Employee.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/EmployeeContract.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/EmployeeContract.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/ManagerController_Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/ManagerController_Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/ShiftSwapRequest_Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/ShiftSwapRequest_Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/Shift_Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Enums/Shift_Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/HRManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/HRManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/AssignmentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/AssignmentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/BranchRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/BranchRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/ContractsRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/ContractsRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/RoleRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/RoleRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/ShiftRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/ShiftRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/WeeklyPreferencesRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/WeeklyPreferencesRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Shift.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Shift.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftAssignment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftAssignment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftSwapRequest$Status.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftSwapRequest$Status.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftSwapRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/ShiftSwapRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/User$Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/User$Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Driver.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Driver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Item.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Item.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ItemsDocument.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ItemsDocument.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ShipmentArea.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ShipmentArea.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ShipmentAreaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/ShipmentAreaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Site.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Site.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Transportation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Transportation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Truck.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/Truck.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TruckRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TruckRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/EmployeeUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/EmployeeUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/LoginForm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/LoginForm.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/ManagerUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/ManagerUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/TransportationManagerUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/TransportationManagerUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/EmployeeService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/EmployeeService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/ShiftService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/ShiftService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/ShiftSwapRequestService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/ShiftSwapRequestService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/AssignmentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/AssignmentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/BranchDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/BranchDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/ContractDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/ContractDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcAssignmentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcAssignmentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcBranchDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcBranchDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcContractDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcContractDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcRoleDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcRoleDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcShiftDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcShiftDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcSwapRequestDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcSwapRequestDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcWeeklyPreferencesDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcWeeklyPreferencesDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/RoleDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/RoleDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/ShiftDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/ShiftDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/SwapRequestDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/SwapRequestDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/WeeklyPreferencesDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/WeeklyPreferencesDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemsDocumentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ItemsDocumentDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcSiteDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcSiteDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/JdbcTruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ShipmentAreaDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/ShipmentAreaDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/SiteDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/SiteDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TransportationDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/transportation_dal/TruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/database/Database.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/database/database.db" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -87,21 +128,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
-    &quot;JUnit.TransportationTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TransportationTests.testAddTruck.executor&quot;: &quot;Run&quot;,
-    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
-    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;TR__HR&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Downloaded.Files.Path.Enabled": "false",
+    "JUnit.TransportationTests.executor": "Run",
+    "JUnit.TransportationTests.testAddTruck.executor": "Run",
+    "JUnit.TransportationTests.testItemAddAndReduceQuantity.executor": "Run",
+    "JUnit.TransportationTests.testItemsDocumentDisplayIncludesItems.executor": "Run",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "TR__HR",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
   }
-}</component>
-  <component name="RunManager" selected="JUnit.TransportationTests.testAddTruck">
+}]]></component>
+  <component name="RunManager" selected="JUnit.TransportationTests">
     <configuration name="TransportationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="adss-project" />
       <option name="PACKAGE_NAME" value="" />
@@ -121,10 +168,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TransportationTests.testItemAddAndReduceQuantity" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="adss-project" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TransportationTests" />
+      <option name="METHOD_NAME" value="testItemAddAndReduceQuantity" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TransportationTests.testItemsDocumentDisplayIncludesItems" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="adss-project" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="MAIN_CLASS_NAME" value="TransportationTests" />
+      <option name="METHOD_NAME" value="testItemsDocumentDisplayIncludesItems" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TransportationTests.testAddTruck" />
         <item itemvalue="JUnit.TransportationTests" />
+        <item itemvalue="JUnit.TransportationTests.testItemsDocumentDisplayIncludesItems" />
+        <item itemvalue="JUnit.TransportationTests.testItemAddAndReduceQuantity" />
+        <item itemvalue="JUnit.TransportationTests.testAddTruck" />
       </list>
     </recent_temporary>
   </component>
