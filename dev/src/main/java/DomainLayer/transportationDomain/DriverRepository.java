@@ -28,6 +28,15 @@ public class DriverRepository {
     public Driver getDriver(String id) {
         return driverMap.get(id);
     }
+    public List<Driver> getAll() {
+        List<Driver> drivers = new ArrayList<>();
+        int size = driverMap.size();
+        for (int i = 0; i < size; i++) {
+            Driver driver = driverMap.get(size);
+            drivers.add(driver);
+        }
+        return drivers;
+    }
     public void removeDriver(String id) {
         driverMap.remove(id);
     }
