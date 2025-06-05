@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.LicenseType;
-import DTO.driverDTO;
 import DomainLayer.HR_TransportationController;
 
 
@@ -52,9 +51,7 @@ public class TransportationController {
             return "Transportation with ID " + id + " already exists.";
         }
         try {
-            List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, departureTime);
-            driverRep.loadAvailableDrivers(availableDrivers);
-
+            driverRep.loadAvailableDrivers(date, departureTime);
         } catch (Exception e) {
             return "Error loading available drivers: " + e.getMessage();
         }
@@ -189,11 +186,7 @@ public class TransportationController {
             return "Transportation with ID " + id + " not found.";
         }
         try {
-            LocalDate date = t.getDate();
-            LocalTime departureTime = t.getDepartureTime();
-            List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, departureTime);
-            driverRep.loadAvailableDrivers(availableDrivers);
-
+            driverRep.loadAvailableDrivers(t.getDate(), t.getDepartureTime());
         } catch (Exception e) {
             return "Error loading available drivers: " + e.getMessage();
         }
@@ -441,13 +434,17 @@ public class TransportationController {
         for (Transportation transportation : transportations) {
             if (transportation.getDate().equals(date)) {
                 LocalTime tranDeparture = transportation.getDepartureTime();
-                for (LocalTime arrival : arrivalTime) {
+                for(ItemsDocument itemsDocument : transportation.getItemsDocument()) {
+                    LocalTime tranA = itemsDocument.getArrivalTime();
+                    for(LocalTime arrival : arrivalTime){
                     // Check if the new transportation overlaps with the existing one
-                    if ((departureTime.isBefore(arrival) && departureTime.isAfter(tranDeparture)) ||
-                    (arrival.isBefore(arrival) && arrival.isAfter(tranDeparture))) {
+                    if ((departureTime.isBefore(tranA) && departureTime.isAfter(tranDeparture)) ||
+                    (arrival.isBefore(tranA) && arrival.isAfter(tranDeparture))) {
                         return false; // Driver is not available
                     }
+                    }
                 }
+
             }
             
         }
@@ -459,11 +456,14 @@ public class TransportationController {
         for (Transportation transportation : transportations) {
             if (transportation.getDate().equals(date)) {
                 LocalTime tranDeparture = transportation.getDepartureTime();
-                for (LocalTime arrival : arrivalTime) {
+                for(ItemsDocument itemsDocument : transportation.getItemsDocument()) {
+                    LocalTime tranA = itemsDocument.getArrivalTime();
+                    for(LocalTime arrival : arrivalTime){
                     // Check if the new transportation overlaps with the existing one
-                    if ((departureTime.isBefore(arrival) && departureTime.isAfter(tranDeparture)) ||
-                    (arrival.isBefore(arrival) && arrival.isAfter(tranDeparture))) {
+                    if ((departureTime.isBefore(tranA) && departureTime.isAfter(tranDeparture)) ||
+                    (arrival.isBefore(tranA) && arrival.isAfter(tranDeparture))) {
                         return false; // Driver is not available
+                    }
                     }
                 }
             }

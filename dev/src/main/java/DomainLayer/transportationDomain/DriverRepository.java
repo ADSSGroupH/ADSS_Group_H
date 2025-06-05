@@ -4,10 +4,10 @@ package DomainLayer.transportationDomain;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 import DTO.LicenseType;
 import DTO.driverDTO;
@@ -17,11 +17,11 @@ import DomainLayer.HR_TransportationController;
 
 public class DriverRepository {
     private Map<String, Driver> driverMap;
-    //private HR_TransportationController hrTransportationController;
+    private HR_TransportationController hrTransportationController;
 
     public DriverRepository() {
         this.driverMap = new HashMap<>();
-        //this.hrTransportationController = new HR_TransportationController();
+        this.hrTransportationController = new HR_TransportationController();
     }
     public void addDriver(String name, Driver driver) {
         driverMap.put(name, driver);
@@ -30,9 +30,14 @@ public class DriverRepository {
         return driverMap.get(id);
     }
     public List<Driver> getAll() {
-        return new ArrayList<>(driverMap.values());
+        List<Driver> drivers = new ArrayList<>();
+        int size = driverMap.size();
+        for (int i = 0; i < size; i++) {
+            Driver driver = driverMap.get(size);
+            drivers.add(driver);
+        }
+        return drivers;
     }
-
     public void removeDriver(String id) {
         driverMap.remove(id);
     }
@@ -63,12 +68,12 @@ public class DriverRepository {
         return LicenseType.valueOf(LicenseAsString);
     }
 
-    public void loadAvailableDrivers(List<driverDTO> availableDrivers) {
+    public void loadAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
         driverMap.clear();
+        List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, startTime);
         for (driverDTO driver : availableDrivers) {
             driverMap.put(driver.getName(), new Driver(driver.getName(), driver.getLicenseType()));
         }
     }
-
 
 }
