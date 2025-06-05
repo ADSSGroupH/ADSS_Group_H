@@ -153,7 +153,7 @@ public class JdbcEmployeeDAO implements EmployeeDAO {
 
     @Override
     public String getLicenseByDriverId(String id) throws SQLException {
-        String sql = "SELECT licenseType FROM drivers WHERE emp_id = ?";
+        String sql = "SELECT licenseType FROM drivers WHERE employee_id = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
