@@ -1,6 +1,7 @@
 package DomainLayer.transportationDomain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -75,6 +76,16 @@ public class TruckRepository {
 
     }
     public String displayTrucks(){
+         truckMap.clear();
+         try{
+             List<TruckDTO> truckDTOS = jdbcTruckDAO.getAllTrucks();
+             for(TruckDTO truckDTO: truckDTOS){
+                 truckMap.put(truckDTO.getPlateNumber(), new Truck(truckDTO));
+             }
+         }catch (Exception e){
+             return null;
+         }
+
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Truck> entry : truckMap.entrySet()) {
             Truck truck = entry.getValue();

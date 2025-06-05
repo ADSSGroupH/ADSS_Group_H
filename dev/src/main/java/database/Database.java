@@ -11,6 +11,7 @@ public final class Database {
     private static final String DB_URL = "jdbc:sqlite:hr_management.db";
     private static Connection conn;
     private static final Logger log = Logger.getLogger(Database.class.getName());
+    private static final boolean RESET_DB_ON_START = false; // שנה ל-true אם אתה רוצה לאפס את הדאטה
 
     static {
         try {
@@ -20,7 +21,7 @@ public final class Database {
             try (Statement st = conn.createStatement()) {
 
                 // Drop existing tables if they exist
-                st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
+                /*st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
                 st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
                 st.executeUpdate("DROP TABLE IF EXISTS shift_assignments");
                 st.executeUpdate("DROP TABLE IF EXISTS shifts");
@@ -30,13 +31,33 @@ public final class Database {
                 st.executeUpdate("DROP TABLE IF EXISTS branches");
                 st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
                 st.executeUpdate("DROP TABLE IF EXISTS drivers");
+                */
+                if (RESET_DB_ON_START) {
+                    st.executeUpdate("DROP TABLE IF EXISTS items_documents_items");
+                    st.executeUpdate("DROP TABLE IF EXISTS ItemsDocuments");
+                    st.executeUpdate("DROP TABLE IF EXISTS items");
+                    st.executeUpdate("DROP TABLE IF EXISTS transportations");
+                    st.executeUpdate("DROP TABLE IF EXISTS trucks");
+                    st.executeUpdate("DROP TABLE IF EXISTS sites");
+                    st.executeUpdate("DROP TABLE IF EXISTS shipmentAreas");
+                    st.executeUpdate("DROP TABLE IF EXISTS drivers");
+                    st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
+                    st.executeUpdate("DROP TABLE IF EXISTS shift_assignments");
+                    st.executeUpdate("DROP TABLE IF EXISTS shifts");
+                    st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
+                    st.executeUpdate("DROP TABLE IF EXISTS employee_contracts");
+                    st.executeUpdate("DROP TABLE IF EXISTS employees");
+                    st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
+                    st.executeUpdate("DROP TABLE IF EXISTS roles");
+                    st.executeUpdate("DROP TABLE IF EXISTS branches");
+                }
 
 
                 //HR Schemas
 
                 // Create Employee-Roles junction table
                 st.executeUpdate("""
-                    CREATE TABLE EmployeeRoles (
+                    CREATE TABLE IF NOT EXISTS EmployeeRoles (
                         employee_id VARCHAR(50),
                         role_id VARCHAR(50),
                         PRIMARY KEY (employee_id, role_id),
@@ -47,7 +68,7 @@ public final class Database {
 
                 //Create Drivers Table
                 st.executeUpdate("""
-                    CREATE TABLE drivers (
+                    CREATE TABLE IF NOT EXISTS drivers (
                         employee_id VARCHAR(50),
                         employee_name VARCHAR(50),
                         licenseType VARCHAR(50),
@@ -59,7 +80,7 @@ public final class Database {
 
                 // Create Branches table
                 st.executeUpdate("""
-                    CREATE TABLE branches (
+                    CREATE TABLE IF NOT EXISTS branches (
                         id VARCHAR(50),
                         name VARCHAR(255) NOT NULL,
                         address VARCHAR(500) NOT NULL,
@@ -70,7 +91,7 @@ public final class Database {
 
                 // Create Roles table
                 st.executeUpdate("""
-                    CREATE TABLE roles (
+                    CREATE TABLE IF NOT EXISTS roles (
                         id VARCHAR(50),
                         name VARCHAR(255) NOT NULL UNIQUE,
                         is_archived boolean,
@@ -80,7 +101,7 @@ public final class Database {
 
                 // Create Employees table
                 st.executeUpdate("""
-                    CREATE TABLE employees (
+                    CREATE TABLE IF NOT EXISTS employees (
                         id VARCHAR(50),
                         name VARCHAR(255) NOT NULL,
                         phone_number VARCHAR(20),
@@ -100,7 +121,7 @@ public final class Database {
 
                 // Create Employee Contracts table
                 st.executeUpdate("""
-                    CREATE TABLE employee_contracts (
+                    CREATE TABLE IF NOT EXISTS employee_contracts (
                         id VARCHAR(100),
                         employee_id VARCHAR(50) NOT NULL,
                         start_date VARCHAR(20) NOT NULL,
@@ -119,7 +140,7 @@ public final class Database {
 
                 // Create Shifts table
                 st.executeUpdate("""
-                    CREATE TABLE shifts (
+                    CREATE TABLE IF NOT EXISTS shifts (
                         id VARCHAR(50),
                         date VARCHAR(20) NOT NULL,
                         start_time VARCHAR(10) NOT NULL,
@@ -137,7 +158,7 @@ public final class Database {
 
                 // Create Shift Assignments table
                 st.executeUpdate("""
-                    CREATE TABLE shift_assignments (
+                    CREATE TABLE IF NOT EXISTS shift_assignments (
                         id VARCHAR(150),
                         employee_id VARCHAR(50) NOT NULL,
                         shift_id VARCHAR(50) NOT NULL,
@@ -153,7 +174,7 @@ public final class Database {
 
                 // Create Shift Swap Requests table
                 st.executeUpdate("""
-                    CREATE TABLE shift_swap_requests (
+                    CREATE TABLE IF NOT EXISTS shift_swap_requests (
                         id TEXT PRIMARY KEY,
                         requestor_id TEXT NOT NULL,
                         from_shift_id TEXT NOT NULL,
@@ -170,7 +191,7 @@ public final class Database {
 
                 // Create Weekly Preferences table
                 st.executeUpdate("""
-                    CREATE TABLE weekly_preferences (
+                    CREATE TABLE IF NOT EXISTS weekly_preferences (
                         employee_id VARCHAR(50),
                         preferred_shift_ids_csv TEXT,
                         week_start_date VARCHAR(20) NOT NULL,
@@ -237,15 +258,17 @@ public final class Database {
 
                 // Create items table
                 st.executeUpdate("""
-                    CREATE TABLE IF NOT EXISTS items (
-                        itemsDocumentId INTEGER PRIMARY KEY,
-                        itemId INTEGER NOT NULL,
-                        name TEXT NOT NULL,
-                        quantity INTEGER NOT NULL,
-                        weight INTEGER NOT NULL,
-                        FOREIGN KEY (itemsDocumentId) REFERENCES itemsDocument(id)
-                    );
-                """);
+                            CREATE TABLE IF NOT EXISTS items (
+                                        itemsDocumentId INTEGER NOT NULL,
+                                        itemId INTEGER NOT NULL,
+                                        name TEXT NOT NULL,
+                                        quantity INTEGER NOT NULL,
+                                        weight INTEGER NOT NULL,
+                                        PRIMARY KEY (itemsDocumentId, itemId),
+                                        FOREIGN KEY (itemsDocumentId) REFERENCES itemsDocument(id)
+                                    );
+                                    
+                        """);
 
                 // Create items_documents table
                 st.executeUpdate("""
@@ -272,38 +295,38 @@ public final class Database {
 
 
                 // Create indexes for better performance
-                st.executeUpdate("CREATE INDEX idx_employees_branch ON employees(branch_id)");
-                st.executeUpdate("CREATE INDEX idx_employees_archived ON employees(is_archived)");
-                st.executeUpdate("CREATE INDEX idx_shifts_date ON shifts(date)");
-                st.executeUpdate("CREATE INDEX idx_shifts_archived ON shifts(is_archived)");
-                st.executeUpdate("CREATE INDEX idx_shift_assignments_employee ON shift_assignments(employee_id)");
-                st.executeUpdate("CREATE INDEX idx_shift_assignments_shift ON shift_assignments(shift_id)");
-                st.executeUpdate("CREATE INDEX idx_contracts_employee ON employee_contracts(employee_id)");
-                st.executeUpdate("CREATE INDEX idx_shift_swap_requests ON shift_swap_requests(id)");
-                st.executeUpdate("CREATE INDEX idx_weekly_preferences_employee ON weekly_preferences(employee_id)");
-                st.executeUpdate("CREATE INDEX idx_weekly_preferences_week ON weekly_preferences(week_start_date)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_employees_branch ON employees(branch_id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_employees_archived ON employees(is_archived)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_shifts_date ON shifts(date)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_shifts_archived ON shifts(is_archived)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_shift_assignments_employee ON shift_assignments(employee_id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_shift_assignments_shift ON shift_assignments(shift_id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_contracts_employee ON employee_contracts(employee_id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_shift_swap_requests ON shift_swap_requests(id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_weekly_preferences_employee ON weekly_preferences(employee_id)");
+                st.executeUpdate("CREATE INDEX IF NOT EXISTS idx_weekly_preferences_week ON weekly_preferences(week_start_date)");
 
                 //insert manager details:
                 st.executeUpdate("""
-                    INSERT INTO branches (id, name, address, employee_ids) VALUES
+                    INSERT OR IGNORE INTO branches (id, name, address, employee_ids) VALUES
                     ('1', 'example', 'example', '123456789,111,112,113,114,115,116,117,118')
                 """);
 
                 // Roles
                 st.executeUpdate("""
-                    INSERT INTO roles (id, name, is_archived) VALUES
+                    INSERT OR IGNORE INTO roles (id, name, is_archived) VALUES
                     ('0', 'manager', false)
                 """);
 
                 // Employees
                 st.executeUpdate("""
-                    INSERT INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
                     ('123456789', 'manager', '054-4332473', '1', '0', 2000, '123456789-2025-04-17', 'n', 0, NULL, 1, '123')
                 """);
 
                 // Employee Contracts
                 st.executeUpdate("""
-                    INSERT INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
                     ('123456789-2025-04-17', '123456789', '2025-04-17', 10, 10, 20, 'example', 'example', 2000, '17.04.2025', 1)
                 """);
 
@@ -311,13 +334,13 @@ public final class Database {
 
                 // Employee Roles
                 st.executeUpdate("""
-                    INSERT INTO EmployeeRoles (employee_id, role_id) VALUES
+                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
                     ('123456789', '0')
                 """);
 
                 // Drivers
                 st.executeUpdate("""
-                    INSERT INTO drivers (employee_id, employee_name, licenseType) VALUES
+                    INSERT OR IGNORE INTO drivers (employee_id, employee_name, licenseType) VALUES
                     ('114', 'Dana',"A"),
                     ('115', 'Eli',"B"),
                     ('116', 'Snir',"C")
@@ -340,7 +363,7 @@ public final class Database {
 
             // Roles
             st.executeUpdate("""
-                    INSERT INTO roles (id, name, is_archived) VALUES
+                    INSERT OR IGNORE INTO roles (id, name, is_archived) VALUES
                     ('1', 'shift manager', false),
                     ('2', 'cashier', false),
                     ('3', 'stocker', false),
@@ -350,7 +373,7 @@ public final class Database {
 
             // Employees
             st.executeUpdate("""
-                    INSERT INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
                     ('111', 'Hila', '050-0000001', '1', '2', 8000, '111-2025-06-01', '123', 0, NULL, 0, 'pass1'),
                     ('112', 'Yarden', '050-0000002', '1', '2', 7800, '112-2025-06-01', '456', 0, NULL, 0, 'pass2'),
                     ('113', 'Charlie', '050-0000003', '1', '3', 7500, '113-2025-06-01', '789', 0, NULL, 0, 'pass3'),
@@ -363,7 +386,7 @@ public final class Database {
 
             // Employee Contracts
             st.executeUpdate("""
-                    INSERT INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
                     ('111-2025-06-01', '111', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 8000, NULL, 0),
                     ('112-2025-06-01', '112', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 7800, NULL, 0),
                     ('113-2025-06-01', '113', '2025-06-01', 10, 4, 160, 'Basic', 'None', 7500, NULL, 0),
@@ -376,7 +399,7 @@ public final class Database {
 
             // Shifts
             st.executeUpdate("""
-                    INSERT INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
+                    INSERT OR IGNORE INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
                     ('morn_0', '2025-06-01', '08:00', '14:00', 'Morning', '2,3,5', '111morn_02,113morn_03,118morn_05,117morn_01', '117', NULL, 0),
                     ('eve_0', '2025-06-01', '14:00', '21:00', 'Evening', '4', '114eve_04,117eve_01', '117', NULL, 0),
                     ('morn_1', '2025-06-02', '08:00', '14:00', 'Morning', '2,3,5', '112morn_12,115morn_13,118morn_15,117morn_11', '117', NULL, 0),
@@ -387,7 +410,7 @@ public final class Database {
 
             // Shift Assignments
             st.executeUpdate("""
-                    INSERT INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
+                    INSERT OR IGNORE INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
                     ('111morn_02', '111', 'morn_0', '2', NULL, 0),
                     ('113morn_03', '113', 'morn_0', '3', NULL, 0),
                     ('118morn_05', '118', 'morn_0', '5', NULL, 0),
@@ -404,7 +427,7 @@ public final class Database {
 
             // Sample Weekly Preferences
             st.executeUpdate("""
-                    INSERT INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
+                    INSERT OR IGNORE INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
                     ('111', 'morn_0,morn_2,morn_4', '2025-06-01', '2025-06-01', '2025-06-01', 'SUBMITTED', 'Prefer mornings', '111'),
                     ('112', 'morn_1,morn_3,morn_5', '2025-06-01', '2025-06-01', '2025-06-01', 'DRAFT', NULL, '112'),
                     ('114', 'eve_0,eve_2,eve_4', '2025-06-01', '2025-06-01', '2025-06-01', 'APPROVED', 'Evening driver', '114')
@@ -412,7 +435,7 @@ public final class Database {
 
             // Employee Roles
             st.executeUpdate("""
-                    INSERT INTO EmployeeRoles (employee_id, role_id) VALUES
+                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
                     ('111', '2'),
                     ('112', '2'),
                     ('113', '3'),
@@ -425,39 +448,39 @@ public final class Database {
                     ('118', '5')
                 """);
             st.executeUpdate("""
-                   INSERT INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
+                   INSERT OR IGNORE INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
                    ('11111111', 'Audi', 350, 800, 'C'),
                    ('12345678', 'Mercedes', 200, 920, 'A')
                 """);
             st.executeUpdate("""
-                   INSERT INTO shipmentAreas (id, name) VALUES
+                   INSERT OR IGNORE INTO shipmentAreas (id, name) VALUES
                     (123, 'Negev'),
                     (111, 'Galil'),
                     (222, 'Center')
                 """);
             st.executeUpdate("""
-                   INSERT INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId) VALUES
+                   INSERT OR IGNORE INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId) VALUES
                    ('Ikea', 'Beer sheva', '086312589', 'Ido', 111),
                    ('Nike', 'Tel aviv', '081111111', 'Tal', 123),
                    ('Mango', 'Sderot', '032222222', 'Jordi', 222),
                    ('Zara', 'Beer sheva', '031234567', 'Hila', 111)
                 """);
             st.executeUpdate("""
-                   INSERT INTO transportations (id, date, departureTime, truckPlateNumber, driverName, originName, originShipmentAreaId, succeeded, accident) VALUES
+                   INSERT OR IGNORE INTO transportations (id, date, departureTime, truckPlateNumber, driverName, originName, originShipmentAreaId, succeeded, accident) VALUES
                    (1234, '2025-06-01', '10:00', '11111111', 'Dana', 'Ikea', 111, 1, 'No accidents reported'),
                    (4444, '2025-06-01', '11:00', '12345678', 'Eli', 'Mango', 222, 0, 'No accidents reported')
                 """);
             st.executeUpdate("""
-                   INSERT INTO items (itemsDocumentId, itemId, name, quantity, weight) VALUES
+                   INSERT OR IGNORE INTO items (itemsDocumentId, itemId, name, quantity, weight) VALUES
                    (4444, 1, 'milk', 2, 1),
                    (4444, 2, 'bread', 3, 2),
                    (5555, 3, 'coffee', 1, 1),
                    (5555, 4, 'water', 1, 4)
                 """);
             st.executeUpdate("""
-                   INSERT INTO ItemsDocuments (id, destinationName, shipmentAreaId, arrivalTime, transportationId) VALUES
-                   (4444, 'Ikea', 111, 12:00', 1234),
-                   (5555, 'Mango', 222, 13:00', 4444)
+                   INSERT OR IGNORE INTO ItemsDocuments (id, destinationName, shipmentAreaId, arrivalTime, transportationId) VALUES
+                   (4444, 'Ikea', 111, '12:00', 1234),
+                   (5555, 'Mango', 222, '13:00', 4444)
                 """);
         } catch (SQLException e) {
             throw new RuntimeException(e);

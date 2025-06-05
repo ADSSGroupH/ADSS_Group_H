@@ -3,6 +3,8 @@ package Dal.transportation_dal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import DTO.LicenseType;
@@ -46,5 +48,29 @@ public class JdbcTruckDAO implements TruckDAO {
             ps.executeUpdate();
         }
     }
+
+    @Override
+    public List<TruckDTO> getAllTrucks() throws SQLException {
+        List<TruckDTO> trucks = new ArrayList<>();
+        String sql = "SELECT plateNumber, model, netWeight, maxWeight, licenseType FROM trucks";
+
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                TruckDTO truck = new TruckDTO(
+                        rs.getString("plateNumber"),
+                        rs.getString("model"),
+                        rs.getInt("netWeight"),
+                        rs.getInt("maxWeight"),
+                        LicenseType.valueOf(rs.getString("licenseType"))
+                );
+                trucks.add(truck);
+            }
+        }
+
+        return trucks;
+    }
+
 
 }
