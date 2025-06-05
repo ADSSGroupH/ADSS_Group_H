@@ -1,13 +1,26 @@
-package DomainLayer.transportationDomain;
+package DomainLayer.Transportation.Controllers;
+
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
+import DomainLayer.HR_TransportationController;
+import DomainLayer.Transportation.ShipmentArea;
+import DomainLayer.Transportation.Driver;
+import DomainLayer.Transportation.Transportation;
+import DomainLayer.Transportation.ItemsDocument;
+import DomainLayer.Transportation.Site;
+import DomainLayer.Transportation.Truck;
+import DomainLayer.Transportation.Item;
+import DomainLayer.Transportation.Repositories.DriverRepository;
+import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
+import DomainLayer.Transportation.Repositories.TransportationRepository;
+import DomainLayer.Transportation.Repositories.TruckRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import DTO.LicenseType;
-import DTO.driverDTO;
-import DomainLayer.HR_TransportationController;
+
 
 
 public class TransportationController {
