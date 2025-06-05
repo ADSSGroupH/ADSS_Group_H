@@ -1,33 +1,27 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import DTO.Transportation.LicenseType;
+import DomainLayer.Transportation.*;
+import DomainLayer.Transportation.Controllers.TransportationController;
+import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
+import DomainLayer.Transportation.Repositories.TruckRepository;
 import database.Database;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
-import org.junit.jupiter.api.BeforeEach;
-
-
-import DomainLayer.transportationDomain.*;
 
 import org.junit.jupiter.api.Test;
 
-import DTO.LicenseType;
-//import DomainLayer.User;
-//import DomainLayer.UserController;
-
-import DomainLayer.transportationDomain.*;
-
-import DTO.LicenseType;
 
 
 public class TransportationTests {
@@ -99,7 +93,7 @@ public class TransportationTests {
     }
 
     @Test
-    public void testRemoveExistingDriver() {
+    public void testRemoveExistingDriver() throws SQLException {
         TransportationController tc = new TransportationController();
         tc.addDriver("name", LicenseType.B);
         String result = tc.removeDriver("name");
@@ -140,7 +134,7 @@ public class TransportationTests {
     }
 
     @Test
-    public void testMakeTransportationWithMissingDriver() {
+    public void testMakeTransportationWithMissingDriver() throws SQLException {
         TransportationController tc = new TransportationController();
         tc.makeShipmentArea(1, "Area1");
 
