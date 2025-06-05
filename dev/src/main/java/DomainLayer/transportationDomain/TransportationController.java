@@ -26,6 +26,28 @@ public class TransportationController {
         hrTransportationController = new HR_TransportationController();
     }
 
+
+
+    public void setTransportationRep(TransportationRepository transportationRep) {
+        this.transportationRep = transportationRep;
+    }
+
+    public void setShipmentAreaRep(ShipmentAreaRepository shipmentAreaRep) {
+        this.shipmentAreaRep = shipmentAreaRep;
+    }
+
+    public void setDriverRep(DriverRepository driverRep) {
+        this.driverRep = driverRep;
+    }
+
+    public void setTruckRep(TruckRepository truckRep) {
+        this.truckRep = truckRep;
+    }
+
+    public void setHrTransportationController(HR_TransportationController hrTransportationController) {
+        this.hrTransportationController = hrTransportationController;
+    }
+
     public String makeShipmentArea(int id, String name){
         // Check if the shipment area already exists
         if (shipmentAreaRep.shipmentAreaExists(id)) {
