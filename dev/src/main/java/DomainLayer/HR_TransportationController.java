@@ -1,6 +1,7 @@
 package DomainLayer;
 
-import DTO.driverDTO;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;
@@ -10,9 +11,7 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.transportationDomain.DriverRepository;
-import DTO.LicenseType;
-
+import DomainLayer.Transportation.Repositories.DriverRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -42,30 +41,30 @@ public class HR_TransportationController {
      * מחזירה רשימת נהגים זמינים למשמרת בתאריך ובשעה הנתונה
      */
     public List<driverDTO> getAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
-        Role driverRole = roleRepository.getRoleByName("driver");
-        Shift targetShift = shiftRepository.findByDateAndTime(date.toString(), startTime.toString());
-        if (targetShift == null) { //shift does not exist!
-            return new ArrayList<>();
-        }
-        List<Employee> availableDrivers = shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).get(0); // רשימת זמינים
         List<driverDTO> driverDTOList = new ArrayList<>();
+        List<driverDTO> allDrivers = getAllDrivers();
 
-        if (availableDrivers == null || availableDrivers.isEmpty()){
-            return driverDTOList;
-        }
-        for (Employee driver : availableDrivers) {
-            LicenseType licenseTypeStr = driverRepository.getLicenseByDriverId(driver.getId());
+        for (driverDTO driver : allDrivers) {
+            if (driver == null) continue;
 
-            if (licenseTypeStr != null) {
-                driverDTO dto = new driverDTO(licenseTypeStr);
-                dto.setId(driver.getId());
-                dto.setName(driver.getName());
-                dto.setLicenseType(licenseTypeStr); // לפי enum
-                driverDTOList.add(dto);
-            }
+            // בדיקה אם הנהג פנוי בתאריך ובשעה
+            if (!driverRepository.isDriverAvailable(driver.getId(), date, startTime)) continue;
+
+            LicenseType licenseType = driverRepository.getLicenseByDriverId(driver.getId());
+            if (licenseType == null) continue;
+
+            driverDTO dto = new driverDTO(licenseType);
+            dto.setId(driver.getId());
+            dto.setName(driver.getName());
+
+            driverDTOList.add(dto);
         }
+
         return driverDTOList;
     }
+
+
+
 
 
     /**
