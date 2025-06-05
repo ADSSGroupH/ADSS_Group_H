@@ -77,6 +77,9 @@ public class HR_TransportationController {
 
         for (LocalTime endTime : endTimes) {
             Shift targetShift = shiftRepository.findByDateAndTime(date.toString(), endTime.toString());
+            if (targetShift == null){ //no shift found!
+                return false;
+            }
             List<ShiftAssignment> hasStocker = assignmentRepository.findByShiftAndRole(targetShift.getId(), stockerRole.getId());
             if (hasStocker == null) {
                 return false;
