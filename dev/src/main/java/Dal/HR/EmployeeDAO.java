@@ -2,9 +2,11 @@ package Dal.HR;
 
 
 import DTO.HR.EmployeeDTO;
-import DTO.driverDTO;
+import DTO.Transportation.driverDTO;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,4 +31,5 @@ public interface EmployeeDAO {
     void delete(String id) throws SQLException;
     boolean exists(String id) throws SQLException;
     int getEmployeeCount() throws SQLException;
+    public boolean isDriverAvailable(String driverId, LocalDate date, LocalTime startTime) throws SQLException;
 }
