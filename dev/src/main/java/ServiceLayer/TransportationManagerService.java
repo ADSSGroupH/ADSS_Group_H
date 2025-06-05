@@ -1,19 +1,20 @@
-// TransportationManagerService.java
 package ServiceLayer;
 
-import DomainLayer.transportationDomain.*;
-import DTO.LicenseType;
-import DomainLayer.transportationDomain.ItemsDocument;
-import DTO.ItemDTO;
-import DTO.ItemsDocumentDTO;
+import DTO.Transportation.LicenseType;
+import DomainLayer.Transportation.Controllers.TransportationController;
+import DomainLayer.Transportation.Item;
+import DomainLayer.Transportation.ItemsDocument;
+import DomainLayer.Transportation.ShipmentArea;
+import DomainLayer.Transportation.Site;
 
+
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
-import DTO.LicenseType;
-import DomainLayer.transportationDomain.*;
 
 public class TransportationManagerService {
     private final TransportationController controller = new TransportationController();
@@ -192,7 +193,7 @@ public class TransportationManagerService {
         System.out.println(controller.changeTruckPlateNumber(id, truckId));
     }
 
-    public void changeDriverUI(Scanner scanner) {
+    public void changeDriverUI(Scanner scanner) throws SQLException {
         System.out.print("Transportation ID: ");
         int id = Integer.parseInt(scanner.nextLine());
         System.out.print("New Driver ID: ");
