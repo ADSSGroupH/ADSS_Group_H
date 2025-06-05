@@ -3,7 +3,7 @@ package DomainLayer.HR.Repositories;
 import DTO.HR.EmployeeDTO;
 import DTO.HR.RoleDTO;
 import DTO.HR.ShiftDTO;
-import DTO.driverDTO;
+import DTO.Transportation.driverDTO;
 import Dal.HR.JdbcBranchDAO;
 import Dal.HR.JdbcEmployeeDAO;
 import DomainLayer.HR.*;
@@ -57,7 +57,7 @@ public class EmployeeRepository {
     }
 
     public void addDriverLicense(String id, String licenseType) throws SQLException {
-        jdbcEmployeeDAO.addDriverLicense( id,  licenseType);
+        jdbcEmployeeDAO.addDriverLicense(id, licenseType);
     }
 
     public void updateEmployee(Employee employee) {
@@ -97,7 +97,7 @@ public class EmployeeRepository {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // המרה מ-Employee ל-EmployeeDTO
-    public static EmployeeDTO fromEntity (Employee employee) {
+    public static EmployeeDTO fromEntity(Employee employee) {
         if (employee == null) return null;
 
         String roleIds = employee.getRoles().stream()
@@ -248,10 +248,11 @@ public class EmployeeRepository {
             return false;
         }
     }
-    public List<Employee> getAllEmployees () throws SQLException {
+
+    public List<Employee> getAllEmployees() throws SQLException {
         List<EmployeeDTO> AllEmployeesDTO = jdbcEmployeeDAO.findAll();
         List<Employee> result = new ArrayList<>();
-        for (EmployeeDTO empDTO : AllEmployeesDTO){
+        for (EmployeeDTO empDTO : AllEmployeesDTO) {
             result.add(toEntity(empDTO));
         }
         return result;
@@ -288,9 +289,34 @@ public class EmployeeRepository {
         }
     }
 
+    // פונקצית מחיקת עובד
+    public void deleteEmployee(String id) throws SQLException {
+        try {
+            // מחיקה מהמפה המקומית
+            employeeMap.remove(id);
+
+            // מחיקה מבסיס הנתונים
+            jdbcEmployeeDAO.delete(id);
+        } catch (Exception e) {
+            throw new SQLException("Failed to delete employee with id: " + id, e);
+        }
+    }
+
+    // פונקצית ארכוב עובד (מחיקה רכה)
+    public void archiveEmployee(String id) throws SQLException {
+        try {
+            Employee employee = getEmployee(id);
+            if (employee != null) {
+                employee.setArchived(true);
+                employee.setArchivedAt(LocalDate.now());
+                updateEmployee(employee);
+            }
+        } catch (Exception e) {
+            throw new SQLException("Failed to archive employee with id: " + id, e);
+        }
 
 
-
+    }
 }
 
 
