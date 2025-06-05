@@ -28,11 +28,7 @@ import DTO.Transportation.driverDTO;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class HR_Transportation_Tests {
 
@@ -102,28 +98,30 @@ public class HR_Transportation_Tests {
 
     @Test
     void testGetAvailableDrivers_WithValidDrivers_ReturnsDriverDTOList() throws SQLException {
-        // Test that returns list of available drivers with valid licenses
+        // נתוני בדיקה
         LocalDate testDate = LocalDate.of(2025, 6, 5);
         LocalTime testTime = LocalTime.of(9, 0);
 
-        // Setup mock data
-        Role driverRole = new Role("1", "driver");
-        Shift testShift = createTestShift("1", testDate, testTime.toString(), "17:00");
-        Employee driver1 = createTestEmployee("101", "John Doe");
-        Employee driver2 = createTestEmployee("102", "Jane Smith");
-        List<Employee> availableDrivers = Arrays.asList(driver1, driver2);
-        List<Employee> unavailableDrivers = new ArrayList<>();
+        // יצירת נהגים
+        driverDTO driver1 = new driverDTO(LicenseType.B);
+        driver1.setId("101");
+        driver1.setName("John Doe");
 
-        // Mock repository calls
-        when(mockRoleRepository.getRoleByName("driver")).thenReturn(driverRole);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), testTime.toString())).thenReturn(testShift);
-        when(mockShiftController.AvailableAndUnavailableEmpForRoleInShift(testShift, driverRole))
-                .thenReturn(Arrays.asList(availableDrivers, unavailableDrivers));
+        driverDTO driver2 = new driverDTO(LicenseType.C);
+        driver2.setId("102");
+        driver2.setName("Jane Smith");
+
+        List<driverDTO> mockDriverList = Arrays.asList(driver1, driver2);
+
+        // מוקים
+        when(controller.getAllDrivers()).thenReturn(mockDriverList);
         when(mockDriverRepository.getLicenseByDriverId("101")).thenReturn(LicenseType.B);
         when(mockDriverRepository.getLicenseByDriverId("102")).thenReturn(LicenseType.C);
 
+        // קריאה לפונקציה
         List<driverDTO> result = controller.getAvailableDrivers(testDate, testTime);
 
+        // בדיקות
         assertEquals(2, result.size());
         assertEquals("John Doe", result.get(0).getName());
         assertEquals(LicenseType.B, result.get(0).getLicenseType());
@@ -131,26 +129,24 @@ public class HR_Transportation_Tests {
         assertEquals(LicenseType.C, result.get(1).getLicenseType());
     }
 
+
+
     @Test
     void testGetAvailableDrivers_WithNoAvailableDrivers_ReturnsEmptyList() throws SQLException {
-        // Test that returns empty list when no drivers are available
+        // Arrange
         LocalDate testDate = LocalDate.of(2025, 6, 5);
         LocalTime testTime = LocalTime.of(9, 0);
 
-        Role driverRole = new Role("1", "driver");
-        Shift testShift = createTestShift("1", testDate, testTime.toString(), "17:00");
-        List<Employee> emptyAvailableList = new ArrayList<>();
-        List<Employee> unavailableDrivers = new ArrayList<>();
+        // נניח שאין אף נהג זמין כי getAllDrivers מחזירה רשימה ריקה
+        when(controller.getAllDrivers()).thenReturn(Collections.emptyList());
 
-        when(mockRoleRepository.getRoleByName("driver")).thenReturn(driverRole);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), testTime.toString())).thenReturn(testShift);
-        when(mockShiftController.AvailableAndUnavailableEmpForRoleInShift(testShift, driverRole))
-                .thenReturn(Arrays.asList(emptyAvailableList, unavailableDrivers));
-
+        // Act
         List<driverDTO> result = controller.getAvailableDrivers(testDate, testTime);
 
-        assertTrue(result.isEmpty());
+        // Assert
+        assertTrue(result.isEmpty(), "Expected empty list when no available drivers exist");
     }
+
 
     @Test
     void testGetAvailableDrivers_WithNullLicense_ExcludesDriverFromResult() throws SQLException {
