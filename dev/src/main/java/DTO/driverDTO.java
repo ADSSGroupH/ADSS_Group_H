@@ -1,4 +1,4 @@
-package DTO.Transportation;
+package DTO;
 
 
 import DTO.HR.EmployeeDTO;

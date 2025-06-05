@@ -1,6 +1,10 @@
 package DomainLayer.transportationDomain;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import DTO.ShipmentAreaDTO;
 import DTO.SiteDTO;
@@ -46,7 +50,6 @@ public class ShipmentAreaRepository {
             shipmentAreaMap.put(id, shipmentArea);
             return shipmentAreaMap.get(id);
         } catch (Exception e) {
-            e.printStackTrace();
             return null;
         }
     }

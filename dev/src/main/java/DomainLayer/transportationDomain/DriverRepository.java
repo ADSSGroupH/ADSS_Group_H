@@ -1,21 +1,26 @@
-package DomainLayer.Transportation.Repositories;
+package DomainLayer.transportationDomain;
 
-import DTO.Transportation.LicenseType;
-import Dal.HR.JdbcEmployeeDAO;
-import DomainLayer.Transportation.Driver;
-import database.Database;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import DTO.LicenseType;
+import DTO.driverDTO;
+import Dal.HR.JdbcEmployeeDAO;
+import DomainLayer.HR_TransportationController;
+
 
 public class DriverRepository {
     private Map<String, Driver> driverMap;
+    private HR_TransportationController hrTransportationController;
 
     public DriverRepository() {
         this.driverMap = new HashMap<>();
+        this.hrTransportationController = new HR_TransportationController();
     }
     public void addDriver(String name, Driver driver) {
         driverMap.put(name, driver);
@@ -51,6 +56,14 @@ public class DriverRepository {
         JdbcEmployeeDAO empDAO = new JdbcEmployeeDAO();
         String LicenseAsString = empDAO.getLicenseByDriverId(id);
         return LicenseType.valueOf(LicenseAsString);
+    }
+
+    public void loadAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
+        driverMap.clear();
+        List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, startTime);
+        for (driverDTO driver : availableDrivers) {
+            driverMap.put(driver.getName(), new Driver(driver.getName(), driver.getLicenseType()));
+        }
     }
 
 }

@@ -1,7 +1,13 @@
 package DomainLayer;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import DTO.LicenseType;
+import DTO.driverDTO;
 import DomainLayer.HR.Controllers.ShiftController;
 import DomainLayer.HR.Employee;
 import DomainLayer.HR.Repositories.AssignmentRepository;
@@ -11,13 +17,9 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.Transportation.Repositories.DriverRepository;
+import DomainLayer.transportationDomain.DriverRepository;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class HR_TransportationController {
 

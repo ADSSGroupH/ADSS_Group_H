@@ -3,11 +3,11 @@ package DomainLayer.transportationDomain;
 import DTO.LicenseType;
 
 public class Driver {
-    private String id;
+    private String name;
     private LicenseType licenseType;
 
-    public Driver(String id, LicenseType licenseType) {
-        this.id = id;
+    public Driver(String name, LicenseType licenseType) {
+        this.name = name;
         this.licenseType = licenseType;
     }
 
@@ -16,12 +16,12 @@ public class Driver {
         return licenseType;
     }
     public String getName() {
-        return id;
+        return name;
     }
 
     public String display() {
         return "Driver{" +
-                "id='" + id + '\'' +
+                "name='" + name + '\'' +
                 ", licenseType=" + licenseType +
                 '}';
     }

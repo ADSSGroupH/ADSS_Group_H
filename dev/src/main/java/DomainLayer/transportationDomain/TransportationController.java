@@ -50,13 +50,18 @@ public class TransportationController {
         if (transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " already exists.";
         }
-
-        // Check if the driver exists ← מוקדם!
+        try {
+            driverRep.loadAvailableDrivers(date, departureTime);
+        } catch (Exception e) {
+            return "Error loading available drivers: " + e.getMessage();
+        }
+        
+        // Check if the driver exists 
         if (!driverRep.driverExists(drivername)) {
-            return "Driver with ID " + drivername + " does not exist.";
+            return "Driver with name " + drivername + " was not found at this time.";
         }
 
-        // Check if the truck exists ← גם מוקדם כי נשתמש בו בהמשך
+        // Check if the truck exists
         if (!truckRep.truckExists(truckPlateNumber)) {
             return "Truck with plate number " + truckPlateNumber + " does not exist.";
         }
@@ -66,7 +71,6 @@ public class TransportationController {
             arrivalTime.add(itemsDocument1.getArrivalTime());
         }
 
-        // בדיקת זמינות עובדים במחסן אחרי ווידוא נהג ומשאית
         try {
             if (!hrTransportationController.isWarehouseWorkerAvailable(date, departureTime, arrivalTime)) {
                 return "There are no available warehouse workers for the specified time.";
@@ -129,7 +133,9 @@ public class TransportationController {
     public String changeDate(int id, LocalDate newDate) {
         Transportation t = transportationRep.getTransportation(id);
         if (t != null){
+            transportationRep.removeTransportation(id);
             t.setDate(newDate);
+            transportationRep.addTransportation(id, t);
             return "Transportation date changed to " + newDate + " for ID " + id;
         } 
         else {
@@ -140,7 +146,9 @@ public class TransportationController {
     public String changeDepartureTime(int id, LocalTime newDepartureTime) {
         Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
+            transportationRep.removeTransportation(id);
             t.setDepartureTime(newDepartureTime);
+            transportationRep.addTransportation(id, t);
             return "Departure time changed to " + newDepartureTime + " for ID " + id;
         } else {
             return "Transportation with ID " + id + " not found.";
@@ -151,7 +159,17 @@ public class TransportationController {
         Transportation t = transportationRep.getTransportation(id);
         if(truckRep.truckExists(newPlate)){
             if (t != null) {
+                List<LocalTime> arrivalTime = new ArrayList<>();
+                for (ItemsDocument itemsDocument1 : t.getItemsDocument()) {
+                    arrivalTime.add(itemsDocument1.getArrivalTime());
+                }
+                if(!checkTruckAvailability(newPlate, t.getDate(), t.getDepartureTime(), arrivalTime))
+                {
+                    return "Truck with plate number " + newPlate + " is already occupied during the specified time.";
+                }
+                transportationRep.removeTransportation(id);
                 t.setTruckPlateNumber(newPlate);
+                transportationRep.addTransportation(id, t);
                 return "Truck plate number changed to " + newPlate + " for ID " + id;
             } else {
                 return "Transportation with ID " + id + " not found.";
@@ -161,7 +179,18 @@ public class TransportationController {
         }
     }
     
+    
     public String changeDriverName(int id, String newDriverName) {
+        Transportation t = transportationRep.getTransportation(id);
+        if (t == null) {
+            return "Transportation with ID " + id + " not found.";
+        }
+        try {
+            driverRep.loadAvailableDrivers(t.getDate(), t.getDepartureTime());
+        } catch (Exception e) {
+            return "Error loading available drivers: " + e.getMessage();
+        }
+        
         // Check if the driver exists
         if (!driverRep.driverExists(newDriverName)) {
             return "Driver with ID " + newDriverName + " does not exist.";
@@ -169,10 +198,6 @@ public class TransportationController {
         // Check if the transportation exists
         if (!transportationRep.transportationExists(id)) {
             return "Transportation with ID " + id + " does not exist.";
-        }
-        Transportation t = transportationRep.getTransportation(id);
-        if (t == null) {
-            return "Transportation with ID " + id + " not found.";
         }
         Driver driver = driverRep.getDriver(newDriverName);
         List<ItemsDocument> itemsDocument = t.getItemsDocument();
@@ -188,7 +213,9 @@ public class TransportationController {
         if (driver.getLicenseType().equals(truckRep.getTruck(t.getTruckPlateNumber()).getLicenseType())) {
             return "Driver with name " + newDriverName + " does not have the required license type for truck " + t.getTruckPlateNumber() + ".";
         }
+        transportationRep.removeTransportation(id);
         t.setDriverName(newDriverName);
+        transportationRep.addTransportation(id, t);
         return "Driver name changed to " + newDriverName + " for Transportation ID " + id;
         
     }
@@ -196,7 +223,9 @@ public class TransportationController {
     public String changeSucceeded(int id, boolean newSucceeded) {
         Transportation t = transportationRep.getTransportation(id);
         if (t != null) {
+            transportationRep.removeTransportation(id);
             t.setSucceeded(newSucceeded);
+            transportationRep.addTransportation(id, t);
             return "Success status changed to " + newSucceeded + " for ID " + id;
         } else {
             return "Transportation with ID " + id + " not found.";

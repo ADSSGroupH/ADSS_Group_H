@@ -67,8 +67,7 @@ public class TransportationRepository {
             List<Integer> shipmentAreaIds = jdbcItemsDocumentDAO.getAllShipmentAreaIdsByTransportationId(id);
             return new Transportation(transportationdto.get(), origin, itemsDocuments2, shipmentAreaIds);
         } catch (Exception e) {
-            e.printStackTrace();
-        return null;
+            return null;
     }
 }
 
