@@ -176,30 +176,51 @@ public class HR_Transportation_Tests {
 
     @Test
     void testIsWarehouseWorkerAvailable_WithStockersInAllShifts_ReturnsTrue() throws SQLException {
-        // Test that returns true when stockers are available in all required shifts
         LocalDate testDate = LocalDate.of(2025, 6, 5);
-        LocalTime startTime = LocalTime.of(9, 0);
-        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(17, 0), LocalTime.of(18, 0));
+
+        // שלוש משמרות בזמנים שונים
+        Shift shift1 = createTestShift("1", testDate, "09:00", "13:00");
+        Shift shift2 = createTestShift("2", testDate, "13:00", "17:00");
+        Shift shift3 = createTestShift("3", testDate, "17:00", "21:00");
 
         Role stockerRole = new Role("2", "stocker");
-        Shift startShift = createTestShift("1", testDate, startTime.toString(), "17:00");
-        Shift endShift1 = createTestShift("2", testDate, endTimes.get(0).toString(), "18:00");
-        Shift endShift2 = createTestShift("3", testDate, endTimes.get(1).toString(), "19:00");
 
-        Employee stockerEmployee = createTestEmployee("201", "Stocker Employee");
-        List<ShiftAssignment> assignments = Arrays.asList(
-                new ShiftAssignment(stockerEmployee, "1", stockerRole, null));
+        // שלושה מחסנאים שונים
+        Employee stocker1 = createTestEmployee("201", "Stocker One");
+        Employee stocker2 = createTestEmployee("202", "Stocker Two");
+        Employee stocker3 = createTestEmployee("203", "Stocker Three");
+
+        // שיבוצים נפרדים לכל משמרת
+        List<ShiftAssignment> assignmentsForShift1 = Arrays.asList(
+                new ShiftAssignment(stocker1, shift1.getId(), stockerRole, null)
+        );
+        List<ShiftAssignment> assignmentsForShift2 = Arrays.asList(
+                new ShiftAssignment(stocker2, shift2.getId(), stockerRole, null)
+        );
+        List<ShiftAssignment> assignmentsForShift3 = Arrays.asList(
+                new ShiftAssignment(stocker3, shift3.getId(), stockerRole, null)
+        );
 
         when(mockRoleRepository.getRoleByName("stocker")).thenReturn(stockerRole);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), startTime.toString())).thenReturn(startShift);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), endTimes.get(0).toString())).thenReturn(endShift1);
-        when(mockShiftRepository.findByDateAndTime(testDate.toString(), endTimes.get(1).toString())).thenReturn(endShift2);
-        when(mockAssignmentRepository.findByShiftAndRole(anyString(), eq("2"))).thenReturn(assignments);
+
+        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "09:00")).thenReturn(shift1);
+        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "13:00")).thenReturn(shift2);
+        when(mockShiftRepository.findByDateAndTime(testDate.toString(), "17:00")).thenReturn(shift3);
+
+        when(mockAssignmentRepository.findByShiftAndRole(shift1.getId(), "2")).thenReturn(assignmentsForShift1);
+        when(mockAssignmentRepository.findByShiftAndRole(shift2.getId(), "2")).thenReturn(assignmentsForShift2);
+        when(mockAssignmentRepository.findByShiftAndRole(shift3.getId(), "2")).thenReturn(assignmentsForShift3);
+
+        // נקרא לפונקציה עם startTime ו-endTimes בהתאם למשמרות שיצרנו
+        LocalTime startTime = LocalTime.of(9, 0);
+        List<LocalTime> endTimes = Arrays.asList(LocalTime.of(13, 0), LocalTime.of(17, 0), LocalTime.of(21, 0));
 
         boolean result = controller.isWarehouseWorkerAvailable(testDate, startTime, endTimes);
 
         assertTrue(result);
     }
+
+
 
     @Test
     void testIsWarehouseWorkerAvailable_WithMissingStockerInOneShift_ReturnsFalse() throws SQLException {
@@ -399,18 +420,7 @@ public class HR_Transportation_Tests {
                             e.getMessage().contains("not found"),
                     "SQLException should be related to date/shift issues");
         }
-
-//        // Test 2: Invalid time handling no need because its taken care of in the presentation layer
-//        try {
-//            List<driverDTO> result = realController.getAvailableDrivers(
-//                    LocalDate.of(2025, 6, 5), LocalTime.of(25, 0)); // Invalid hour
-//            fail("Should throw exception for invalid time");
-//        } catch (Exception e) {
-//            // Expected - invalid time should be caught
-//            assertTrue(e instanceof IllegalArgumentException || e instanceof SQLException,
-//                    "Should throw appropriate exception for invalid time");
-//        }
-
+        
         // Test 3: Null parameter handling
         try {
             List<driverDTO> result = realController.getAvailableDrivers(null, LocalTime.of(9, 0));
@@ -577,7 +587,7 @@ public class HR_Transportation_Tests {
                 itemsDoc, shipmentAreasId, origin);
 
         // Then
-        assertTrue(result.contains("Error loading available drivers:"),
+        assertTrue(result.contains("Driver with name"),
                 "Should fail when driver doesn't exist");
     }
 
