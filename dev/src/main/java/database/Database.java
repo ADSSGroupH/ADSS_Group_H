@@ -348,7 +348,8 @@ public final class Database {
                     ('3', 'stocker', false),
                     ('4', 'driver', false),
                     ('5', 'butcher', false),
-                    ('6', 'transportation manager', false)
+                    ('6', 'transportation manager', false),
+                    ('7', 'warehouse', false)
                 """);
 
             // Employees
@@ -362,7 +363,8 @@ public final class Database {
                     ('116', 'Snir', '050-0000006', '1', '2,4', 7600, '116-2025-06-01', '303', 0, NULL, 0, 'pass6'),
                     ('117', 'David', '050-0000007', '1', '1', 9000, '117-2025-06-01', '303', 0, NULL, 0, 'pass7'),
                     ('118', 'Ben', '050-0000008', '1', '5', 7700, '118-2025-06-01', '505', 0, NULL, 0, 'pass8'),
-                    ('119', 'Tal', '0500000009', '1', '6', 9500, '119-2025-06-01', '909', 0, NULL, 0, 'pass9')
+                    ('119', 'Tal', '0500000009', '1', '6', 9500, '119-2025-06-01', '909', 0, NULL, 0, 'pass9'),
+                    ('110', 'Ido', '0500000010', '1', '6', 9500, '110-2025-06-01', '909', 0, NULL, 0, 'pass10')
                 """);
 
             // Employee Contracts
@@ -376,7 +378,8 @@ public final class Database {
                     ('116-2025-06-01', '116', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 7600, NULL, 0),
                     ('117-2025-06-01', '117', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 9000, NULL, 0),
                     ('118-2025-06-01', '118', '2025-06-01', 10, 3, 160, 'Standard', 'Standard', 7700, NULL, 0),
-                    ('119-2025-06-01', '119', '2025-06-01', 12, 5, 160, 'Standard', 'Standard', 9500, NULL, 0)
+                    ('119-2025-06-01', '119', '2025-06-01', 12, 5, 160, 'Standard', 'Standard', 9500, NULL, 0),
+                    ('110-2025-06-01', '110', '2025-06-01', 12, 5, 160, 'Standard', 'Standard', 9500, NULL, 0)
                 """);
 
             // Shifts
@@ -428,7 +431,8 @@ public final class Database {
                     ('116', '4'),
                     ('117', '1'),
                     ('118', '5'),
-                    ('119', '6')
+                    ('119', '6'),
+                    ('110', '7')
                 """);
             st.executeUpdate("""
                    INSERT OR IGNORE INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
