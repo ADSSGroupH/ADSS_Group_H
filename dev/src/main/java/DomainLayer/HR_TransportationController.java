@@ -41,6 +41,12 @@ public class HR_TransportationController {
      * מחזירה רשימת נהגים זמינים למשמרת בתאריך ובשעה הנתונה
      */
     public List<driverDTO> getAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
+        if (date == null) {
+            throw new IllegalArgumentException("Date cannot be null");
+        }
+        if (startTime == null) {
+            throw new IllegalArgumentException("Start time cannot be null");
+        }
         List<driverDTO> driverDTOList = new ArrayList<>();
         List<driverDTO> allDrivers = getAllDrivers();
 
@@ -68,7 +74,7 @@ public class HR_TransportationController {
 
 
     /**
-     * מחזירה true אם קיים לפחות מחסנאי אחד באחת המשמרות שמתאימות לתאריך, שעת התחלה ורשימת שעות סיום
+     * מחזירה true אם קיים מחסנאי בכל אחת מהמשמרות שמתאימות לתאריך, שעת התחלה ורשימת שעות סיום
      */
     public boolean isWarehouseWorkerAvailable(LocalDate date, LocalTime startTime, List<LocalTime> endTimes) throws SQLException {
         Role stockerRole = roleRepository.getRoleByName("stocker");
@@ -79,13 +85,13 @@ public class HR_TransportationController {
                 return false;
             }
             List<ShiftAssignment> hasStocker = assignmentRepository.findByShiftAndRole(targetShift.getId(), stockerRole.getId());
-            if (hasStocker == null) {
+            if (hasStocker.isEmpty()) { //no stocker assigned in this shift
                 return false;
             }
         }
         Shift targetShift_originBranch = shiftRepository.findByDateAndTime(date.toString(), startTime.toString());
         List<ShiftAssignment> hasStocker_originBranch = assignmentRepository.findByShiftAndRole(targetShift_originBranch.getId(), stockerRole.getId());
-        if (hasStocker_originBranch == null) {
+        if (hasStocker_originBranch.isEmpty()) {
             return false;
         }
         return true;
