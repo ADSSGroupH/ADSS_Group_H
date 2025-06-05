@@ -297,24 +297,25 @@ public class JdbcEmployeeDAO implements EmployeeDAO {
 
     public boolean isDriverAvailable(String driverId, LocalDate date, LocalTime startTime) throws SQLException {
         String sql = """
-        SELECT COUNT(*) FROM shift_assignments sa
+        SELECT COUNT(*) 
+        FROM shift_assignments sa
         JOIN shifts s ON sa.shift_id = s.id
         WHERE sa.employee_id = ?
           AND s.date = ?
-          AND s.start_time = ?
-          AND sa.is_archived = 0
-          AND s.is_archived = 0
+          AND ? >= s.start_time
+          AND ? < s.end_time
     """;
 
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, driverId);
             ps.setString(2, date.toString());
             ps.setString(3, startTime.toString());
+            ps.setString(4, startTime.toString());
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     int count = rs.getInt(1);
-                    return count == 0; // זמין אם אין שיבוצים בזמן הזה
+                    return count == 0; // זמין אם אין שיבוצים חופפים
                 }
             }
         }
