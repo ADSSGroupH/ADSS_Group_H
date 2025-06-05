@@ -24,8 +24,8 @@ public class LoginForm {
             Employee loggedInUser = null;
 
             List<Employee> AllEmployees = managerService.getAllEmployees();
-            for (Employee user : AllEmployees ) {
-                if (user.getId().equals(userId) ) {
+            for (Employee user : AllEmployees) {
+                if (user.getId().equals(userId)) {
                     loggedInUser = user;
                     break;
                 }
@@ -36,16 +36,28 @@ public class LoginForm {
 
                 boolean isManager = loggedInUser.IsManager();
                 if (!isManager) {
-                    new EmployeeUI(loggedInUser).display();
+                    boolean isDriver = loggedInUser.getRoles().stream()
+                            .anyMatch(role -> role.getName().equalsIgnoreCase("Driver"));
+
+                    if (isDriver) {
+                        new DriverUI(loggedInUser).display();
+                    } else {
+                        new EmployeeUI(loggedInUser).display();
+                    }
                 } else {
-                    ManagerUI HRDash = new ManagerUI(); //now we know who is the manager that got into the system.
-                    HRManager manager = new HRManager(loggedInUser.getId(),loggedInUser.getName(),loggedInUser.getPhoneNumber(),loggedInUser.getBranchId(),loggedInUser.getRoles(),loggedInUser.getContract(),loggedInUser.getBankDetails(),loggedInUser.isArchived(),loggedInUser.getArchivedAt(),loggedInUser.getPassword());
+                    ManagerUI HRDash = new ManagerUI();
+                    HRManager manager = new HRManager(
+                            loggedInUser.getId(), loggedInUser.getName(), loggedInUser.getPhoneNumber(),
+                            loggedInUser.getBranchId(), loggedInUser.getRoles(), loggedInUser.getContract(),
+                            loggedInUser.getBankDetails(), loggedInUser.isArchived(),
+                            loggedInUser.getArchivedAt(), loggedInUser.getPassword()
+                    );
                     TransportationManagerUI TransportationDash = new TransportationManagerUI(manager);
                     System.out.println("Hi Manager! What would you like to do? ");
                     System.out.println("1. Manage HR ");
                     System.out.println("2. Manage Transportations ");
-                    String choice = "";
-                    choice = scanner.nextLine().trim().toLowerCase();
+
+                    String choice = scanner.nextLine().trim().toLowerCase();
                     if (choice.equals("1")) {
                         HRDash.LoggedInManager = manager;
                         HRDash.display();
@@ -58,6 +70,7 @@ public class LoginForm {
                 System.out.println("Invalid ID or password.");
             }
         }
+
     }
 
     public static void main(String[] args) throws SQLException {

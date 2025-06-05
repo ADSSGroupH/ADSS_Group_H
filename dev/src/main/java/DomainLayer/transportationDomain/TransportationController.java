@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import DTO.LicenseType;
+import DTO.driverDTO;
 import DomainLayer.HR_TransportationController;
 
 
@@ -51,7 +52,9 @@ public class TransportationController {
             return "Transportation with ID " + id + " already exists.";
         }
         try {
-            driverRep.loadAvailableDrivers(date, departureTime);
+            List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, departureTime);
+            driverRep.loadAvailableDrivers(availableDrivers);
+
         } catch (Exception e) {
             return "Error loading available drivers: " + e.getMessage();
         }
@@ -186,7 +189,11 @@ public class TransportationController {
             return "Transportation with ID " + id + " not found.";
         }
         try {
-            driverRep.loadAvailableDrivers(t.getDate(), t.getDepartureTime());
+            LocalDate date = t.getDate();
+            LocalTime departureTime = t.getDepartureTime();
+            List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, departureTime);
+            driverRep.loadAvailableDrivers(availableDrivers);
+
         } catch (Exception e) {
             return "Error loading available drivers: " + e.getMessage();
         }

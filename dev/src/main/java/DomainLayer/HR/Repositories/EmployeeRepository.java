@@ -3,7 +3,7 @@ package DomainLayer.HR.Repositories;
 import DTO.HR.EmployeeDTO;
 import DTO.HR.RoleDTO;
 import DTO.HR.ShiftDTO;
-import DTO.Transportation.driverDTO;
+import DTO.driverDTO;
 import Dal.HR.JdbcBranchDAO;
 import Dal.HR.JdbcEmployeeDAO;
 import DomainLayer.HR.*;

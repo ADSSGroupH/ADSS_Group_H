@@ -475,7 +475,7 @@ public class ManagerUI {
                             System.out.printf("There are no qualified for the role : %s\n", requiredRole.getName());
                             continue;
                         }
-                        List<Employee> available = AvailableUnavailableEmps.getFirst();
+                        List<Employee> available = AvailableUnavailableEmps.get(0);
                         List<Employee> unavailable = AvailableUnavailableEmps.get(1);
                         List<Employee> allOptions = new ArrayList<>();
                         allOptions.addAll(unavailable);
