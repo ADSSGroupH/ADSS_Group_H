@@ -47,7 +47,7 @@ public class HR_TransportationController {
         if (targetShift == null) { //shift does not exist!
             return new ArrayList<>();
         }
-        List<Employee> availableDrivers = shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).getFirst(); // רשימת זמינים
+        List<Employee> availableDrivers = shiftController.AvailableAndUnavailableEmpForRoleInShift(targetShift, driverRole).get(0); // רשימת זמינים
         List<driverDTO> driverDTOList = new ArrayList<>();
 
         if (availableDrivers == null || availableDrivers.isEmpty()){

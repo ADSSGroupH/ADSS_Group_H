@@ -17,11 +17,11 @@ import DomainLayer.HR_TransportationController;
 
 public class DriverRepository {
     private Map<String, Driver> driverMap;
-    private HR_TransportationController hrTransportationController;
+    //private HR_TransportationController hrTransportationController;
 
     public DriverRepository() {
         this.driverMap = new HashMap<>();
-        this.hrTransportationController = new HR_TransportationController();
+        //this.hrTransportationController = new HR_TransportationController();
     }
     public void addDriver(String name, Driver driver) {
         driverMap.put(name, driver);
@@ -30,14 +30,9 @@ public class DriverRepository {
         return driverMap.get(id);
     }
     public List<Driver> getAll() {
-        List<Driver> drivers = new ArrayList<>();
-        int size = driverMap.size();
-        for (int i = 0; i < size; i++) {
-            Driver driver = driverMap.get(size);
-            drivers.add(driver);
-        }
-        return drivers;
+        return new ArrayList<>(driverMap.values());
     }
+
     public void removeDriver(String id) {
         driverMap.remove(id);
     }
@@ -68,12 +63,12 @@ public class DriverRepository {
         return LicenseType.valueOf(LicenseAsString);
     }
 
-    public void loadAvailableDrivers(LocalDate date, LocalTime startTime) throws SQLException {
+    public void loadAvailableDrivers(List<driverDTO> availableDrivers) {
         driverMap.clear();
-        List<driverDTO> availableDrivers = hrTransportationController.getAvailableDrivers(date, startTime);
         for (driverDTO driver : availableDrivers) {
             driverMap.put(driver.getName(), new Driver(driver.getName(), driver.getLicenseType()));
         }
     }
+
 
 }
