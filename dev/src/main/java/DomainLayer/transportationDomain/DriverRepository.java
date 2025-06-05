@@ -1,23 +1,32 @@
-package DomainLayer.transportationDomain;
+package DomainLayer.Transportation.Repositories;
 
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
+import Dal.HR.JdbcEmployeeDAO;
+import DomainLayer.HR_TransportationController;
+import DomainLayer.Transportation.Driver;
+import database.Database;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import DTO.LicenseType;
-import DTO.driverDTO;
-import Dal.HR.JdbcEmployeeDAO;
 
 
 public class DriverRepository {
     private Map<String, Driver> driverMap;
+    private JdbcEmployeeDAO jdbcEmployeeDAO;
     //private HR_TransportationController hrTransportationController;
 
     public DriverRepository() {
         this.driverMap = new HashMap<>();
+        this.jdbcEmployeeDAO = new JdbcEmployeeDAO();
         //this.hrTransportationController = new HR_TransportationController();
     }
     public void addDriver(String name, Driver driver) {
@@ -69,6 +78,10 @@ public class DriverRepository {
         for (driverDTO driver : availableDrivers) {
             driverMap.put(driver.getName(), new Driver(driver.getName(), driver.getLicenseType()));
         }
+    }
+
+    public boolean isDriverAvailable(String driverId, LocalDate date, LocalTime startTime) throws SQLException {
+        return jdbcEmployeeDAO.isDriverAvailable(driverId,date,startTime);
     }
 
 
