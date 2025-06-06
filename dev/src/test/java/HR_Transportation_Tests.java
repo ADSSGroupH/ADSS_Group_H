@@ -1,5 +1,8 @@
-
-import DomainLayer.transportationDomain.*;
+import DomainLayer.Transportation.*;
+import DomainLayer.Transportation.Controllers.TransportationController;
+import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
+import DomainLayer.Transportation.Repositories.TransportationRepository;
+import DomainLayer.Transportation.Repositories.TruckRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -16,8 +19,9 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DTO.LicenseType;
-import DTO.driverDTO;
+import DomainLayer.Transportation.Repositories.DriverRepository;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -595,3 +599,46 @@ public class HR_Transportation_Tests {
 
         cleanupTestData();
     }
+
+    @Test
+    void testCreateTransportation_DriverNotAssignedToShift_ShouldFail() throws SQLException {
+        // Setup test data
+        setupTestData();
+
+        // הסר את השיבוץ של נהג כלשהו (למשל driver2 מהמשמרת)
+        String driverId = createdEmployeeIds.stream()
+                .filter(id -> id.equals("driver_002"))
+                .findFirst()
+                .orElse(null);
+        if (driverId == null) {
+            System.out.println("No driver found to unassign from shift.");
+            return;
+        }
+
+        List<ShiftAssignment> assignments = assignmentRepository.findByEmployee(driverId);
+        for (ShiftAssignment assignment : assignments) {
+            assignmentRepository.removeAssignment(assignment.getId());  // מסיר את השיבוץ שלו מהמשמרת
+        }
+
+        int transportationId = (int) (System.currentTimeMillis() % 100000) + 12;
+        LocalDate date = LocalDate.of(2025, 6, 5);
+        LocalTime departureTime = LocalTime.of(9, 0);
+        String truckPlate = getFirstTruckPlate();
+        List<ItemsDocument> itemsDoc = createTestItemsDocument();
+        List<Integer> shipmentAreasId = Arrays.asList(1);
+        Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+
+        // פעולה: ניסיון ליצור הובלה עם נהג שאינו משובץ
+        String result = transportationController.makeTransportation(
+                transportationId, date, departureTime, truckPlate, driverId,
+                itemsDoc, shipmentAreasId, origin
+        );
+
+        // ציפייה: שהמערכת תיכשל בגלל שהנהג לא נמצא במשמרת
+        assertTrue(result.toLowerCase().contains("driver") && result.toLowerCase().contains("not in shift"),
+                "Should fail due to driver not being assigned to a shift. Actual: " + result);
+
+        cleanupTestData();
+    }
+
+}
