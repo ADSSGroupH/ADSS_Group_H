@@ -115,7 +115,7 @@ public class HR_Transportation_Tests {
 
         Employee driver1 = new Employee(driverId1, "John Doe", "123-456-7890", "branch1",
                 driverRoles, con1, "bank123", false, null, false, "password");
-        Driver driver_001 = new Driver(driverId1, LicenseType.A);
+        Driver driver_001 = new Driver(driverId1, LicenseType.C);
 
         Employee driver2 = new Employee(driverId2, "Jane Smith", "987-654-3210", "branch1",
                 driverRoles, con2, "bank456", false, null, false, "password");
@@ -162,11 +162,11 @@ public class HR_Transportation_Tests {
         assignmentRepository.addAssignment(stockerAssignment2);
 
         // Create test trucks with unique plate numbers
-        String plateNumber1 = "TEST" + timestamp.substring(timestamp.length() - 6) + "1";
-        String plateNumber2 = "TEST" + timestamp.substring(timestamp.length() - 6) + "2";
+        String plateNumber1 = "TEST1";
+        String plateNumber2 = "TEST2";
 
-        Truck truck1 = new Truck(plateNumber1, "Ford Transit", 1000, 5000, LicenseType.B);
-        Truck truck2 = new Truck(plateNumber2, "Mercedes Sprinter", 2000, 8000, LicenseType.C);
+        Truck truck1 = new Truck(plateNumber1, "Ford Transit", 1000, 5000, LicenseType.C);
+        Truck truck2 = new Truck(plateNumber2, "Mercedes Sprinter", 2000, 8000, LicenseType.B);
 
         truckRepository.addTruck(plateNumber1, truck1);
         truckRepository.addTruck(plateNumber2, truck2);
@@ -497,6 +497,8 @@ public class HR_Transportation_Tests {
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+        ShipmentArea shipmentArea1 = shipmentAreaRepository.getShipmentArea(1);
+        shipmentArea1.addSite(origin);
 
         // When: Create transportation
         String createResult = transportationController.makeTransportation(
@@ -593,5 +595,3 @@ public class HR_Transportation_Tests {
 
         cleanupTestData();
     }
-
-}
