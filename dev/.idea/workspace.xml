@@ -5,30 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f87149ee-16cc-4ea0-a961-a30edb3241cd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Dal/HR/EmployeeDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Dal/HR/EmployeeDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/HR/Repositories/EmployeeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/HR/Repositories/EmployeeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/HR_TransportationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/HR_TransportationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Dal/transportation_dal/DriverDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Dal/transportation_dal/DriverDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Dal/transportation_dal/JdbcDriverDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Dal/transportation_dal/JdbcDriverDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/DriverRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/DriverRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DomainLayer/transportationDomain/TransportationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/PresentationLayer/TransportationManagerUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/PresentationLayer/TransportationManagerUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ServiceLayer/TransportationManagerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ServiceLayer/TransportationManagerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/HR_Transportation_Tests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/HR_Transportation_Tests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/EmployeeController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ManagerController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Controllers/ShiftController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR/Repositories/SwapRequestRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/HR_TransportationController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/DriverRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/DriverUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/LoginForm.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/LoginForm.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/PresentationLayer/TransportationManagerUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/PresentationLayer/TransportationManagerUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/DriverTransportationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/HRManagerService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/ServiceLayer/TransportationManagerService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/EmployeeDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dal/HR/JdbcEmployeeDAO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/database/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/database/Database.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/HR_Transportation_Tests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/HR_Transportation_Tests.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/TransportationTests.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +62,7 @@
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;
   }
 }</component>
-  <component name="RunManager" selected="JUnit.TransportationTests">
+  <component name="RunManager">
     <configuration name="TransportationTests" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="adss-project" />
       <option name="PACKAGE_NAME" value="" />

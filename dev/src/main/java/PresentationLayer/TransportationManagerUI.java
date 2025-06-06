@@ -1,6 +1,6 @@
 package PresentationLayer;
 
-import DTO.Transportation.LicenseType;
+import DTO.LicenseType;
 import DomainLayer.HR.Employee;
 import ServiceLayer.TransportationManagerService;
 

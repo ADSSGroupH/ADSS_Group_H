@@ -1,11 +1,11 @@
 package ServiceLayer;
 
-import DTO.Transportation.LicenseType;
-import DomainLayer.Transportation.Controllers.TransportationController;
-import DomainLayer.Transportation.Item;
-import DomainLayer.Transportation.ItemsDocument;
-import DomainLayer.Transportation.ShipmentArea;
-import DomainLayer.Transportation.Site;
+import DTO.LicenseType;
+import DomainLayer.transportationDomain.TransportationController;
+import DomainLayer.transportationDomain.Item;
+import DomainLayer.transportationDomain.ItemsDocument;
+import DomainLayer.transportationDomain.ShipmentArea;
+import DomainLayer.transportationDomain.Site;
 
 
 import java.sql.SQLException;

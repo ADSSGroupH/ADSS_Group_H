@@ -1,10 +1,10 @@
-package DomainLayer.Transportation.Repositories;
+package DomainLayer.transportationDomain;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DTO.LicenseType;
+import DTO.driverDTO;
 import Dal.HR.JdbcEmployeeDAO;
 import Dal.Transportation.JdbcDriverDAO;
-import DomainLayer.Transportation.Driver;
+import DomainLayer.transportationDomain.Driver;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

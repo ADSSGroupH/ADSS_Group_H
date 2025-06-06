@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import DTO.Transportation.LicenseType;
-import DomainLayer.Transportation.*;
-import DomainLayer.Transportation.Controllers.TransportationController;
-import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
-import DomainLayer.Transportation.Repositories.TruckRepository;
+import DTO.LicenseType;
+import DomainLayer.transportationDomain.*;
+import DomainLayer.transportationDomain.TransportationController;
+import DomainLayer.transportationDomain.ShipmentAreaRepository;
+import DomainLayer.transportationDomain.TruckRepository;
 import database.Database;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

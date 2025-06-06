@@ -1,19 +1,19 @@
-package DomainLayer.Transportation.Controllers;
+package DomainLayer.transportationDomain;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DTO.LicenseType;
+import DTO.driverDTO;
 import DomainLayer.HR_TransportationController;
-import DomainLayer.Transportation.ShipmentArea;
-import DomainLayer.Transportation.Driver;
-import DomainLayer.Transportation.Transportation;
-import DomainLayer.Transportation.ItemsDocument;
-import DomainLayer.Transportation.Site;
-import DomainLayer.Transportation.Truck;
-import DomainLayer.Transportation.Item;
-import DomainLayer.Transportation.Repositories.DriverRepository;
-import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
-import DomainLayer.Transportation.Repositories.TransportationRepository;
-import DomainLayer.Transportation.Repositories.TruckRepository;
+import DomainLayer.transportationDomain.ShipmentArea;
+import DomainLayer.transportationDomain.Driver;
+import DomainLayer.transportationDomain.Transportation;
+import DomainLayer.transportationDomain.ItemsDocument;
+import DomainLayer.transportationDomain.Site;
+import DomainLayer.transportationDomain.Truck;
+import DomainLayer.transportationDomain.Item;
+import DomainLayer.transportationDomain.DriverRepository;
+import DomainLayer.transportationDomain.ShipmentAreaRepository;
+import DomainLayer.transportationDomain.TransportationRepository;
+import DomainLayer.transportationDomain.TruckRepository;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

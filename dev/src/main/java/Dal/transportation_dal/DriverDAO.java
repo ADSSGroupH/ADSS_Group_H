@@ -1,6 +1,6 @@
-package Dal.Transportation;
+package Dal.transportation_dal;
 
-import DTO.Transportation.driverDTO;
+import DTO.driverDTO;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

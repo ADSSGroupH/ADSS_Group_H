@@ -1,8 +1,5 @@
-import DomainLayer.Transportation.*;
-import DomainLayer.Transportation.Controllers.TransportationController;
-import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
-import DomainLayer.Transportation.Repositories.TransportationRepository;
-import DomainLayer.Transportation.Repositories.TruckRepository;
+
+import DomainLayer.transportationDomain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -19,9 +16,8 @@ import DomainLayer.HR.Repositories.ShiftRepository;
 import DomainLayer.HR.Role;
 import DomainLayer.HR.Shift;
 import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.Transportation.Repositories.DriverRepository;
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DTO.LicenseType;
+import DTO.driverDTO;
 
 import java.sql.SQLException;
 import java.time.LocalDate;

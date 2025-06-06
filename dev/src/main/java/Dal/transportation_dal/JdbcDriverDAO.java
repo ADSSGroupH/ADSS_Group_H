@@ -1,7 +1,8 @@
 package Dal.Transportation;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
+import DTO.LicenseType;
+import DTO.driverDTO;
+import Dal.transportation_dal.DriverDAO;
 import database.Database;
 
 import java.sql.*;
