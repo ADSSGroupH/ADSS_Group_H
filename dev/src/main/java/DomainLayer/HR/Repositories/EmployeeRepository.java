@@ -302,6 +302,7 @@ public class EmployeeRepository {
         }
     }
 
+
     // פונקצית ארכוב עובד (מחיקה רכה)
     public void archiveEmployee(String id) throws SQLException {
         try {
