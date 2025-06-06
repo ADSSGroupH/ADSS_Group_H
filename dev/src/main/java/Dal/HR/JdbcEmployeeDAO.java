@@ -142,7 +142,7 @@ public class JdbcEmployeeDAO implements EmployeeDAO {
 
     @Override
     public void addDriverLicense(String id, String licenseType) throws SQLException {
-        String sql = "UPDATE drivers SET licenseType = ? WHERE emp_id = ?";
+        String sql = "UPDATE drivers SET licenseType = ? WHERE employee_id = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, licenseType); // סוג רישיון חדש
             ps.setString(2, id);          // מזהה הנהג
