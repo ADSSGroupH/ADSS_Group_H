@@ -19,24 +19,6 @@ public final class Database {
 
             try (Statement st = conn.createStatement()) {
 
-                // Drop existing tables if they exist
-                st.executeUpdate("DROP TABLE IF EXISTS items_documents_items");
-                st.executeUpdate("DROP TABLE IF EXISTS ItemsDocuments");
-                st.executeUpdate("DROP TABLE IF EXISTS items");
-                st.executeUpdate("DROP TABLE IF EXISTS transportations");
-                st.executeUpdate("DROP TABLE IF EXISTS trucks");
-                st.executeUpdate("DROP TABLE IF EXISTS sites");
-                st.executeUpdate("DROP TABLE IF EXISTS shipmentAreas");
-                st.executeUpdate("DROP TABLE IF EXISTS drivers");
-                st.executeUpdate("DROP TABLE IF EXISTS shift_swap_requests");
-                st.executeUpdate("DROP TABLE IF EXISTS shift_assignments");
-                st.executeUpdate("DROP TABLE IF EXISTS shifts");
-                st.executeUpdate("DROP TABLE IF EXISTS weekly_preferences");
-                st.executeUpdate("DROP TABLE IF EXISTS employee_contracts");
-                st.executeUpdate("DROP TABLE IF EXISTS employees");
-                st.executeUpdate("DROP TABLE IF EXISTS EmployeeRoles");
-                st.executeUpdate("DROP TABLE IF EXISTS roles");
-                st.executeUpdate("DROP TABLE IF EXISTS branches");
 
 
                 //HR Schemas
@@ -301,48 +283,7 @@ public final class Database {
                 // Roles
                 st.executeUpdate("""
                     INSERT OR IGNORE INTO roles (id, name, is_archived) VALUES
-                    ('0', 'manager', false)
-                """);
-
-                // Employees
-                st.executeUpdate("""
-                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
-                    ('123456789', 'manager', '054-4332473', '1', '0', 2000, '123456789-2025-04-17', 'n', 0, NULL, 1, '123')
-                """);
-
-                // Employee Contracts
-                st.executeUpdate("""
-                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
-                    ('123456789-2025-04-17', '123456789', '2025-04-17', 10, 10, 20, 'example', 'example', 2000, '17.04.2025', 1)
-                """);
-
-
-
-                // Employee Roles
-                st.executeUpdate("""
-                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
-                    ('123456789', '0')
-                """);
-
-
-
-
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError("Database initialization failed: " + e.getMessage());
-        }
-    }
-
-    // Insert updated sample data
-    public static void InsertData(){
-        try (Statement st = conn.createStatement()) {
-
-            // Roles
-            st.executeUpdate("""
-                    INSERT INTO roles (id, name, is_archived) VALUES
+                    ('0', 'manager', false),
                     ('1', 'shift manager', false),
                     ('2', 'cashier', false),
                     ('3', 'stocker', false),
@@ -351,9 +292,10 @@ public final class Database {
                     ('6', 'transportation manager', false)
                 """);
 
-            // Employees
-            st.executeUpdate("""
-                    INSERT INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                // Employees
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                    ('123456789', 'manager', '054-4332473', '1', '0', 2000, '123456789-2025-04-17', 'n', 0, NULL, 1, '123'),
                     ('111', 'Hila', '050-0000001', '1', '2', 8000, '111-2025-06-01', '123', 0, NULL, 0, 'pass1'),
                     ('112', 'Yarden', '050-0000002', '1', '2', 7800, '112-2025-06-01', '456', 0, NULL, 0, 'pass2'),
                     ('113', 'Charlie', '050-0000003', '1', '3', 7500, '113-2025-06-01', '789', 0, NULL, 0, 'pass3'),
@@ -365,9 +307,10 @@ public final class Database {
                     ('119', 'Tal', '0500000009', '1', '6', 9500, '119-2025-06-01', '909', 0, NULL, 0, 'pass9')
                 """);
 
-            // Employee Contracts
-            st.executeUpdate("""
-                    INSERT INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                // Employee Contracts
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                    ('123456789-2025-04-17', '123456789', '2025-04-17', 10, 10, 20, 'example', 'example', 2000, '17.04.2025', 1),
                     ('111-2025-06-01', '111', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 8000, NULL, 0),
                     ('112-2025-06-01', '112', '2025-06-01', 12, 5, 160, 'Basic', 'Standard', 7800, NULL, 0),
                     ('113-2025-06-01', '113', '2025-06-01', 10, 4, 160, 'Basic', 'None', 7500, NULL, 0),
@@ -379,9 +322,9 @@ public final class Database {
                     ('119-2025-06-01', '119', '2025-06-01', 12, 5, 160, 'Standard', 'Standard', 9500, NULL, 0)
                 """);
 
-            // Shifts
-            st.executeUpdate("""
-                    INSERT INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
+                // Shifts
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO shifts (id, date, start_time, end_time, type, required_roles_csv, assignments_csv, shift_manager_id, archived_at, is_archived) VALUES
                     ('morn_0', '2025-06-01', '08:00', '14:00', 'Morning', '2,3,5', '111morn_02,113morn_03,118morn_05,117morn_01', '117', NULL, 0),
                     ('eve_0', '2025-06-01', '14:00', '21:00', 'Evening', '4', '114eve_04,117eve_01', '117', NULL, 0),
                     ('morn_1', '2025-06-02', '08:00', '14:00', 'Morning', '2,3,5', '112morn_12,115morn_13,118morn_15,117morn_11', '117', NULL, 0),
@@ -390,9 +333,10 @@ public final class Database {
                     ('eve_2', '2025-06-03', '14:00', '21:00', 'Evening', '4', NULL, '117', NULL, 0)
                 """);
 
-            // Shift Assignments
-            st.executeUpdate("""
-                    INSERT INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
+
+                // Shift Assignments
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO shift_assignments (id, employee_id, shift_id, role_id, archived_at, is_archived) VALUES
                     ('111morn_02', '111', 'morn_0', '2', NULL, 0),
                     ('113morn_03', '113', 'morn_0', '3', NULL, 0),
                     ('118morn_05', '118', 'morn_0', '5', NULL, 0),
@@ -407,17 +351,20 @@ public final class Database {
                     ('117eve_11', '117', 'eve_1', '1', NULL, 0)
                 """);
 
-            // Sample Weekly Preferences
-            st.executeUpdate("""
-                    INSERT INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
+                // Sample Weekly Preferences
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO weekly_preferences (employee_id, preferred_shift_ids_csv, week_start_date, created_at, last_modified, status, notes, employee_id_simple) VALUES
                     ('111', 'morn_0,morn_2,morn_4', '2025-06-01', '2025-06-01', '2025-06-01', 'SUBMITTED', 'Prefer mornings', '111'),
                     ('112', 'morn_1,morn_3,morn_5', '2025-06-01', '2025-06-01', '2025-06-01', 'DRAFT', NULL, '112'),
                     ('114', 'eve_0,eve_2,eve_4', '2025-06-01', '2025-06-01', '2025-06-01', 'APPROVED', 'Evening driver', '114')
                 """);
 
-            // Employee Roles
-            st.executeUpdate("""
-                    INSERT INTO EmployeeRoles (employee_id, role_id) VALUES
+
+
+                // Employee Roles
+                st.executeUpdate("""
+                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
+                    ('123456789', '0'),
                     ('111', '2'),
                     ('112', '2'),
                     ('113', '3'),
@@ -430,49 +377,122 @@ public final class Database {
                     ('118', '5'),
                     ('119', '6')
                 """);
-            st.executeUpdate("""
+
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO trucks (plateNumber, model, netWeight, maxWeight, licenseType) VALUES
                    ('11111111', 'Audi', 350, 800, 'C'),
                    ('12345678', 'Mercedes', 200, 920, 'A')
                 """);
-            st.executeUpdate("""
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO shipmentAreas (id, name) VALUES
                     (123, 'Negev'),
                     (111, 'Galil'),
                     (222, 'Center')
                 """);
-            st.executeUpdate("""
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId) VALUES
                    ('Ikea', 'Beer sheva', '086312589', 'Ido', 111),
                    ('Nike', 'Tel aviv', '081111111', 'Tal', 123),
                    ('Mango', 'Sderot', '032222222', 'Jordi', 222),
                    ('Zara', 'Beer sheva', '031234567', 'Hila', 111)
                 """);
-            st.executeUpdate("""
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO transportations (id, date, departureTime, truckPlateNumber, driverName, originName, originShipmentAreaId, succeeded, accident) VALUES
                    (1234, '2025-06-01', '10:00', '11111111', 'Dana', 'Ikea', 111, 1, 'No accidents reported'),
                    (4444, '2025-06-01', '11:00', '12345678', 'Eli', 'Mango', 222, 0, 'No accidents reported')
                 """);
-            st.executeUpdate("""
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO items (itemsDocumentId, itemId, name, quantity, weight) VALUES
                    (4444, 1, 'milk', 2, 1),
                    (4444, 2, 'bread', 3, 2),
                    (5555, 3, 'coffee', 1, 1),
                    (5555, 4, 'water', 1, 4)
                 """);
-            st.executeUpdate("""
+                st.executeUpdate("""
                    INSERT OR IGNORE INTO ItemsDocuments (id, destinationName, shipmentAreaId, arrivalTime, transportationId) VALUES
                    (4444, 'Ikea', 111, '12:00', 1234),
                    (5555, 'Mango', 222, '13:00', 4444)
                 """);
 
-            // Drivers
-            st.executeUpdate("""
+                // Drivers
+                st.executeUpdate("""
                         INSERT OR IGNORE INTO drivers (employee_id, employee_name, licenseType) VALUES
                         ('114', 'Dana',"A"),
                         ('115', 'Eli',"B"),
                         ('116', 'Snir',"C")
                     """);
+
+
+
+
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError("Database initialization failed: " + e.getMessage());
+        }
+    }
+
+    // Insert updated sample data
+    public static void ClearData(){
+        try (Statement st = conn.createStatement()) {
+
+            st.executeUpdate("""
+                    DELETE FROM branches;
+                    DELETE FROM drivers;
+                    DELETE FROM employee_contracts;
+                    DELETE FROM EmployeeRoles;
+                    DELETE FROM employees;
+                    DELETE FROM items;
+                    DELETE FROM items_documents_items;
+                    DELETE FROM ItemsDocuments;
+                    DELETE FROM roles;
+                    DELETE FROM shift_assignments;
+                    DELETE FROM shift_swap_requests;
+                    DELETE FROM shifts;
+                    DELETE FROM shipmentAreas;
+                    DELETE FROM sites;
+                    DELETE FROM transportations;
+                    DELETE FROM trucks;
+                    DELETE FROM weekly_preferences;
+                """);
+
+            //insert manager details (important data):
+            st.executeUpdate("""
+                    INSERT OR IGNORE INTO branches (id, name, address, employee_ids) VALUES
+                    ('1', 'example', 'example', '123456789,111,112,113,114,115,116,117,118')
+                """);
+
+            // Roles
+            st.executeUpdate("""
+                    INSERT OR IGNORE INTO roles (id, name, is_archived) VALUES
+                    ('0', 'manager', false)
+                """);
+
+            // Employees
+            st.executeUpdate("""
+                    INSERT OR IGNORE INTO employees (id, name, phone_number, branch_id, role_ids, salary, contract_id, bank_details, is_archived, archived_at, is_manager, password) VALUES
+                    ('123456789', 'manager', '054-4332473', '1', '0', 2000, '123456789-2025-04-17', 'n', 0, NULL, 1, '123')
+                """);
+
+            // Employee Contracts
+            st.executeUpdate("""
+                    INSERT OR IGNORE INTO employee_contracts (id, employee_id, start_date, free_days, sickness_days, monthly_work_hours, social_contributions, advanced_study_fund, salary, archived_at, is_archived) VALUES
+                    ('123456789-2025-04-17', '123456789', '2025-04-17', 10, 10, 20, 'example', 'example', 2000, '17.04.2025', 1)
+                """);
+
+
+
+            // Employee Roles
+            st.executeUpdate("""
+                    INSERT OR IGNORE INTO EmployeeRoles (employee_id, role_id) VALUES
+                    ('123456789', '0')
+                """);
+
+
+
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
