@@ -602,8 +602,10 @@ public class HR_Transportation_Tests {
 
     @Test
     void testCreateTransportation_DriverNotAssignedToShift_ShouldFail() throws SQLException {
+
         // Setup test data
         setupTestData();
+
 
         // הסר את השיבוץ של נהג כלשהו (למשל driver2 מהמשמרת)
         String driverId = createdEmployeeIds.stream()
@@ -614,6 +616,7 @@ public class HR_Transportation_Tests {
             System.out.println("No driver found to unassign from shift.");
             return;
         }
+        String driverName = employeeRepository.getEmployeeById(driverId).getName();
 
         List<ShiftAssignment> assignments = assignmentRepository.findByEmployee(driverId);
         for (ShiftAssignment assignment : assignments) {
@@ -627,15 +630,17 @@ public class HR_Transportation_Tests {
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+        ShipmentArea shipmentArea1 = shipmentAreaRepository.getShipmentArea(1);
+        shipmentArea1.addSite(origin);
 
         // פעולה: ניסיון ליצור הובלה עם נהג שאינו משובץ
         String result = transportationController.makeTransportation(
-                transportationId, date, departureTime, truckPlate, driverId,
+                transportationId, date, departureTime, truckPlate, driverName,
                 itemsDoc, shipmentAreasId, origin
         );
 
         // ציפייה: שהמערכת תיכשל בגלל שהנהג לא נמצא במשמרת
-        assertTrue(result.toLowerCase().contains("driver") && result.toLowerCase().contains("not in shift"),
+        assertTrue(result.toLowerCase().contains("driver") && result.toLowerCase().contains("was not found"),
                 "Should fail due to driver not being assigned to a shift. Actual: " + result);
 
         cleanupTestData();
