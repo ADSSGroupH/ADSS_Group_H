@@ -39,7 +39,7 @@ public class HRManagerService {
         managerController.addEmployee(id, name, phoneNumber, branchId, roles,contract, bankDetails, isManager, password);
     }
 
-    public ManagerController_Status deleteEmployee(String id) {
+    public ManagerController_Status deleteEmployee(String id) throws SQLException {
         return managerController.deleteEmployee(id);
     }
 
