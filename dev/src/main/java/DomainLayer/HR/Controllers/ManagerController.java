@@ -38,7 +38,7 @@ public class ManagerController {
     }
 
 
-    public ManagerController_Status deleteEmployee(String id) {
+    public ManagerController_Status deleteEmployee(String id) throws SQLException {
         Employee emp = employeeRepository.getEmployeeById(id);
         if (emp != null) {
             emp.setArchived(true);
