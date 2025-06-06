@@ -119,7 +119,7 @@ public class HR_Transportation_Tests {
 
         Employee driver1 = new Employee(driverId1, "John Doe", "123-456-7890", "branch1",
                 driverRoles, con1, "bank123", false, null, false, "password");
-        Driver driver_001 = new Driver(driverId1, LicenseType.B);
+        Driver driver_001 = new Driver(driverId1, LicenseType.A);
 
         Employee driver2 = new Employee(driverId2, "Jane Smith", "987-654-3210", "branch1",
                 driverRoles, con2, "bank456", false, null, false, "password");
@@ -178,11 +178,13 @@ public class HR_Transportation_Tests {
         createdTruckPlates.add(truck2.getPlateNumber());
 
         // Create test shipment areas
+        ShipmentArea shipmentArea1 = new ShipmentArea(1, "Test Area 1", new ArrayList<>());
         if (!shipmentAreaRepository.shipmentAreaExists(1)) {
-            shipmentAreaRepository.addShipmentArea(new ShipmentArea(1, "Test Area 1", new ArrayList<>()));
+            shipmentAreaRepository.addShipmentArea(shipmentArea1);
         }
+        ShipmentArea shipmentArea2 = new ShipmentArea(2, "Test Area 2", new ArrayList<>());
         if (!shipmentAreaRepository.shipmentAreaExists(2)) {
-            shipmentAreaRepository.addShipmentArea(new ShipmentArea(2, "Test Area 2", new ArrayList<>()));
+            shipmentAreaRepository.addShipmentArea(shipmentArea2);
         }
     }
 
@@ -395,6 +397,8 @@ public class HR_Transportation_Tests {
         List<ItemsDocument> itemsDoc = createTestItemsDocument();
         List<Integer> shipmentAreasId = Arrays.asList(1);
         Site origin = new Site("Origin", "Address", "123", "Contact", 1);
+        ShipmentArea shipmentArea1 = shipmentAreaRepository.getShipmentArea(1);
+        shipmentArea1.addSite(origin);
 
         // When: Creating transportation with real controller and repositories
         String result = transportationController.makeTransportation(
