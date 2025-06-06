@@ -227,7 +227,7 @@ public class ManagerUI {
                         }
                         if (roleNameLowerCase.equals("driver")){
                             isDriver = true;
-                            System.out.print("This role doesn't exist. would you like to create it? (yes/no): ");
+                            System.out.print("Add License type to the driver(A/B/C/D/E) ");
                             licenseType = scanner.nextLine();
 
                         }
@@ -275,6 +275,7 @@ public class ManagerUI {
                             managerService.addDriverLicense(id,licenseType);
                         }
                         managerService.addEmployee(id, name, phone, branchId, roles, contract, bank, false, password);
+                        managerService.addDriverLicense(id,licenseType);
 
                     }catch (SQLException e){
                         System.out.printf("ID number : %s already exists in the system.",id);
