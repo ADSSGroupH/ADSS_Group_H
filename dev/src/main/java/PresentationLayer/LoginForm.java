@@ -85,10 +85,10 @@ public class LoginForm {
             answer = scanner.nextLine().trim().toLowerCase();
 
             if (answer.equals("yes")) {
+                Database.ClearData();
                 System.out.println("Starting with empty system. You can now add data manually.");
                 break;
             } else if (answer.equals("no")) {
-                Database.InsertData();
                 System.out.println("The system is loaded with employees, shifts, and shifts assignments from sunday to friday.");
                 break;
             } else {
