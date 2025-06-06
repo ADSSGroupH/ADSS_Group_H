@@ -111,8 +111,8 @@ public class HR_Transportation_Tests {
         Set<Role> driverRoles = new HashSet<>();
         driverRoles.add(driverRole);
 
-        String driverId1 = "driver_" + timestamp + "_001";
-        String driverId2 = "driver_" + timestamp + "_002";
+        String driverId1 = "driver_001";
+        String driverId2 = "driver_002";
 
         EmployeeContract con1 = new EmployeeContract(driverId1, LocalDate.now(), 1, 1, 1, "1", "1", 1, "no", false);
         EmployeeContract con2 = new EmployeeContract(driverId2, LocalDate.now(), 1, 1, 1, "1", "1", 1, "no", false);
@@ -560,7 +560,7 @@ public class HR_Transportation_Tests {
                 transportationId, date, departureTime, getFirstTruckPlate(), nonExistentDriver,
                 itemsDoc, shipmentAreasId, origin);
 
-        assertTrue(result.contains("Error loading available"),
+        assertTrue(result.contains("Driver with name"),
                 "Should fail for non-existent driver. Result: " + result);
 
         cleanupTestData();
