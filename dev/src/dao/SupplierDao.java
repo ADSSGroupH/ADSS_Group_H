@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SupplierDao {
 
-    private static final String FILE_PATH = "C:/Users/eladt/IdeaProjects/Supplier New/dev/src/Data/Suppliers.sql";
+    private static final String FILE_PATH = Paths.get("Data", "Suppliers.sql").toAbsolutePath().toString();
 
     public List<Supplier> getAllSuppliers() {
         List<Supplier> suppliers = new ArrayList<>();

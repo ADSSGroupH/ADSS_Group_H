@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ProductDao {
 
-    private static final String FILE_PATH = "C:/Users/eladt/IdeaProjects/Supplier New/dev/src/Data/Products.sql";
+    private static final String FILE_PATH = Paths.get("Data", "Products.sql").toAbsolutePath().toString();
 
     /** 1. קבלת כל המוצרים מתוך הקובץ */
     public List<Product> getAllProducts() {

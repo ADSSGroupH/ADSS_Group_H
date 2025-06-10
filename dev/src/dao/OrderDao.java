@@ -9,7 +9,7 @@ import java.nio.file.*;
 import java.util.*;
 
 public class OrderDao {
-    private static final String FILE_PATH = "C:/Users/eladt/IdeaProjects/Supplier New/dev/src/Data/Orders.sql";
+    private static final String FILE_PATH = Paths.get("Data", "Orders.sql").toAbsolutePath().toString();;
     private final SupplierDao supplierDao = new SupplierDao();
 
     /** 1. כל ההזמנות */

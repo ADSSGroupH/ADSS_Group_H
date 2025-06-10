@@ -10,7 +10,7 @@ public class ItemDao {
 
     // 1. כוון לנתיב המדויק שבו אתה רוצה שה־.sql יתעדכן
     private static final String FILE_PATH =
-            "C:/Users/eladt/IdeaProjects/Supplier New/dev/src/Data/Items.sql";
+            Paths.get("Data", "Items.sql").toAbsolutePath().toString();;
 
     private final ProductDao productDao;
 
