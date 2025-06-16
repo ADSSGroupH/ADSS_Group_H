@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Product {
     private String pid;
@@ -151,6 +152,41 @@ public class Product {
         return
                 "name='" + name + '\'' +
                         ", productId='" + pid + '\'' ;
+    }
+
+    public String getPromotionIdsString() {
+        if (promotions == null || promotions.isEmpty()) {
+            return "";
+        }
+        return promotions.stream()
+                .map(promo -> promo.getProID())        // או getId(), לפי השם במחלקת Promotion
+                .collect(Collectors.joining(","));
+    }
+
+    /**
+     * מחזיר מחרוזת של כל ה-IDים של ה-supplierDiscounts, מופרדים בפסיק.
+     */
+    public String getSupplierDiscountIdsString() {
+        if (supplierDiscounts == null || supplierDiscounts.isEmpty()) {
+            return "";
+        }
+        return supplierDiscounts.stream()
+                .map(sd -> sd.getDisID())              // או getId(), לפי השם במחלקת SupplierDiscount
+                .collect(Collectors.joining(","));
+    }
+
+    /**
+     * מחזיר מחרוזת של כל הזוגות supplierId–catalogNumber, מופרדים בפסיק.
+     */
+    public String getSuppliersInfoString() {
+        if (suppliers == null || suppliers.isEmpty()) {
+            return "";
+        }
+        return suppliers.entrySet().stream()
+                .map(entry -> entry.getKey().getSupplierId()   // או getSupplierId(), לפי השם במחלקת Supplier
+                        + "-"
+                        + entry.getValue())
+                .collect(Collectors.joining(","));
     }
 
 
