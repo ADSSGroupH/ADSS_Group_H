@@ -45,6 +45,16 @@ public class ContactPerson {
                 ", phoneNumber: '" + phoneNumber + '\'' +
                 ", email: '" + email + '\'' ;
     }
+
+    public String getAsCsvString() {
+        return name + "-" + phoneNumber + "-" + email;
+    }
+
+    public static ContactPerson fromCsvString(String str) {
+        String[] parts = str.split("-");
+        if (parts.length != 3) throw new IllegalArgumentException("Invalid format for contact person: " + str);
+        return new ContactPerson(parts[0], parts[1], parts[2]);
+    }
 }
 
 

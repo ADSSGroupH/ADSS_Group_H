@@ -1,6 +1,7 @@
 package Domain;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Order {
     private OrderStatus status;
@@ -122,5 +123,17 @@ public class Order {
                 ", totalPrice=" + totalPrice +
                 ", status=" + status +
                 '}';
+    }
+
+    public static Map<String, Integer> parseItemsFromString(String itemsStr) {
+        return itemsStr == null || itemsStr.isEmpty() ?
+                new java.util.HashMap<>() :
+                java.util.Arrays.stream(itemsStr.split(","))
+                        .map(s -> s.split("-"))
+                        .filter(parts -> parts.length == 2)
+                        .collect(Collectors.toMap(
+                                parts -> parts[0].trim(),
+                                parts -> Integer.parseInt(parts[1].trim())
+                        ));
     }
 }

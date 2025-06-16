@@ -3,6 +3,7 @@ package Domain;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Agreement {
     private String agreementId;
@@ -128,5 +129,23 @@ public class Agreement {
         }
 
         return sb.toString();
+    }
+
+    public String getDeliveryDaysAsString() {
+        if (deliveryDays == null || deliveryDays.isEmpty()) return "";
+        return deliveryDays.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(","));
+    }
+
+    public String getItemsAsString() {
+        if (items == null || items.isEmpty()) return "";
+        return items.entrySet().stream()
+                .map(entry -> entry.getKey().getItemId() + "-" + entry.getValue())
+                .collect(Collectors.joining(","));
+    }
+
+    public String getStartDateAsString() {
+        return startDate != null ? startDate.toString() : "";
     }
 }

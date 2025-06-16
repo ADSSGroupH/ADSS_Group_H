@@ -3,6 +3,7 @@ package Domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Supplier {
     private String name;             // Supplier name
@@ -139,6 +140,24 @@ public class Supplier {
             sb.append("   Email: ").append(c.getEmail()).append("\n");
         }
         return sb.toString();
+    }
+
+    public String getAgreementIdsAsString() {
+        return agreements.stream()
+                .map(Agreement::getAgreementId)
+                .collect(Collectors.joining(","));
+    }
+
+    public String getDeliveryDaysAsString() {
+        return deliveryDays.stream()
+                .map(Enum::name)
+                .collect(Collectors.joining(","));
+    }
+
+    public String getContactNumbersAsString() {
+        return contactPeople.stream()
+                .map(ContactPerson::getPhoneNumber)
+                .collect(Collectors.joining(","));
     }
 }
 
