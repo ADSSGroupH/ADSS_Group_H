@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a99386aa-eff5-4551-b12b-03949838fde7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/dev/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dev/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/dev/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/hr_management.db" beforeDir="false" afterPath="$PROJECT_DIR$/dev/hr_management.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/BranchDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/EmployeeContractDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/EmployeeDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/RoleDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/ShiftAssignmentDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/ShiftDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/ShiftSwapRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/HR/WeeklyPreferencesDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/ItemDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/ItemsDocumentDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/LicenseType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/ShipmentAreaDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/SiteDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/TransportationDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/TruckDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DTO/driverDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/AssignmentDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/BranchDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/ContractDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/EmployeeDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcAssignmentDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcBranchDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcContractDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcEmployeeDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcRoleDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcShiftDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcSwapRequestDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/JdbcWeeklyPreferencesDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/RoleDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/ShiftDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/SwapRequestDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/HR/WeeklyPreferencesDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/DriverDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/ItemDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/ItemsDocumentDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcDriverDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcItemDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcItemsDocumentDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcShipmentAreaDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcSiteDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcTransportationDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/JdbcTruckDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/ShipmentAreaDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/SiteDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/TransportationDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/Dal/transportation_dal/TruckDAO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Branch.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Controllers/EmployeeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Controllers/ManagerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Controllers/ShiftController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Controllers/ShiftSwapRequestController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Employee.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/EmployeeContract.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Enums/ManagerController_Status.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Enums/ShiftSwapRequest_Status.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Enums/Shift_Status.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/HRManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/AssignmentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/BranchRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/ContractsRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/EmployeeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/RoleRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/ShiftRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/SwapRequestRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Repositories/WeeklyPreferencesRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Role.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/Shift.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/ShiftAssignment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR/ShiftSwapRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/HR_TransportationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/Driver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/DriverRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/Item.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/ItemsDocument.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/ShipmentArea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/ShipmentAreaRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/Site.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/Transportation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/TransportationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/TransportationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/Truck.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/DomainLayer/transportationDomain/TruckRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/DriverUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/EmployeeUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/LoginForm.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/ManagerUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/TransportationManagerUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/PresentationLayer/UserInteraction.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/DriverTransportationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/EmployeeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/HRManagerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/ShiftService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/ShiftSwapRequestService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/ServiceLayer/TransportationManagerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/database/Database.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/main/java/database/database.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/test/java/HR_Transportation_Tests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/src/test/java/TransportationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/AssignmentRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/AssignmentRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/BranchRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/BranchRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/EmployeeRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/RoleRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/RoleRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/ShiftRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR/Repositories/ShiftRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR_TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/HR_TransportationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/DriverRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/DriverRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/ShipmentAreaRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/ShipmentAreaRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TransportationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TransportationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TransportationRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TruckRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/DomainLayer/transportationDomain/TruckRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/PresentationLayer/ManagerUI$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/PresentationLayer/TransportationManagerUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/PresentationLayer/TransportationManagerUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/ServiceLayer/TransportationManagerService.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/ServiceLayer/TransportationManagerService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/EmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/EmployeeDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcAssignmentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcAssignmentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcBranchDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcBranchDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcContractDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcContractDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcEmployeeDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcEmployeeDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcRoleDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcRoleDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcShiftDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcShiftDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcSwapRequestDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcSwapRequestDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcWeeklyPreferencesDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/HR/JdbcWeeklyPreferencesDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/Transportation/JdbcDriverDAO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/DriverDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/DriverDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcItemDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcItemDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcItemsDocumentDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcShipmentAreaDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcSiteDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcSiteDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcTransportationDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcTruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/JdbcTruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/TruckDAO.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/dal/transportation_dal/TruckDAO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/classes/database/Database.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/classes/database/Database.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/test-classes/HR_Transportation_Tests.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/test-classes/HR_Transportation_Tests.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dev/target/test-classes/TransportationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/dev/target/test-classes/TransportationTests.class" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="2yb5UzvUgPaHPtjp1febozh8ZCt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "TR__HR",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/owner/Desktop/supermarket project/ADSS_Group_H"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a99386aa-eff5-4551-b12b-03949838fde7" name="Changes" comment="" />
+      <created>1750090451630</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750090451630</updated>
+    </task>
+    <servers />
+  </component>
+</project>
