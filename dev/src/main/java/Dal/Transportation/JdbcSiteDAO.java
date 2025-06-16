@@ -14,7 +14,7 @@ public class JdbcSiteDAO implements SiteDAO {
 
     @Override
     public Optional<SiteDTO> findSite(String name, int shipmentAreaId) throws SQLException {
-        String sql = "SELECT name, shipmentAreaId, address, phoneNumber, contactPersonName  FROM sites WHERE name = ? and shipmentAreaId = ?";
+        String sql = "SELECT name, shipmentAreaId, address, phoneNumber, contactPersonName, branchOrSupplierId FROM sites WHERE name = ? and shipmentAreaId = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, name);
             ps.setInt(2, shipmentAreaId);
@@ -22,7 +22,7 @@ public class JdbcSiteDAO implements SiteDAO {
                 return rs.next()
                         ? Optional.of(new SiteDTO(rs.getString("name"), rs.getInt("shipmentAreaId"),
                         rs.getString("address"), rs.getString("phoneNumber"),
-                        rs.getString("contactPersonName")
+                        rs.getString("contactPersonName"), rs.getString("branchOrSupplierId")
                 ))
                         : Optional.empty();
             }
@@ -31,13 +31,14 @@ public class JdbcSiteDAO implements SiteDAO {
 
     @Override
     public void save(SiteDTO site) throws SQLException {
-        String sql = "INSERT INTO sites (name, shipmentAreaId, address, phoneNumber, contactPersonName) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO sites (name, shipmentAreaId, address, phoneNumber, contactPersonName, branchOrSupplierId) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setString(1, site.getName());
             ps.setInt(2, site.getShipmentAreaId());
             ps.setString(3, site.getAddress());
             ps.setString(4, site.getPhoneNumber());
             ps.setString(5, site.getContactPersonName());
+            ps.setString(6, site.getBranchOrSupplierId());
             ps.executeUpdate();
         }
     }
@@ -53,7 +54,7 @@ public class JdbcSiteDAO implements SiteDAO {
 
     @Override
     public List<SiteDTO> findAllSitesByShipmentAreaId(int shipmentAreaId) throws SQLException {
-        String sql = "SELECT name, shipmentAreaId, address, phoneNumber, contactPersonName FROM sites WHERE shipmentAreaId = ?";
+        String sql = "SELECT name, shipmentAreaId, address, phoneNumber, contactPersonName, branchOrSupplierId FROM sites WHERE shipmentAreaId = ?";
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setInt(1, shipmentAreaId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -61,7 +62,7 @@ public class JdbcSiteDAO implements SiteDAO {
                 while (rs.next()) {
                     sites.add(new SiteDTO(rs.getString("name"), rs.getInt("shipmentAreaId"),
                             rs.getString("address"), rs.getString("phoneNumber"),
-                            rs.getString("contactPersonName")));
+                            rs.getString("contactPersonName"), rs.getString("branchOrSupplierId")));
                 }
                 return sites;
             }
@@ -72,6 +73,20 @@ public class JdbcSiteDAO implements SiteDAO {
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setInt(1, shipmentAreaId);
             ps.executeUpdate();
+        }
+    }
+
+    public List<SiteDTO> findAll() throws SQLException{
+        String sql = "SELECT name, shipmentAreaId, address, phoneNumber, contactPersonName, branchOrSupplierId FROM sites";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            List<SiteDTO> sites = new ArrayList<>();
+            while (rs.next()) {
+                sites.add(new SiteDTO(rs.getString("name"), rs.getInt("shipmentAreaId"),
+                        rs.getString("address"), rs.getString("phoneNumber"),
+                        rs.getString("contactPersonName"), rs.getString("branchOrSupplierId")));
+            }
+            return sites;
         }
     }
 

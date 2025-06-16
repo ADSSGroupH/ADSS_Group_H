@@ -1,13 +1,17 @@
 package DomainLayer.Transportation.Repositories;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import DTO.Transportation.ShipmentAreaDTO;
 import DTO.Transportation.SiteDTO;
 import Dal.Transportation.JdbcShipmentAreaDAO;
 import Dal.Transportation.JdbcSiteDAO;
 import DomainLayer.Transportation.ShipmentArea;
 import DomainLayer.Transportation.Site;
-
-import java.util.*;
 
 
 public class ShipmentAreaRepository {
@@ -19,6 +23,19 @@ public class ShipmentAreaRepository {
         this.shipmentAreaMap = new HashMap<>();
         this.jdbcSiteDAO = new JdbcSiteDAO();
         this.jdbcShipmentAreaDAO = new JdbcShipmentAreaDAO();
+    }
+
+    public void loadData() {
+        try {
+            List<ShipmentAreaDTO> shipmentAreaDTOs = jdbcShipmentAreaDAO.findAll();
+            for (ShipmentAreaDTO shipmentAreaDTO : shipmentAreaDTOs) {
+                List<SiteDTO> siteDTOs = jdbcSiteDAO.findAllSitesByShipmentAreaId(shipmentAreaDTO.getId());
+                ShipmentArea shipmentArea = new ShipmentArea(shipmentAreaDTO, siteDTOs);
+                shipmentAreaMap.put(shipmentArea.getId(), shipmentArea);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void addShipmentArea(ShipmentArea shipmentArea) {
 
@@ -125,6 +142,18 @@ public class ShipmentAreaRepository {
 
     public List<ShipmentArea> getAllShipmentAreas() {
         return new ArrayList<>(shipmentAreaMap.values());
+    }
+
+    public boolean branchOrSupplierExists(String branchOrSupplierId) {
+        loadData();
+        for (ShipmentArea shipmentArea : shipmentAreaMap.values()) {
+            for (Site site : shipmentArea.getSites()) {
+                if (site.getBranchOrSupplierId().equals(branchOrSupplierId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

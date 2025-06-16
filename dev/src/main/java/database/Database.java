@@ -191,6 +191,7 @@ public final class Database {
                         phoneNumber TEXT NOT NULL,
                         contactPersonName TEXT NOT NULL,
                         shipmentAreaId INTEGER NOT NULL,
+                        branchOrSupplierId TEXT NOT NULL,
                         FOREIGN KEY (shipmentAreaId) REFERENCES shipmentAreas(id)
                     );
                 """);
@@ -391,11 +392,11 @@ public final class Database {
                     (222, 'Center')
                 """);
                 st.executeUpdate("""
-                   INSERT OR IGNORE INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId) VALUES
-                   ('Ikea', 'Beer sheva', '086312589', 'Ido', 111),
-                   ('Nike', 'Tel aviv', '081111111', 'Tal', 123),
-                   ('Mango', 'Sderot', '032222222', 'Jordi', 222),
-                   ('Zara', 'Beer sheva', '031234567', 'Hila', 111)
+                   INSERT OR IGNORE INTO sites (name, address, phoneNumber, contactPersonName, shipmentAreaId, branchOrSupplierId) VALUES
+                   ('Ikea', 'Beer sheva', '086312589', 'Ido', 111, 1),
+                   ('Nike', 'Tel aviv', '081111111', 'Tal', 123, 2),
+                   ('Mango', 'Sderot', '032222222', 'Jordi', 222, 3),
+                   ('Zara', 'Beer sheva', '031234567', 'Hila', 111, 4)
                 """);
                 st.executeUpdate("""
                    INSERT OR IGNORE INTO transportations (id, date, departureTime, truckPlateNumber, driverName, originName, originShipmentAreaId, succeeded, accident) VALUES

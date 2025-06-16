@@ -1,11 +1,12 @@
 package Dal.Transportation;
 
-import DTO.Transportation.ShipmentAreaDTO;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
+
+import DTO.Transportation.ShipmentAreaDTO;
 import database.Database;
 
 public class JdbcShipmentAreaDAO implements ShipmentAreaDAO {
@@ -39,6 +40,18 @@ public class JdbcShipmentAreaDAO implements ShipmentAreaDAO {
         try (PreparedStatement ps = Database.getConnection().prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
+        }
+    }
+
+    public List<ShipmentAreaDTO> findAll() throws SQLException{
+        String sql = "SELECT id, name FROM shipmentAreas";
+        try (PreparedStatement ps = Database.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            List<ShipmentAreaDTO> shipmentAreas = new java.util.ArrayList<>();
+            while (rs.next()) {
+                shipmentAreas.add(new ShipmentAreaDTO(rs.getInt("id"), rs.getString("name")));
+            }
+            return shipmentAreas;
         }
     }
 

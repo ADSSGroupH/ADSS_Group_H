@@ -6,14 +6,16 @@ public class SiteDTO {
     private String address;
     private String phoneNumber;
     private String contactPersonName;
+    private String branchOrSupplierId;
 
 
-    public SiteDTO(String name, int shipmentAreaId, String address, String phoneNumber, String contactPersonName) {
+    public SiteDTO(String name, int shipmentAreaId, String address, String phoneNumber, String contactPersonName, String branchOrSupplierId) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.contactPersonName = contactPersonName;
         this.shipmentAreaId = shipmentAreaId;
+        this.branchOrSupplierId = branchOrSupplierId;
     }
 
     public String getName() {
@@ -34,5 +36,9 @@ public class SiteDTO {
 
     public String getContactPersonName() {
         return contactPersonName;
+    }
+
+    public String getBranchOrSupplierId() {
+        return branchOrSupplierId;
     }
 }

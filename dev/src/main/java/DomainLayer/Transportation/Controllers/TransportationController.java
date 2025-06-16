@@ -1,29 +1,26 @@
 package DomainLayer.Transportation.Controllers;
 
-import DTO.Transportation.LicenseType;
-import DTO.Transportation.driverDTO;
-import DomainLayer.HR.Repositories.AssignmentRepository;
-import DomainLayer.HR.Repositories.ShiftRepository;
-import DomainLayer.HR.Shift;
-import DomainLayer.HR.ShiftAssignment;
-import DomainLayer.HR_TransportationController;
-import DomainLayer.Transportation.ShipmentArea;
-import DomainLayer.Transportation.Driver;
-import DomainLayer.Transportation.Transportation;
-import DomainLayer.Transportation.ItemsDocument;
-import DomainLayer.Transportation.Site;
-import DomainLayer.Transportation.Truck;
-import DomainLayer.Transportation.Item;
-import DomainLayer.Transportation.Repositories.DriverRepository;
-import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
-import DomainLayer.Transportation.Repositories.TransportationRepository;
-import DomainLayer.Transportation.Repositories.TruckRepository;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import DTO.HR.BranchDTO;
+import DTO.Transportation.LicenseType;
+import DTO.Transportation.driverDTO;
+import DomainLayer.HR_TransportationController;
+import DomainLayer.Transportation.Driver;
+import DomainLayer.Transportation.Item;
+import DomainLayer.Transportation.ItemsDocument;
+import DomainLayer.Transportation.Repositories.DriverRepository;
+import DomainLayer.Transportation.Repositories.ShipmentAreaRepository;
+import DomainLayer.Transportation.Repositories.TransportationRepository;
+import DomainLayer.Transportation.Repositories.TruckRepository;
+import DomainLayer.Transportation.ShipmentArea;
+import DomainLayer.Transportation.Site;
+import DomainLayer.Transportation.Transportation;
+import DomainLayer.Transportation.Truck;
 
 
 
@@ -428,8 +425,8 @@ public class TransportationController {
         return t.display();
     }
 
-    public String addSite(String name, String address, String phoneNumber, String contactPersonName, int shipmentAreaId) {
-        Site site = new Site(name, address, phoneNumber, contactPersonName, shipmentAreaId);
+    public String addSite(String name, String address, String phoneNumber, String contactPersonName, int shipmentAreaId, String branchOrSupplierId) {
+        Site site = new Site(name, address, phoneNumber, contactPersonName, shipmentAreaId, branchOrSupplierId);
 
         ShipmentArea area = shipmentAreaRep.getShipmentArea(shipmentAreaId);
         if (area == null) {
@@ -523,6 +520,21 @@ public class TransportationController {
 
     public List<ShipmentArea> getAllShipmentAreas() {
         return shipmentAreaRep.getAllShipmentAreas();
+    }
+
+    Public String getTheBranches(){
+        List<BranchDTO> branches = hrTransportationController.getAllBranches();
+        StringBuilder sb = new StringBuilder();
+        for (BranchDTO branch : branches) {
+            if(shipmentAreaRep.branchExists(branch.getId())) {
+                sb.append("Branch ID: ").append(branch.getId())
+                  .append(", Name: ").append(branch.getName())
+                  .append(", Phone: ").append(branch.getPhoneNumber())
+                  .append(", Address: ").append(branch.getAddress())
+                  .append("\n");
+            }
+        }
+        return sb;
     }
 
 
