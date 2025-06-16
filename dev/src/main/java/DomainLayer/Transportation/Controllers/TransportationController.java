@@ -522,20 +522,40 @@ public class TransportationController {
         return shipmentAreaRep.getAllShipmentAreas();
     }
 
-    Public String getTheBranches(){
-        List<BranchDTO> branches = hrTransportationController.getAllBranches();
-        StringBuilder sb = new StringBuilder();
-        for (BranchDTO branch : branches) {
-            if(shipmentAreaRep.branchExists(branch.getId())) {
-                sb.append("Branch ID: ").append(branch.getId())
-                  .append(", Name: ").append(branch.getName())
-                  .append(", Phone: ").append(branch.getPhoneNumber())
-                  .append(", Address: ").append(branch.getAddress())
-                  .append("\n");
+    public String getUnknowenBranches(){
+        try {
+            List<BranchDTO> branches = hrTransportationController.getAllBranchesDTO();
+            StringBuilder sb = new StringBuilder();
+            for (BranchDTO branch : branches) {
+                if(!shipmentAreaRep.branchOrSupplierExists(branch.getId())) {
+                    sb.append("Branch ID: ").append(branch.getId())
+                    .append(", Name: ").append(branch.getName())
+                    .append(", Address: ").append(branch.getAddress())
+                    .append("\n");
             }
         }
-        return sb;
+            return sb.toString();
+        } catch (Exception e) {
+            return "Error loading branches: " + e.getMessage();
+        }
     }
 
+    public String makeSitesFromBranches(int shipmentAreaId, String phoneNumber, String branchId, String contactPersonName) {
+        List<BranchDTO> branches;
+        try {
+            branches = hrTransportationController.getAllBranchesDTO();
+        } catch (SQLException e) {
+            return "Error loading branches: " + e.getMessage();
+        }
 
+        StringBuilder result = new StringBuilder();
+        for (BranchDTO branch : branches) {
+            if (branch.getId().equals(branchId)) {  
+                String response = addSite(branch.getName(), branch.getAddress(), phoneNumber,contactPersonName, shipmentAreaId, branch.getId());
+                result.append(response).append("\n");
+        }
+        
+    }
+    return result.toString();
+    }
 }
